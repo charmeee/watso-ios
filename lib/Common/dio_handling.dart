@@ -110,18 +110,41 @@ class CustomInterceptor extends Interceptor {
 
         return handler.resolve(response);
       } on DioError catch (e) {
-        // circular dependency error
-        // A, B
-        // A -> B의 친구
-        // B -> A의 친구
-        // A는 B의 친구구나
-        // A -> B -> A -> B -> A -> B
-        // ump -> dio -> ump -> dio
-        ref.read(authStateProvider.notifier).state = AuthState.error;
+        if(ref.read(authStateProvider.notifier).state == AuthState.authenticated) {
+          showErrorDialog('다시 로그인 해 주세요');
+          ref.read(userNotifierProvider.notifier).logout();
+        }
         return handler.reject(e);
       }
     }
 
     return handler.reject(err);
   }
+}
+
+void showErrorDialog(String errorMessage) {
+  SchedulerBinding.instance.addPostFrameCallback((_) {
+    final context = navigatorState.currentContext;
+    if (context != null) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('에러 발생'),
+            content: Text(errorMessage),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('확인'),
+              ),
+            ],
+          );
+        },
+      ).then((value) {
+        Navigator.popUntil(context, (route) => route.isFirst);
+      });
+    }
+  });
 }
