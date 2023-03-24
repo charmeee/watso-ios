@@ -90,16 +90,11 @@ class CustomInterceptor extends Interceptor {
       final dio = Dio(options);
 
       try {
-        final resp = await dio.get(
-          '/signin/refresh',
-          options: Options(
-            headers: {
-              'authorization': 'Bearer $refreshToken',
-            },
-          ),
-        );
+        final resp = await dio.get('/signin/refresh', queryParameters: {
+          'Authorization': storage.read(key: "accessToken")
+        });
 
-        final accessToken = resp.headers['accessToken'] as String;
+        final accessToken = resp.headers["authentication"].toString();
 
         final options = err.requestOptions;
 
