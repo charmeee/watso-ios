@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:dio/dio.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,7 +16,6 @@ final dioProvider = Provider<Dio>((ref) {
   //dio.interceptors.add(CookieManager(CookieJar()));
   final storage = ref.watch(secureStorageProvider);
 
-  dio.interceptors.add(LogInterceptor(responseBody: true));
   dio.interceptors.add(CustomInterceptor(ref: ref, storage: storage));
   return dio;
 });
