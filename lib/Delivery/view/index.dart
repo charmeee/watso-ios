@@ -12,8 +12,7 @@ class DeliveryMainPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final ath = ref.watch(authStateProvider);
-    log(ath.toString());
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Delivery'),
