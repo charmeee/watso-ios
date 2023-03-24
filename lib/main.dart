@@ -6,7 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sangsangtalk/Auth/auth_provider.dart';
 
 import 'Auth/view/signIn.dart';
-import 'Delivery/view/main.dart';
+import 'Common/global.dart';
+import 'Delivery/view/index.dart';
+
 
 void main() {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -18,7 +20,8 @@ void main() {
       },
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'bonoteam',
+        title: 'dogbird',
+        navigatorKey: navigatorState,
         theme: ThemeData(
             // scaffoldBackgroundColor: backgroundColor,
             // textTheme: TextTheme()
@@ -43,23 +46,19 @@ class _MyAppState extends ConsumerState<MyApp> {
     super.initState();
     FlutterNativeSplash.remove();
   }
-  void initialization() async {
-   // await ref.read(userNotifierProvider.notifier).getUserProfile();
-  }
 
   @override
   Widget build(BuildContext context) {
     final initState = ref.watch(startProvider);
 
-
     // TODO: implement build
     return initState.when(
         data: (data) {
-          return (data==AuthState.authenticated) ?const DeliveryMainPage():const SignInPage();
+          return (data==AuthState.authenticated) ?DeliveryMainPage():SignInPage();
         },
         loading: () => const Scaffold(
           body: Center(
-            child: Text('에러'),
+            child: Text('로딩'),
           ),
         ),
         error: (e, s) {
@@ -70,7 +69,6 @@ class _MyAppState extends ConsumerState<MyApp> {
             ),
           );
         });
-    //return authState==AuthState.authenticated?const DeliveryMainPage():const SignInPage();
   }
   
 }
