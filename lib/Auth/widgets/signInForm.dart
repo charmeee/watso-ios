@@ -71,14 +71,13 @@ class _EmailSignInState extends ConsumerState<SignInForm> {
                 onPressed:() async {
                   if(_signInFormKey.currentState!.validate()){
                     _signInFormKey.currentState!.save();
-                    //authRepositoryProvider
-                    final resp = await ref.read(userNotifierProvider.notifier).signIn( username,password);
-                    log('resp'+resp.toString());
-                    //if resp has error then show error message
-                    if(resp.hasError){
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(resp.errorMessage!)));
-                    }
+                     await ref.read(userNotifierProvider.notifier).signIn( username,password)
+                         .onError((error, stackTrace) {
+                           var message = (error is FormatException) ?error.message:error.toString();
+                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+                     }
 
+                     );
                   }
                 },
                 style: TextButton.styleFrom(
