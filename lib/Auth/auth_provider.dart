@@ -54,7 +54,7 @@ class UserNotifier extends StateNotifier<UserInfo?> {
   UserNotifier(this.dio, this.storage,{required this.ref}) : super(null);
   //로긴됏을때! 머다? authorize 한다.
 
-  signIn(username,password) async{
+  Future signIn(username,password) async{
     try {
       final response = await dio.post('/signin', data: {
         'username': username,
@@ -74,13 +74,16 @@ class UserNotifier extends StateNotifier<UserInfo?> {
       }
       ref.read(authStateProvider.notifier).state = AuthState.authenticated;
       return response;
-    }catch(e){
-      log(e.toString());
-      return e;
+    }on DioError catch(e){
+      if(e.type == DioErrorType.badResponse){
+        log(e.response.toString());
+        throw FormatException("아이디 또는 비밀번호가 틀렸습니다.");
+      }
+      throw Exception("로그인 실패");
     }
   }
 
-  signUp(username,nickname,password,email,account)async{
+  Future signUp(username,nickname,password,email,account)async{
     try{
       final response = await dio.post('/signup', data: {
         'username': username.toString(),
@@ -96,7 +99,7 @@ class UserNotifier extends StateNotifier<UserInfo?> {
     }
   }
 
-  getUserProfile() async {
+  Future getUserProfile() async {
     //log("******us erProfile 받아오기******");
     // try {
     //   UserInfo userInfo = await userProfileRequest();
@@ -157,7 +160,7 @@ class UserNotifier extends StateNotifier<UserInfo?> {
   //   }
   // }
 
-  logout() async {
+  Future logout() async {
     try {
       await dio.get('/logout', queryParameters: {
         'Authorization': await storage.read(key: "accessToken")
@@ -174,7 +177,7 @@ class UserNotifier extends StateNotifier<UserInfo?> {
     }
   }
 
-  deleteUserProfile() async {
+  Future deleteUserProfile() async {
     log("회원탈퇴");
     state = null;
     ref.read(authStateProvider.notifier).state = AuthState.unauthenticated;
