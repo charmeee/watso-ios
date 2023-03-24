@@ -1,7 +1,8 @@
 import 'dart:developer';
 
-import 'package:dio/src/dio.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../Common/dio.dart';
 import 'models/user_model.dart';
@@ -11,36 +12,92 @@ enum AuthState {
   initial,
   authenticated,
   unauthenticated,
-  error
 }
 
 final startProvider = FutureProvider((ref) async {
-  var authState = ref.watch(authStateProvider);
-  if(authState == AuthState.initial){
+  final authState = ref.watch(authStateProvider);
+  log(authState.toString());
+  if(authState==AuthState.initial) {
     try {
       await ref.read(userNotifierProvider.notifier).getUserProfile();
-      ref.read(authStateProvider.notifier).state = AuthState.authenticated;
-    }catch(e){
+      //ref.read(authStateProvider.notifier).state = AuthState.authenticated;
+    } catch (e) {
       log(e.toString());
       ref.read(authStateProvider.notifier).state = AuthState.unauthenticated;
     }
   }
+
   return authState;
 });
 
 final authStateProvider = StateProvider<AuthState>((ref) => AuthState.initial);
 
 final userNotifierProvider =
-StateNotifierProvider<UserNotifier, UserInfo>((ref) {
-  return UserNotifier(ref);
+StateNotifierProvider<UserNotifier, UserInfo?>((ref) {
+
+
+  final dio = ref.watch(dioProvider);
+  final storage = ref.watch(secureStorageProvider);
+
+  //dio url /auth 추가
+  dio.options.baseUrl +='/auth';
+
+  return UserNotifier(dio,storage,ref:ref);
 });
 
-class UserNotifier extends StateNotifier<UserInfo> {
+class UserNotifier extends StateNotifier<UserInfo?> {
+  // final AuthRepository authRepo;
+  final Dio dio;
   final Ref ref;
-  UserNotifier(this.ref) : super(UserInfo());
+  final FlutterSecureStorage storage;
+  // UserNotifier( {required this.authRepo,required this.ref}) : super(null);
+  UserNotifier(this.dio, this.storage,{required this.ref}) : super(null);
   //로긴됏을때! 머다? authorize 한다.
+
+  signIn(username,password) async{
+    try {
+      final response = await dio.post('/signin', data: {
+        'username': username,
+        'pw': password,
+        'registration_token': 'string'
+      });
+      if(response.headers["authentication"] != null){
+        final token = response.headers["authentication"].toString().split("/");
+        log("access token 발급 완료  $token");
+
+        storage.delete(key: "accessToken");
+        storage.write(key: "accessToken", value: token[0]);
+        storage.delete(key: "refreshToken");
+        storage.write(key: "refreshToken", value: token[1]);
+      }else{
+        throw Exception("access token 발급 실패");
+      }
+      ref.read(authStateProvider.notifier).state = AuthState.authenticated;
+      return response;
+    }catch(e){
+      log(e.toString());
+      return e;
+    }
+  }
+
+  signUp(username,nickname,password,email,account)async{
+    try{
+      final response = await dio.post('/signup', data: {
+        'username': username.toString(),
+        'pw': password.toString(),
+        'nickname': nickname.toString(),
+        'account_number': account.toString(),
+        'email': email.toString(),
+      });
+      return response;
+    }catch(e){//return errormessage
+      log((e is Error).toString() );
+      return e;
+    }
+  }
+
   getUserProfile() async {
-    log("******us erProfile 받아오기******");
+    //log("******us erProfile 받아오기******");
     // try {
     //   UserInfo userInfo = await userProfileRequest();
     //   state = userInfo;
@@ -101,16 +158,26 @@ class UserNotifier extends StateNotifier<UserInfo> {
   // }
 
   logout() async {
-    state = UserInfo.init();
-    ref.read(authStateProvider.notifier).state = AuthState.unauthenticated;
+    try {
+      await dio.get('/logout', queryParameters: {
+        'Authorization': await storage.read(key: "accessToken")
+      });
+      storage.delete(key: "accessToken");
+      state = null;
+      ref
+          .read(authStateProvider.notifier)
+          .state = AuthState.unauthenticated;
+      return true;
+    } catch (e) {
+      log(e.toString());
+      return false;
+    }
   }
 
   deleteUserProfile() async {
     log("회원탈퇴");
-    if (state.id != null) {
-      state = UserInfo.init();
-      ref.read(authStateProvider.notifier).state = AuthState.unauthenticated;
-    }
+    state = null;
+    ref.read(authStateProvider.notifier).state = AuthState.unauthenticated;
   }
 }
 
