@@ -61,14 +61,14 @@ class UserNotifier extends StateNotifier<UserInfo?> {
         'pw': password,
         'registration_token': 'string'
       });
-      if(response.headers["authentication"] != null){
-        final token = response.headers["authentication"].toString().split("/");
+      if(response.headers["authentication"]?[0] != null){
+        log(response.headers["authentication"].runtimeType.toString());//list string
+        final token = response.headers["authentication"]![0].toString().split("/");
         log("access token 발급 완료  $token");
-
-        storage.delete(key: "accessToken");
-        storage.write(key: "accessToken", value: token[0]);
-        storage.delete(key: "refreshToken");
-        storage.write(key: "refreshToken", value: token[1]);
+        await storage.delete(key: "accessToken");
+        await storage.write(key: "accessToken", value: token[0]);
+        await storage.delete(key: "refreshToken");
+        await storage.write(key: "refreshToken", value: token[1]);
       }else{
         throw Exception("access token 발급 실패");
       }
