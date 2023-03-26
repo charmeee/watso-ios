@@ -123,6 +123,11 @@ class CustomInterceptor extends Interceptor {
 
         return handler.resolve(response);
       } on DioError catch (e) {
+        log('refresh token 실패 ${e.response?.statusCode} ${e.response?.data}');
+
+        if(isPathLogOut) {//무한 루프 방지
+          return handler.reject(e);
+        }
         if(ref.read(authStateProvider.notifier).state == AuthState.authenticated) {
           showErrorDialog('다시 로그인 해 주세요');
           ref.read(userNotifierProvider.notifier).logout();
