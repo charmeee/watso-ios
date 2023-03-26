@@ -92,11 +92,32 @@ class UserNotifier extends StateNotifier<UserInfo?> {
         'account_number': account.toString(),
         'email': email.toString(),
       });
-      return response;
-    }catch(e){//return errormessage
-      log((e is Error).toString() );
-      return e;
+      return true;
+    }on DioError catch(e){
+      if(e.type == DioErrorType.badResponse){
+        if(e.response?.data["msg"]){
+          throw FormatException(e.response?.data["msg"]);
+        }
+      }
+      throw Exception("회원가입 실패");
     }
+  }
+
+  Future signUpCheckDuplicate({required field,required value})async{
+    try{
+      final response = await dio.get('/signup/duplicate-check', queryParameters: {
+        'field': field,
+        'value': value
+      });
+      if(response.data['is_duplicated']!=null){
+        return response.data['is_duplicated'];
+      }
+      throw Exception("응답 객체가 없음");
+
+    }on DioError catch(e){
+      throw FormatException("일시적인 서비스 장애입니다.");
+    }
+
   }
 
   Future getUserProfile() async {
