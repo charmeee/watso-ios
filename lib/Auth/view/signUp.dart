@@ -2,13 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../widgets/signUpForm.dart';
 
-class SignUpPage extends StatefulWidget {
-  @override
-  _SignUpPageState createState() => _SignUpPageState();
-}
-
-class _SignUpPageState extends State<SignUpPage> {
-
+class SignUpPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
