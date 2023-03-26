@@ -27,31 +27,38 @@ class CustomInterceptor extends Interceptor {
   @override
   void onRequest(
       RequestOptions options, RequestInterceptorHandler handler) async {
-    log('[REQ] [${options.method}] ${options.uri} ${options.data}');
-
-    if (options.headers['accessToken'] == 'true') {
-      // 헤더 삭제
-      options.headers.remove('accessToken');
-
-      final token = await storage.read(key: 'ACCESS_TOKEN');
-
-      // 실제 토큰으로 대체
+    log('[REQ] [${options.method}] ${options.uri} ${options.data} ${options.headers}');
+    final token = await storage.read(key: 'accessToken');
+    //실제 토큰으로 대체
+    if(token!=null) {
       options.headers.addAll({
-        'authorization': 'Bearer $token',
+        'Authorization': token,
       });
     }
 
-    if (options.headers['refreshToken'] == 'true') {
-      // 헤더 삭제
-      options.headers.remove('refreshToken');
+    // if (options.headers['accessToken'] == 'true') {
+    //   // 헤더 삭제
+    //   options.headers.remove('accessToken');
+    //
+    //   final token = await storage.read(key: 'ACCESS_TOKEN');
+    //
+    //   // 실제 토큰으로 대체
+    //   options.headers.addAll({
+    //     'authorization': 'Bearer $token',
+    //   });
+    // }
 
-      final token = await storage.read(key: 'REFRESH_TOKEN');
-
-      // 실제 토큰으로 대체
-      options.headers.addAll({
-        'authorization': 'Bearer $token',
-      });
-    }
+    // if (options.headers['refreshToken'] == 'true') {
+    //   // 헤더 삭제
+    //   options.headers.remove('refreshToken');
+    //
+    //   final token = await storage.read(key: 'REFRESH_TOKEN');
+    //
+    //   // 실제 토큰으로 대체
+    //   options.headers.addAll({
+    //     'authorization': 'Bearer $token',
+    //   });
+    // }
 
     return super.onRequest(options, handler);
   }
@@ -71,10 +78,10 @@ class CustomInterceptor extends Interceptor {
     // 401에러가 났을때 (status code)
     // 토큰을 재발급 받는 시도를하고 토큰이 재발급되면
     // 다시 새로운 토큰으로 요청을한다.
-    log('[ERR] [${err.requestOptions.method}] ${err.requestOptions.uri} ${err
+    log('[ERR] [${err.requestOptions.method}] ${err.requestOptions.uri} ${err.response?.statusCode} ${err
         .requestOptions.data} ${err.response?.data}');
 
-    final refreshToken = await storage.read(key: 'REFRESH_TOKEN');
+    final refreshToken = await storage.read(key: 'refreshToken');
 
     // refreshToken 아예 없으면
     // 당연히 에러를 던진다
@@ -85,25 +92,31 @@ class CustomInterceptor extends Interceptor {
 
     final isStatus401 = err.response?.statusCode == 401;
     final isPathRefresh = err.requestOptions.path == '/signin/refresh';
-
+    final isPathLogOut = err.requestOptions.path == '/logout';
     if (isStatus401 && !isPathRefresh) {
       final dio = Dio(options);
 
       try {
-        final resp = await dio.get('/signin/refresh', queryParameters: {
-          'Authorization': storage.read(key: "accessToken")
-        });
-
-        final accessToken = resp.headers["authentication"].toString();
-
+        log('refresh token 발급');
+        final refreshToken = await storage.read(key: 'refreshToken');
+        dio.options.headers['Authorization'] = refreshToken;
+        final resp = await dio.get('/signin/refresh');
+        final accessToken = resp.headers["authentication"]?[0];
+        if (accessToken == null) {
+          throw DioError(
+            requestOptions: err.requestOptions,
+            response: err.response,
+          );
+        }
+        log('refresh token 성공 $accessToken');
         final options = err.requestOptions;
 
         // 토큰 변경하기
         options.headers.addAll({
-          'authorization': 'Bearer $accessToken',
+          'Authorization': accessToken,
         });
 
-        await storage.write(key: 'ACCESS_TOKEN', value: accessToken);
+        await storage.write(key: 'accessToken', value: accessToken);
 
         // 요청 재전송
         final response = await dio.fetch(options);
