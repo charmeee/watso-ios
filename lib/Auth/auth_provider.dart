@@ -183,10 +183,9 @@ class UserNotifier extends StateNotifier<UserInfo?> {
 
   Future logout() async {
     try {
-      await dio.get('/logout', queryParameters: {
-        'Authorization': await storage.read(key: "accessToken")
-      });
+      await dio.get('/logout');
       storage.delete(key: "accessToken");
+      storage.delete(key: "refreshToken");
       state = null;
       ref
           .read(authStateProvider.notifier)
@@ -194,6 +193,11 @@ class UserNotifier extends StateNotifier<UserInfo?> {
       return true;
     } catch (e) {
       log(e.toString());
+      storage.delete(key: "accessToken");
+      storage.delete(key: "refreshToken");
+      ref
+          .read(authStateProvider.notifier)
+          .state = AuthState.unauthenticated;
       return false;
     }
   }
