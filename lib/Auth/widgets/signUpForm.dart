@@ -2,19 +2,25 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SignUpForm extends StatefulWidget {
+import '../auth_provider.dart';
+
+class SignUpForm extends ConsumerStatefulWidget {
   @override
   _SignUpFormState createState() => _SignUpFormState();
 }
 
-class _SignUpFormState extends State<SignUpForm> {
+class _SignUpFormState extends ConsumerState<SignUpForm> {
   final _signUpFormKey = GlobalKey<FormState>();
   String username = '';
   String nickname = '';
   String password = '';
   String email = '';
   String account = '';
+
+  bool checkUsername=false;
+  bool checkNickname=false;
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -31,15 +37,18 @@ class _SignUpFormState extends State<SignUpForm> {
               Expanded(
                 child: TextFormField(
                   autovalidateMode: AutovalidateMode.onUserInteraction,
-                  decoration: InputDecoration(labelText: '성함'),
+                  decoration: InputDecoration(labelText: '아이디'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return '성함 입력해주세요';
+                      return '아이디 입력해주세요';
+                    }
+                    if(!checkUsername){
+                      return '아이디 중복검사를 해주세요';
                     }
                     return null;
                   },
-                  onSaved: (value) {
-                    username = value!;
+                  onChanged: (value) {
+                    username = value;
                   },
                 ),
               ),
@@ -47,8 +56,34 @@ class _SignUpFormState extends State<SignUpForm> {
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.black, backgroundColor: Colors.grey[300],
                 ),
-                onPressed: () {//validator check
+                onPressed: () async {//validator check
                   log("중복검사");
+                  if(username.isNotEmpty){
+                    //api 호출
+                    await ref.read(userNotifierProvider.notifier).signUpCheckDuplicate(field: 'username', value: username)
+                        .then((value){
+                          if(!value) {
+                            setState(() {
+                              checkUsername = !value;
+                            });
+                          }else{
+                            showDialog(context: context, builder: (context){
+                              return AlertDialog(
+                                title: Text('이미 존재하는 아이디입니다'),
+                                actions: [
+                                  TextButton(onPressed: (){
+                                    Navigator.pop(context);
+                                  }, child: Text('확인'))
+                                ],
+                              );
+                            });
+                          }
+                        })
+                        .onError((error, stackTrace){
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error.toString())));
+                      });
+                  }
+
                 },
                 child: Text('중복검사'),
               ),
@@ -64,10 +99,13 @@ class _SignUpFormState extends State<SignUpForm> {
                     if (value == null || value.isEmpty) {
                       return '닉네임을 입력해주세요';
                     }
+                    if(!checkNickname){
+                      return '아이디 중복검사를 해주세요';
+                    }
                     return null;
                   },
-                  onSaved: (value) {
-                    nickname = value!;
+                  onChanged: (value) {
+                    nickname = value;
                   },
                 ),
               ),
@@ -75,8 +113,33 @@ class _SignUpFormState extends State<SignUpForm> {
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.black, backgroundColor: Colors.grey[300],
                 ),
-                onPressed: () {
+                onPressed: () async {
                   log("중복검사");
+                  if(nickname.isNotEmpty){
+                    await ref.read(userNotifierProvider.notifier).signUpCheckDuplicate(field: 'nickname', value: nickname)
+                        .then((value){
+                          if(!value) {
+                            setState(() {
+                              checkNickname = !value;
+                            });
+                          }else{
+                            showDialog(context: context, builder: (context){
+                              return AlertDialog(
+                                title: Text('이미 존재하는 닉네임입니다'),
+                                actions: [
+                                  TextButton(onPressed: (){
+                                    Navigator.pop(context);
+                                  }, child: Text('확인'))
+                                ],
+                              );
+                            });
+                          }
+                        })
+                        .onError((error, stackTrace){
+                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error.toString())));
+                    });
+                    //api 호출
+                  }
                 },
                 child: Text('중복검사'),
               ),
@@ -97,8 +160,8 @@ class _SignUpFormState extends State<SignUpForm> {
                   inputFormatters: [
                     FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9@.]')),
                   ],
-                  onSaved: (value) {
-                    email = value!;
+                  onChanged: (value) {
+                    email = value;
                   },
                   keyboardType: TextInputType.emailAddress,
                 ),
@@ -108,7 +171,9 @@ class _SignUpFormState extends State<SignUpForm> {
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.black, backgroundColor: Colors.grey[300],
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  //api 호출
+                },
                 child: Text('인증'),
               ),
             ],
@@ -118,7 +183,7 @@ class _SignUpFormState extends State<SignUpForm> {
             decoration: InputDecoration(labelText: '비밀번호'),
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return '비밀번호를 입력해주세요';
+                return '숫자,영대소문자,특수문자를 사용할 수 있습니다';
               }
               if(value.length < 6){
                 return '비밀번호는 6자 이상이어야 합니다';
@@ -134,7 +199,10 @@ class _SignUpFormState extends State<SignUpForm> {
           ),
           TextFormField(//account
             autovalidateMode: AutovalidateMode.onUserInteraction,
-            decoration: InputDecoration(labelText: '계좌번호'),
+            decoration: InputDecoration(
+                labelText: '계좌번호',
+                hintText: '농협 12341111111',
+            ),
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return '계좌번호를 입력해주세요';
@@ -143,9 +211,9 @@ class _SignUpFormState extends State<SignUpForm> {
             },onSaved: (value) {{
               account = value!;
             }}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             ,
-            keyboardType: TextInputType.number,
-            inputFormatters: [//only number
-              FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+            keyboardType: TextInputType.text,
+            inputFormatters: [//number and korean
+              FilteringTextInputFormatter.allow(RegExp(r'[0-9ㄱ-ㅎㅏ-ㅣ가-힣]')),
             ],
 
           ),
@@ -157,11 +225,25 @@ class _SignUpFormState extends State<SignUpForm> {
             ),
             onPressed: () {
               if (_signUpFormKey.currentState!.validate()) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('Processing Data'),
-                  ),
-                );
+                _signUpFormKey.currentState!.save();
+                log('username: $username, nickname: $nickname, email: $email, password: $password, account: $account');
+                //api 호출
+                ref.read(userNotifierProvider.notifier).signUp(username, nickname,password, email, account)
+                    .then((value){
+                      showDialog(context: context, builder: (context){
+                        return AlertDialog(
+                          title: Text('회원가입이 완료되었습니다'),
+                          actions: [
+                            TextButton(onPressed: (){
+                              Navigator.pop(context);
+                            }, child: Text('확인'))
+                          ],
+                        );
+                      }
+                    ).then((value) => Navigator.pop(context));})
+                    .onError((error, stackTrace){
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error.toString())));
+                });
               }
             },
             child: Text('회원가입'),
