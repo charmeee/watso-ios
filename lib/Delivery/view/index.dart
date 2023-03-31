@@ -1,6 +1,7 @@
 //Main delivery page
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:sangsangtalk/Common/commonType.dart';
 
 import '../../Common/widget/appbar.dart';
@@ -97,7 +98,7 @@ class _DeliveryMainPageState extends ConsumerState<DeliveryMainPage> {
                     ListView.separated(
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
-                      itemCount: 2,
+                      itemCount: myPostData.length,
                       padding: EdgeInsets.all(0),
                       itemBuilder: (context, index) {
                         return ListTile(
@@ -108,9 +109,10 @@ class _DeliveryMainPageState extends ConsumerState<DeliveryMainPage> {
                                   width: 50,
                                   height: 50,
                                   fit: BoxFit.cover)),
-                          title: Text('제목들'),
-                          subtitle: Text('가게이름'),
-                          trailing: Text('15:30'),
+                          title: Text(myPostData[index].title),
+                          subtitle: Text(myPostData[index].nickname),
+                          trailing: Text(DateFormat('MM/dd HH:mm')
+                              .format(myPostData[index].orderTime)),
                         );
                       },
                       separatorBuilder: (BuildContext context, int index) {
@@ -240,5 +242,12 @@ class _DeliveryMainPageState extends ConsumerState<DeliveryMainPage> {
         backgroundColor: Colors.indigo,
       ),
     );
+  }
+
+  List<Widget> actionButtons() {
+    return [
+      IconButton(onPressed: () {}, icon: Icon(Icons.timelapse_outlined)),
+      IconButton(onPressed: () {}, icon: Icon(Icons.settings)),
+    ];
   }
 }
