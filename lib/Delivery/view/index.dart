@@ -30,7 +30,7 @@ class _DeliveryMainPageState extends ConsumerState<DeliveryMainPage> {
   }
 
   getPostData() {
-    ref.read(postOrderRepositoryProvider).getOrder().then((value) {
+    ref.read(postOrderRepositoryProvider).getDeliveryList().then((value) {
       setState(() {
         postData = value;
         loadState = LoadState.success;
