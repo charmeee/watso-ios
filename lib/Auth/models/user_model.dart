@@ -2,14 +2,9 @@ class UserInfo {
   String id;
   String nickname;
 
-  UserInfo(
-      {required this.id,
-        required this.nickname});
+  User({required this.id, required this.nickname});
 
-  UserInfo.fromJson(Map<String, dynamic> json)
-      : id = json['id'],
+  User.fromJson(Map<String, dynamic> json)
+      : id = (json['id'] ?? json['user_id']).toString(),
         nickname = json['nickname'];
-
-
 }
-
