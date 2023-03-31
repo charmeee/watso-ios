@@ -21,7 +21,7 @@ class Store {
 
 class PostOption {
   String place;
-  String orderTime;
+  DateTime orderTime;
   int minMember;
   int maxMember;
 
@@ -33,7 +33,7 @@ class PostOption {
 
   PostOption.fromJson(Map<String, dynamic> json)
       : place = json['place'],
-        orderTime = json['order_time'],
+        orderTime = DateTime.parse(json['order_time']),
         minMember = json['min_member'],
         maxMember = json['max_member'];
 }

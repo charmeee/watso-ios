@@ -9,7 +9,7 @@ class PostOrder extends PostOption {
       {required this.orders,
       required this.storeId,
       required String place,
-      required String orderTime,
+      required DateTime orderTime,
       required int minMember,
       required int maxMember})
       : super(
