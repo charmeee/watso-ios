@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:sangsangtalk/Common/widget/appbar.dart';
 
 import 'menu_list_page.dart';
 
@@ -11,24 +12,25 @@ class OrderSetPage extends StatefulWidget {
   _OrderSetPageState createState() => _OrderSetPageState();
 }
 
-enum Selection { min, max }
-
 class _OrderSetPageState extends State<OrderSetPage> {
   final _recruitFormKey = GlobalKey<FormState>();
+
   String minRecruit = '';
   String maxRecruit = '';
   bool minChecked = false;
   bool maxChecked = false;
   DateTime nowDate = DateTime.now();
-
+  String myStore = '';
   late DateTime _dateTime;
   List storeList = ["네네치킨", "맘스터치"];
+  String place = "생자대";
 
   @override
   void initState() {
     super.initState();
     _dateTime = DateTime(nowDate.year, nowDate.month, nowDate.day, nowDate.hour,
         nowDate.minute - nowDate.minute % 10 + 10);
+    log(_dateTime.toString());
   }
 
   //_dateTime.minute=_dateTime.minute%10
@@ -39,14 +41,10 @@ class _OrderSetPageState extends State<OrderSetPage> {
         builder: (BuildContext context) => Container(
               height: 216,
               padding: const EdgeInsets.only(top: 6.0),
-              // The Bottom margin is provided to align the popup above the system
-              // navigation bar.
               margin: EdgeInsets.only(
                 bottom: MediaQuery.of(context).viewInsets.bottom,
               ),
-              // Provide a background color for the popup.
               color: CupertinoColors.systemBackground.resolveFrom(context),
-              // Use a SafeArea widget to avoid system overlaps.
               child: SafeArea(
                 top: false,
                 child: CupertinoDatePicker(
@@ -65,21 +63,46 @@ class _OrderSetPageState extends State<OrderSetPage> {
             ));
   }
 
+  void _showStoreDialog() {
+    showDialog<void>(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+            content: SizedBox(
+          width: 300,
+          child: ListView.separated(
+              shrinkWrap: true,
+              itemBuilder: (context, index) {
+                return InkWell(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    width: 300,
+                    alignment: Alignment.center,
+                    child:
+                        Text(storeList[index], style: TextStyle(fontSize: 15)),
+                  ),
+                  onTap: () {
+                    setState(() {
+                      myStore = storeList[index];
+                    });
+                    Navigator.pop(context);
+                  },
+                );
+              },
+              separatorBuilder: (BuildContext context, int index) =>
+                  const Divider(),
+              itemCount: storeList.length),
+        ));
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        iconTheme: IconThemeData(
-          color: Colors.black, //change your color here
-        ),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        centerTitle: false,
-        title: Text('배달톡 생성',
-            style: TextStyle(
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-            )),
+      appBar: customAppBar(
+        context,
+        title: '배달톡 생성',
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20),
@@ -130,15 +153,49 @@ class _OrderSetPageState extends State<OrderSetPage> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    _showStoreDialog();
+                  },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("가계를 선택해 주세요",
+                      Text(myStore.isEmpty ? "가계를 선택해 주세요" : myStore,
                           style: TextStyle(fontSize: 20, color: Colors.grey)),
                       Icon(Icons.arrow_drop_down),
                     ],
                   ),
+                ),
+                SizedBox(
+                  height: 15,
+                ),
+                Text(
+                  "수령 장소",
+                  style: TextStyle(fontSize: 15),
+                ),
+                //select by radio
+                Row(
+                  children: [
+                    Radio(
+                      value: '생자대',
+                      groupValue: place,
+                      onChanged: (value) {
+                        setState(() {
+                          place = value.toString();
+                        });
+                      },
+                    ),
+                    Expanded(child: Text("생자대")),
+                    Radio(
+                      value: '기숙사',
+                      groupValue: place,
+                      onChanged: (value) {
+                        setState(() {
+                          place = value.toString();
+                        });
+                      },
+                    ),
+                    Expanded(child: Text("기숙사")),
+                  ],
                 ),
                 SizedBox(
                   height: 15,
