@@ -46,26 +46,8 @@ class _DeliveryMainPageState extends ConsumerState<DeliveryMainPage> {
   Widget build(BuildContext context) {
     String dropdownValue = list.first;
     return Scaffold(
-      appBar: AppBar(
-        iconTheme: IconThemeData(
-          color: Colors.black, //change your color here
-        ),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        centerTitle: false,
-        title: Text(
-          '배달톡',
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 30,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        actions: [
-          IconButton(onPressed: () {}, icon: Icon(Icons.timelapse_outlined)),
-          IconButton(onPressed: () {}, icon: Icon(Icons.settings)),
-        ],
-      ),
+      appBar: customAppBar(context,
+          title: '배달톡', action: actionButtons(), titleSize: 30),
       body: CustomScrollView(
         slivers: [
           //구분생각을 해보겟습니다.
