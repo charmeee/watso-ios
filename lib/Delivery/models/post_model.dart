@@ -1,3 +1,5 @@
+enum PostFilter { all, joinable, joined }
+
 class Store {
   String id;
   String name;

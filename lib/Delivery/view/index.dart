@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sangsangtalk/Common/commonType.dart';
 
+import '../../Common/widget/appbar.dart';
+import '../models/post_model.dart';
 import '../models/post_response_model.dart';
 import '../repository/postOrder_repository.dart';
 import 'order_set_page.dart';

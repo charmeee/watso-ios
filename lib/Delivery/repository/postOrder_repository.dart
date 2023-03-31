@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../Common/dio.dart';
+import '../models/post_model.dart';
 import '../models/post_response_model.dart';
 
 final postOrderRepositoryProvider = Provider<PostOrderRepository>(
@@ -22,9 +23,11 @@ class PostOrderRepository {
   final String staticUrl;
   final Dio _dio;
 
-  Future<List<ResponsePostList>> getDeliveryList() async {
+  Future<List<ResponsePostList>> getDeliveryList(PostFilter filter) async {
     try {
-      final response = await _dio.get(staticUrl);
+      final response = await _dio.get(staticUrl, queryParameters: {
+        'filter': filter.name,
+      });
       return (response.data as List)
           .map((e) => ResponsePostList.fromJson(e))
           .toList();
