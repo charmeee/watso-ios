@@ -17,13 +17,15 @@ enum AuthState {
 final startProvider = FutureProvider((ref) async {
   final authState = ref.watch(authStateProvider);
   log(authState.toString());
-  if(authState==AuthState.initial) {
+  if (authState == AuthState.initial) {
     try {
       await ref.read(userNotifierProvider.notifier).getUserProfile();
       //ref.read(authStateProvider.notifier).state = AuthState.authenticated;
     } catch (e) {
       log(e.toString());
-      ref.read(authStateProvider.notifier).state = AuthState.unauthenticated;
+      ref
+          .read(authStateProvider.notifier)
+          .state = AuthState.unauthenticated;
     }
   }
 
@@ -61,15 +63,17 @@ class UserNotifier extends StateNotifier<UserInfo?> {
         'pw': password,
         'registration_token': 'string'
       });
-      if(response.headers["authentication"]?[0] != null){
-        log(response.headers["authentication"].runtimeType.toString());//list string
-        final token = response.headers["authentication"]![0].toString().split("/");
+      if (response.headers["authentication"]?[0] != null) {
+        log(response.headers["authentication"].runtimeType
+            .toString()); //list string
+        final token =
+        response.headers["authentication"]![0].toString().split("/");
         log("access token 발급 완료  $token");
         await storage.delete(key: "accessToken");
         await storage.write(key: "accessToken", value: token[0]);
         await storage.delete(key: "refreshToken");
         await storage.write(key: "refreshToken", value: token[1]);
-      }else{
+      } else {
         throw Exception("access token 발급 실패");
       }
       ref.read(authStateProvider.notifier).state = AuthState.authenticated;
@@ -93,9 +97,9 @@ class UserNotifier extends StateNotifier<UserInfo?> {
         'email': email.toString(),
       });
       return true;
-    }on DioError catch(e){
-      if(e.type == DioErrorType.badResponse){
-        if(e.response?.data["msg"]){
+    } on DioError catch (e) {
+      if (e.type == DioErrorType.badResponse) {
+        if (e.response?.data["msg"]) {
           throw FormatException(e.response?.data["msg"]);
         }
       }
@@ -103,18 +107,15 @@ class UserNotifier extends StateNotifier<UserInfo?> {
     }
   }
 
-  Future signUpCheckDuplicate({required field,required value})async{
-    try{
-      final response = await dio.get('/signup/duplicate-check', queryParameters: {
-        'field': field,
-        'value': value
-      });
-      if(response.data['is_duplicated']!=null){
+  Future signUpCheckDuplicate({required field, required value}) async {
+    try {
+      final response = await dio.get('$staticUrl/signup/duplicate-check',
+          queryParameters: {'field': field, 'value': value});
+      if (response.data['is_duplicated'] != null) {
         return response.data['is_duplicated'];
       }
       throw Exception("응답 객체가 없음");
-
-    }on DioError catch(e){
+    } on DioError catch (e) {
       throw FormatException("일시적인 서비스 장애입니다.");
     }
 
@@ -205,7 +206,8 @@ class UserNotifier extends StateNotifier<UserInfo?> {
   Future deleteUserProfile() async {
     log("회원탈퇴");
     state = null;
-    ref.read(authStateProvider.notifier).state = AuthState.unauthenticated;
+    ref
+        .read(authStateProvider.notifier)
+        .state = AuthState.unauthenticated;
   }
 }
-
