@@ -60,15 +60,30 @@ class Order {
 class Menu {
   String name;
   int price;
-  List<MenuOptionGroup> groups;
+  List<MenuOptionGroup>? groups;
 
-  Menu({required this.name, required this.price, required this.groups});
+  Menu({required this.name, required this.price, this.groups});
 
   Menu.fromJson(Map<String, dynamic> json)
       : name = json['name'],
         price = json['price'],
         groups = List<MenuOptionGroup>.from(
             json['groups'].map((x) => MenuOptionGroup.fromJson(x)));
+}
+
+class MenuSection extends Menu {
+  String section;
+
+  MenuSection(
+      {required this.section,
+      required String name,
+      required int price,
+      List<MenuOptionGroup>? groups})
+      : super(name: name, price: price);
+
+  MenuSection.fromJson(Map<String, dynamic> json)
+      : section = json['section'],
+        super.fromJson(json);
 }
 
 class MenuOptionGroup {
