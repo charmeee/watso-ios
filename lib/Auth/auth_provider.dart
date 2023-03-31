@@ -36,15 +36,10 @@ final authStateProvider = StateProvider<AuthState>((ref) => AuthState.initial);
 
 final userNotifierProvider =
 StateNotifierProvider<UserNotifier, UserInfo?>((ref) {
-
-
   final dio = ref.watch(dioProvider);
   final storage = ref.watch(secureStorageProvider);
-
-  //dio url /auth 추가
-  dio.options.baseUrl +='/auth';
-
-  return UserNotifier(dio,storage,ref:ref);
+  const staticUrl = '/auth';
+  return UserNotifier(dio, storage, staticUrl, ref: ref);
 });
 
 class UserNotifier extends StateNotifier<UserInfo?> {
@@ -52,13 +47,17 @@ class UserNotifier extends StateNotifier<UserInfo?> {
   final Dio dio;
   final Ref ref;
   final FlutterSecureStorage storage;
+  final String staticUrl;
+
   // UserNotifier( {required this.authRepo,required this.ref}) : super(null);
-  UserNotifier(this.dio, this.storage,{required this.ref}) : super(null);
+  UserNotifier(this.dio, this.storage, this.staticUrl, {required this.ref})
+      : super(null);
+
   //로긴됏을때! 머다? authorize 한다.
 
-  Future signIn(username,password) async{
+  Future signIn(username, password) async {
     try {
-      final response = await dio.post('/signin', data: {
+      final response = await dio.post('$staticUrl/signin', data: {
         'username': username,
         'pw': password,
         'registration_token': 'string'
@@ -87,9 +86,9 @@ class UserNotifier extends StateNotifier<UserInfo?> {
     }
   }
 
-  Future signUp(username,nickname,password,email,account)async{
-    try{
-      final response = await dio.post('/signup', data: {
+  Future signUp(username, nickname, password, email, account) async {
+    try {
+      final response = await dio.post('$staticUrl/signup', data: {
         'username': username.toString(),
         'pw': password.toString(),
         'nickname': nickname.toString(),
@@ -184,7 +183,7 @@ class UserNotifier extends StateNotifier<UserInfo?> {
 
   Future logout() async {
     try {
-      await dio.get('/logout');
+      await dio.get('$staticUrl/logout');
       storage.delete(key: "accessToken");
       storage.delete(key: "refreshToken");
       state = null;
