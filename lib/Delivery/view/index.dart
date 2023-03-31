@@ -23,8 +23,28 @@ class _DeliveryMainPageState extends ConsumerState<DeliveryMainPage> {
   LoadState loadState = LoadState.loading;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  void initState() {
+    super.initState();
+    //postData = test.map((data) => ResponsePostList.fromJson(data)).toList();
+    getPostData();
+  }
 
+  getPostData() {
+    ref.read(postOrderRepositoryProvider).getOrder().then((value) {
+      setState(() {
+        postData = value;
+        loadState = LoadState.success;
+      });
+    }).onError((error, stackTrace) {
+      setState(() {
+        loadState = LoadState.error;
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    String dropdownValue = list.first;
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(
