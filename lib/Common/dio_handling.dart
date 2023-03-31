@@ -29,8 +29,9 @@ class CustomInterceptor extends Interceptor {
       RequestOptions options, RequestInterceptorHandler handler) async {
     log('[REQ] [${options.method}] ${options.uri} ${options.data} ${options.headers}');
     final token = await storage.read(key: 'accessToken');
+    log('token: $token');
     //실제 토큰으로 대체
-    if(token!=null) {
+    if (token != null) {
       options.headers.addAll({
         'Authorization': token,
       });
@@ -66,8 +67,7 @@ class CustomInterceptor extends Interceptor {
   // 2) 응답을 받을때
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
-    log(
-        '[RES] [${response.requestOptions.method}] ${response.requestOptions.uri} ${response.data?.toString()} ${response.headers}');
+    log('[RES] [${response.requestOptions.method}] ${response.requestOptions.uri} ${response.data?.toString()} ${response.headers}');
 
     return super.onResponse(response, handler);
   }
@@ -78,8 +78,7 @@ class CustomInterceptor extends Interceptor {
     // 401에러가 났을때 (status code)
     // 토큰을 재발급 받는 시도를하고 토큰이 재발급되면
     // 다시 새로운 토큰으로 요청을한다.
-    log('[ERR] [${err.requestOptions.method}] ${err.requestOptions.uri} ${err.response?.statusCode} ${err
-        .requestOptions.data} ${err.response?.data}');
+    log('[ERR] [${err.requestOptions.method}] ${err.requestOptions.uri} ${err.response?.statusCode} ${err.requestOptions.data} ${err.response?.data}');
 
     final refreshToken = await storage.read(key: 'refreshToken');
 
@@ -91,8 +90,8 @@ class CustomInterceptor extends Interceptor {
     }
 
     final isStatus401 = err.response?.statusCode == 401;
-    final isPathRefresh = err.requestOptions.path == '/signin/refresh';
-    final isPathLogOut = err.requestOptions.path == '/logout';
+    final isPathRefresh = err.requestOptions.path == '/auth/signin/refresh';
+    final isPathLogOut = err.requestOptions.path == '/auth/logout';
     if (isStatus401 && !isPathRefresh) {
       final dio = Dio(options);
 
@@ -100,7 +99,7 @@ class CustomInterceptor extends Interceptor {
         log('refresh token 발급');
         final refreshToken = await storage.read(key: 'refreshToken');
         dio.options.headers['Authorization'] = refreshToken;
-        final resp = await dio.get('/signin/refresh');
+        final resp = await dio.get('/auth/signin/refresh');
         final accessToken = resp.headers["authentication"]?[0];
         if (accessToken == null) {
           throw DioError(
@@ -125,10 +124,12 @@ class CustomInterceptor extends Interceptor {
       } on DioError catch (e) {
         log('refresh token 실패 ${e.response?.statusCode} ${e.response?.data}');
 
-        if(isPathLogOut) {//무한 루프 방지
+        if (isPathLogOut) {
+          //무한 루프 방지
           return handler.reject(e);
         }
-        if(ref.read(authStateProvider.notifier).state == AuthState.authenticated) {
+        if (ref.read(authStateProvider.notifier).state ==
+            AuthState.authenticated) {
           showErrorDialog('다시 로그인 해 주세요');
           ref.read(userNotifierProvider.notifier).logout();
         }
