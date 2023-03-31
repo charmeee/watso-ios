@@ -7,7 +7,6 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../Common/dio.dart';
 import 'models/user_model.dart';
 
-
 enum AuthState {
   initial,
   authenticated,
@@ -20,12 +19,9 @@ final startProvider = FutureProvider((ref) async {
   if (authState == AuthState.initial) {
     try {
       await ref.read(userNotifierProvider.notifier).getUserProfile();
-      //ref.read(authStateProvider.notifier).state = AuthState.authenticated;
     } catch (e) {
       log(e.toString());
-      ref
-          .read(authStateProvider.notifier)
-          .state = AuthState.unauthenticated;
+      ref.read(authStateProvider.notifier).state = AuthState.unauthenticated;
     }
   }
 
@@ -35,7 +31,7 @@ final startProvider = FutureProvider((ref) async {
 final authStateProvider = StateProvider<AuthState>((ref) => AuthState.initial);
 
 final userNotifierProvider =
-StateNotifierProvider<UserNotifier, UserInfo?>((ref) {
+    StateNotifierProvider<UserNotifier, UserInfo?>((ref) {
   final dio = ref.watch(dioProvider);
   final storage = ref.watch(secureStorageProvider);
   const staticUrl = '/auth';
@@ -66,7 +62,7 @@ class UserNotifier extends StateNotifier<UserInfo?> {
         log(response.headers["authentication"].runtimeType
             .toString()); //list string
         final token =
-        response.headers["authentication"]![0].toString().split("/");
+            response.headers["authentication"]![0].toString().split("/");
         log("access token 발급 완료  $token");
         await storage.delete(key: "accessToken");
         await storage.write(key: "accessToken", value: token[0]);
@@ -75,10 +71,9 @@ class UserNotifier extends StateNotifier<UserInfo?> {
       } else {
         throw Exception("access token 발급 실패");
       }
-      ref.read(authStateProvider.notifier).state = AuthState.authenticated;
-      return response;
-    }on DioError catch(e){
-      if(e.type == DioErrorType.badResponse){
+      return getUserProfile();
+    } on DioError catch (e) {
+      if (e.type == DioErrorType.badResponse) {
         log(e.response.toString());
         throw FormatException("아이디 또는 비밀번호가 틀렸습니다.");
       }
@@ -117,21 +112,18 @@ class UserNotifier extends StateNotifier<UserInfo?> {
     } on DioError catch (e) {
       throw FormatException("일시적인 서비스 장애입니다.");
     }
-
   }
 
   Future getUserProfile() async {
-    //log("******us erProfile 받아오기******");
-    // try {
-    //   UserInfo userInfo = await userProfileRequest();
-    //   state = userInfo;
-    //   log(state.id.toString());
-    //   log(state.username.toString());
-    //   log(state.nickname.toString());
-    //   log("*****************************");
-    // } catch (e) {
-    //   logout();
-    // }
+    try {
+      final response = await dio.get('$staticUrl/user');
+      state = UserInfo.fromJson(response.data);
+      ref.read(authStateProvider.notifier).state = AuthState.authenticated;
+    } on DioError catch (e) {
+      throw Exception("프로필 불러오기 실패 실패");
+    } catch (e) {
+      throw Exception(e);
+    }
   }
 
   // Future<LoginState> venderLogin(Vender vender) async {
@@ -187,17 +179,13 @@ class UserNotifier extends StateNotifier<UserInfo?> {
       storage.delete(key: "accessToken");
       storage.delete(key: "refreshToken");
       state = null;
-      ref
-          .read(authStateProvider.notifier)
-          .state = AuthState.unauthenticated;
+      ref.read(authStateProvider.notifier).state = AuthState.unauthenticated;
       return true;
     } catch (e) {
       log(e.toString());
       storage.delete(key: "accessToken");
       storage.delete(key: "refreshToken");
-      ref
-          .read(authStateProvider.notifier)
-          .state = AuthState.unauthenticated;
+      ref.read(authStateProvider.notifier).state = AuthState.unauthenticated;
       return false;
     }
   }
@@ -205,8 +193,6 @@ class UserNotifier extends StateNotifier<UserInfo?> {
   Future deleteUserProfile() async {
     log("회원탈퇴");
     state = null;
-    ref
-        .read(authStateProvider.notifier)
-        .state = AuthState.unauthenticated;
+    ref.read(authStateProvider.notifier).state = AuthState.unauthenticated;
   }
 }
