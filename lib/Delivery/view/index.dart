@@ -22,24 +22,48 @@ class DeliveryMainPage extends ConsumerStatefulWidget {
 
 class _DeliveryMainPageState extends ConsumerState<DeliveryMainPage> {
   List<ResponsePostList> postData = [];
-  LoadState loadState = LoadState.loading;
+  List<ResponsePostList> myPostData = [];
+  Map<String, LoadState> loadState = {
+    'post': LoadState.loading,
+    'myPost': LoadState.loading,
+  };
 
   @override
   void initState() {
     super.initState();
-    //postData = test.map((data) => ResponsePostList.fromJson(data)).toList();
     getPostData();
+    getMyPostData();
   }
 
   getPostData() {
-    ref.read(postOrderRepositoryProvider).getDeliveryList().then((value) {
+    ref
+        .read(postOrderRepositoryProvider)
+        .getDeliveryList(PostFilter.joinable)
+        .then((value) {
       setState(() {
         postData = value;
-        loadState = LoadState.success;
+        loadState['post'] = LoadState.success;
       });
     }).onError((error, stackTrace) {
       setState(() {
-        loadState = LoadState.error;
+        loadState['post'] = LoadState.error;
+      });
+    });
+  }
+
+  getMyPostData() {
+    //는 provider로 따로 관리해야 할지도?
+    ref
+        .read(postOrderRepositoryProvider)
+        .getDeliveryList(PostFilter.joined)
+        .then((value) {
+      setState(() {
+        myPostData = value;
+        loadState['myPost'] = LoadState.success;
+      });
+    }).onError((error, stackTrace) {
+      setState(() {
+        loadState['myPost'] = LoadState.error;
       });
     });
   }
