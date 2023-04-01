@@ -5,8 +5,6 @@ import '../models/post_model.dart';
 import '../my_deliver_provider.dart';
 import '../repository/store_repository.dart';
 
-List storeList = ["네네치킨", "맘스터치"];
-
 class StoreSelector extends ConsumerStatefulWidget {
   const StoreSelector({
     Key? key,
@@ -18,6 +16,7 @@ class StoreSelector extends ConsumerStatefulWidget {
 
 class _StoreSelectorState extends ConsumerState<StoreSelector> {
   List<Store> _storeList = [];
+  String nowStoreName = "";
 
   @override
   void initState() {
@@ -60,7 +59,7 @@ class _StoreSelectorState extends ConsumerState<StoreSelector> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(myStore.isEmpty ? "가계를 선택해 주세요" : myStore,
+                Text(myStore.isEmpty ? "가계를 선택해 주세요" : nowStoreName,
                     style: TextStyle(fontSize: 20, color: Colors.grey)),
                 Icon(Icons.arrow_drop_down),
               ],
@@ -84,13 +83,16 @@ class _StoreSelectorState extends ConsumerState<StoreSelector> {
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                     width: 300,
                     alignment: Alignment.center,
-                    child:
-                        Text(storeList[index], style: TextStyle(fontSize: 15)),
+                    child: Text(_storeList[index].name,
+                        style: TextStyle(fontSize: 15)),
                   ),
                   onTap: () {
                     ref
                         .read(postOrderNotifierProvider.notifier)
                         .setMyDeliverStore(_storeList[index].id);
+                    setState(() {
+                      nowStoreName = _storeList[index].name;
+                    });
                     Navigator.pop(context);
                   },
                 );
