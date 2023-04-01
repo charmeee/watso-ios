@@ -67,8 +67,10 @@ class Menu {
   Menu.fromJson(Map<String, dynamic> json)
       : name = json['name'],
         price = json['price'],
-        groups = List<MenuOptionGroup>.from(
-            json['groups'].map((x) => MenuOptionGroup.fromJson(x)));
+        groups = json['groups'] != null
+            ? List<MenuOptionGroup>.from(
+                json['groups'].map((x) => MenuOptionGroup.fromJson(x)))
+            : null;
 }
 
 class MenuSection extends Menu {
