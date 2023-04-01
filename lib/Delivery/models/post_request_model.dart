@@ -26,15 +26,23 @@ class PostOrder extends PostOption {
     return PostOrder(
         orders: [],
         storeId: '',
-        place: '',
+        place: '생자대',
         orderTime: DateTime.now(),
         minMember: 0,
         maxMember: 999);
   }
 
+  bool get isStoreSelected => storeId.isNotEmpty;
 
-  get canNotOrder =>
-      orders.isEmpty || storeId.isEmpty || place.isEmpty ||
-          orderTime.isBefore(DateTime.now()) || minMember > maxMember;
+  bool get isMemberLogical => minMember <= maxMember;
 
+  bool get isOrderTimeLogical =>
+      orderTime.isAfter(DateTime.now().add(Duration(minutes: 10)));
+
+  bool get canNotOrder =>
+      orders.isEmpty ||
+          storeId.isEmpty ||
+          place.isEmpty ||
+          orderTime.isBefore(DateTime.now()) ||
+          minMember > maxMember;
 }

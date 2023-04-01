@@ -1,30 +1,25 @@
 import 'dart:developer';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sangsangtalk/Common/widget/appbar.dart';
 
+import '../my_deliver_provider.dart';
 import '../widgets/order_set_place.dart';
+import '../widgets/order_set_recuit.dart';
 import '../widgets/order_set_store.dart';
 import '../widgets/order_set_time.dart';
 import 'menu_list_page.dart';
 
-class OrderSetPage extends StatefulWidget {
-  @override
-  _OrderSetPageState createState() => _OrderSetPageState();
-}
+final _recruitFormKey = GlobalKey<FormState>();
 
-class _OrderSetPageState extends State<OrderSetPage> {
-  final _recruitFormKey = GlobalKey<FormState>();
-
-  String minRecruit = '';
-  String maxRecruit = '';
-  bool minChecked = false;
-  bool maxChecked = false;
+class OrderSetPage extends ConsumerWidget {
+  const OrderSetPage({
+    Key? key,
+  }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: customAppBar(
         context,
@@ -53,63 +48,9 @@ class _OrderSetPageState extends State<OrderSetPage> {
                 SizedBox(
                   height: 15,
                 ),
-                Row(
-                  children: [
-                    Text(
-                      "모집 인원 선택 ",
-                      style: TextStyle(fontSize: 15),
-                    ),
-                    Text(
-                      "(선택 사항)",
-                      style: TextStyle(fontSize: 12),
-                    ),
-                  ],
+                RecuitNumSelector(
+                  recruitFormKey: _recruitFormKey,
                 ),
-                Form(
-                  key: _recruitFormKey,
-                  child: Row(
-                    children: [
-                      Checkbox(
-                          value: minChecked,
-                          onChanged: (value) {
-                            setState(() {
-                              minChecked = value!;
-                            });
-                          }),
-                      Expanded(
-                          child: TextFormField(
-                        decoration: InputDecoration(
-                          label: Text('최소 인원'),
-                        ),
-                        initialValue: '2',
-                        keyboardType: TextInputType.number,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly
-                        ],
-                        onSaved: (value) => minRecruit = value!,
-                      )),
-                      Checkbox(
-                          value: maxChecked,
-                          onChanged: (value) {
-                            setState(() {
-                              maxChecked = value!;
-                            });
-                          }),
-                      Expanded(
-                          child: TextFormField(
-                        initialValue: '4',
-                        decoration: InputDecoration(
-                          label: Text('최대 인원'),
-                        ),
-                        keyboardType: TextInputType.number,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly
-                        ],
-                        onSaved: (value) => maxRecruit = value!,
-                      )),
-                    ],
-                  ),
-                )
               ],
             ),
             Padding(
@@ -117,12 +58,23 @@ class _OrderSetPageState extends State<OrderSetPage> {
               child: ElevatedButton(
                 onPressed: () {
                   _recruitFormKey.currentState!.save();
-                  var minRecruitNum = int.tryParse(minRecruit) ?? 1;
-                  var maxRecruitNum = int.tryParse(maxRecruit) ?? 999;
-                  if (minChecked &&
-                      maxChecked &&
-                      minRecruitNum > maxRecruitNum) {
-                    //alert error
+                  final postState = ref.read(postOrderNotifierProvider);
+                  log(postState.minMember.toString());
+                  log(postState.maxMember.toString());
+                  log(postState.storeId.toString());
+                  log(postState.place.toString());
+
+                  if (!postState.isStoreSelected ||
+                      !postState.isMemberLogical ||
+                      !postState.isOrderTimeLogical) {
+                    String? storeError =
+                        !postState.isStoreSelected ? '가게를 선택하세요' : null;
+                    String? memberError = !postState.isMemberLogical
+                        ? '최소인원이 최대인원보다 클 수 없습니다.'
+                        : null;
+                    String? timeError = !postState.isOrderTimeLogical
+                        ? '주문시간은 최소 10분 뒤 부터 가능합니다.'
+                        : null;
                     showDialog<void>(
                       context: context,
                       barrierDismissible: true,
@@ -130,7 +82,8 @@ class _OrderSetPageState extends State<OrderSetPage> {
                       builder: (BuildContext dialogContext) {
                         return AlertDialog(
                           title: Text('에러'),
-                          content: Text('최소인원이 최대인원보다 클 수 없습니다.'),
+                          content: Text(
+                              storeError ?? memberError ?? timeError ?? ''),
                           actions: <Widget>[
                             TextButton(
                               child: Text('확인'),
@@ -144,12 +97,6 @@ class _OrderSetPageState extends State<OrderSetPage> {
                       },
                     );
                     return;
-                  }
-                  if (minChecked) {
-                    log("minRecruitNum: $minRecruitNum");
-                  }
-                  if (maxChecked) {
-                    log("maxRecruitNum: $maxRecruitNum");
                   }
                   Navigator.push(
                     context,
