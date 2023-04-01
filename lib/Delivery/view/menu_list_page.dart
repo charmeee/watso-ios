@@ -61,6 +61,8 @@ class _MenuListPageState extends ConsumerState<MenuListPage> {
     return Scaffold(
       appBar: customAppBar(context, title: storeMenus!.name),
       body: CustomScrollView(
+        shrinkWrap: true,
+        physics: const BouncingScrollPhysics(),
         slivers: [
           SliverToBoxAdapter(
             child: Container(
@@ -71,13 +73,11 @@ class _MenuListPageState extends ConsumerState<MenuListPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Text('예상 배달비 : ${storeMenus!.fee}원',
-                      style: const TextStyle(
-                        fontSize: 16,
-                      )),
+                      style:
+                          const TextStyle(fontSize: 16, color: Colors.black54)),
                   Text('최소 배달 금액 : ${storeMenus!.minOrder}원',
-                      style: const TextStyle(
-                        fontSize: 16,
-                      )),
+                      style:
+                          const TextStyle(fontSize: 16, color: Colors.black54)),
                 ],
               ),
             ),
@@ -96,18 +96,34 @@ class _MenuListPageState extends ConsumerState<MenuListPage> {
                       color: Colors.grey[200],
                       child: Text(sections[index]),
                     ),
-                    for (var menu in menuList)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16.0, vertical: 8.0),
-                        child: Text(
-                          menu.name,
-                          style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
+                    ListView.separated(
+                      padding: EdgeInsets.zero,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: menuList.length,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          title: Text(
+                            menuList[index].name,
+                            style: const TextStyle(
+                              fontSize: 18,
+                            ),
                           ),
-                        ),
-                      )
+                          trailing: Text(
+                            '${menuList[index].price}원',
+                            style: const TextStyle(
+                              fontSize: 18,
+                            ),
+                          ),
+                          onTap: () {
+                            //postState.addMenu(menuList[index]);
+                          },
+                        );
+                      },
+                      separatorBuilder: (context, index) {
+                        return const Divider(height: 2);
+                      },
+                    ),
                   ],
                 );
               },
