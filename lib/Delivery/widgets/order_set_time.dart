@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
+
+import '../my_deliver_provider.dart';
 
 class TimeSelector extends ConsumerStatefulWidget {
   const TimeSelector({
@@ -25,15 +28,11 @@ class _TimeSelectorState extends ConsumerState<TimeSelector> {
   void _showTimePicker() {
     showCupertinoModalPopup<void>(
         context: context,
-        builder: (BuildContext context) =>
-            Container(
+        builder: (BuildContext context) => Container(
               height: 216,
               padding: const EdgeInsets.only(top: 6.0),
               margin: EdgeInsets.only(
-                bottom: MediaQuery
-                    .of(context)
-                    .viewInsets
-                    .bottom,
+                bottom: MediaQuery.of(context).viewInsets.bottom,
               ),
               color: CupertinoColors.systemBackground.resolveFrom(context),
               child: SafeArea(
@@ -42,12 +41,13 @@ class _TimeSelectorState extends ConsumerState<TimeSelector> {
                   initialDateTime: _dateTime,
                   minuteInterval: 10,
                   minimumDate: nowDate,
-                  //maxdate nowDate + 1 day
                   maximumDate: nowDate.add(Duration(days: 1)),
                   use24hFormat: false,
-                  // This is called when the user changes the dateTime.
                   onDateTimeChanged: (DateTime newDateTime) {
                     setState(() => _dateTime = newDateTime);
+                    ref
+                        .read(postOrderNotifierProvider.notifier)
+                        .setMyDeliverOption(orderTime: newDateTime);
                   },
                 ),
               ),
@@ -56,6 +56,7 @@ class _TimeSelectorState extends ConsumerState<TimeSelector> {
 
   @override
   Widget build(BuildContext context) {
+    final orderTime = ref.watch(postOrderNotifierProvider).orderTime;
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -78,7 +79,8 @@ class _TimeSelectorState extends ConsumerState<TimeSelector> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("5월 19일 5시 30분", style: TextStyle(fontSize: 20)),
+              Text(DateFormat('MM월 dd일 HH시 mm분').format(orderTime),
+                  style: TextStyle(fontSize: 20)),
               Icon(Icons.timer),
             ],
           ),
