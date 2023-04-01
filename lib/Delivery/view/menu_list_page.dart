@@ -1,117 +1,120 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sangsangtalk/Common/commonType.dart';
 import 'package:sangsangtalk/Common/widget/appbar.dart';
 
-const data = [
-  {
-    'header': '세트메뉴',
-    'menu': [
-      {
-        'name': '불고기 버거 세트',
-        'price': 5000,
-        'description': '불고기 버거, 콜라, 감자튀김, 양념감자',
-      }
-    ]
-  }
-];
+import '../models/post_response_model.dart';
+import '../my_deliver_provider.dart';
+import '../repository/store_repository.dart';
 
 class MenuListPage extends ConsumerStatefulWidget {
   const MenuListPage({
     Key? key,
+    required this.storeId,
   }) : super(key: key);
+  final String storeId;
 
   @override
   ConsumerState createState() => _MenuListPageState();
 }
 
 class _MenuListPageState extends ConsumerState<MenuListPage> {
+  LoadState loadState = LoadState.loading;
+  StoreMenus? storeMenus;
+
+  @override
+  void initState() {
+    super.initState();
+    getStoreMenuList();
+  }
+
+  getStoreMenuList() {
+    ref
+        .read(storeRepositoryProvider)
+        .getStoreMenuList(widget.storeId)
+        .then((value) {
+      setState(() {
+        storeMenus = value;
+      });
+    }).onError((error, stackTrace) {
+      setState(() {
+        loadState = LoadState.error;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (loadState == LoadState.loading && storeMenus == null) {
+      return Scaffold(
+        body: const Center(child: CircularProgressIndicator()),
+      );
+    }
+    if (storeMenus == null || loadState == LoadState.error) {
+      return Scaffold(
+        body: const Center(child: Text('에러')),
+      );
+    }
+    List<String> sections = storeMenus!.sections;
+    final postState = ref.watch(postOrderNotifierProvider);
+
     return Scaffold(
-      appBar: customAppBar(context, title: '메뉴'),
-      body: Container(
-        child: Column(
-          children: [
-            Container(
-              height: 50,
-              child: Row(
+      appBar: customAppBar(context, title: storeMenus!.name),
+      body: CustomScrollView(
+        slivers: [
+          SliverToBoxAdapter(
+            child: Container(
+              padding: const EdgeInsets.only(left: 16.0, bottom: 8.0),
+              height: 80,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Container(
-                    width: 50,
-                    child: IconButton(
-                      icon: Icon(Icons.arrow_back_ios),
-                      onPressed: () {},
-                    ),
-                  ),
-                  Container(
-                    width: 50,
-                    child: Text('메뉴'),
-                  ),
-                  Container(
-                    width: 50,
-                    child: Text('가격'),
-                  ),
-                  Container(
-                    width: 50,
-                    child: Text('수량'),
-                  ),
+                  Text('예상 배달비 : ${storeMenus!.fee}원',
+                      style: const TextStyle(
+                        fontSize: 16,
+                      )),
+                  Text('최소 배달 금액 : ${storeMenus!.minOrder}원',
+                      style: const TextStyle(
+                        fontSize: 16,
+                      )),
                 ],
               ),
             ),
-            Container(
-              height: 50,
-              child: Row(
-                children: [
-                  Container(
-                    width: 50,
-                    child: IconButton(
-                      icon: Icon(Icons.arrow_back_ios),
-                      onPressed: () {},
+          ),
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
+                final menuList = storeMenus!.getMenuBySection(sections[index]);
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0, vertical: 8.0),
+                      color: Colors.grey[200],
+                      child: Text(sections[index]),
                     ),
-                  ),
-                  Container(
-                    width: 50,
-                    child: Text('메뉴'),
-                  ),
-                  Container(
-                    width: 50,
-                    child: Text('가격'),
-                  ),
-                  Container(
-                    width: 50,
-                    child: Text('수량'),
-                  ),
-                ],
-              ),
+                    for (var menu in menuList)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16.0, vertical: 8.0),
+                        child: Text(
+                          menu.name,
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      )
+                  ],
+                );
+              },
+              childCount: sections.length,
             ),
-            Container(
-              height: 50,
-              child: Row(
-                children: [
-                  Container(
-                    width: 50,
-                    child: IconButton(
-                      icon: Icon(Icons.arrow_back_ios),
-                      onPressed: () {},
-                    ),
-                  ),
-                  Container(
-                    width: 50,
-                    child: Text('메뉴'),
-                  ),
-                  Container(
-                    width: 50,
-                    child: Text('가격'),
-                  ),
-                  Container(
-                    width: 50,
-                    child: Text('수량'),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

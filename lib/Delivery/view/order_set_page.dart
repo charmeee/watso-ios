@@ -100,7 +100,9 @@ class OrderSetPage extends ConsumerWidget {
                   }
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => MenuListPage()),
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            MenuListPage(storeId: postState.storeId)),
                   );
                 },
                 child: Text("주문하기"),
