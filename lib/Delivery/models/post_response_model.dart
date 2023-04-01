@@ -60,10 +60,10 @@ class ResponsePostList extends PostOption {
 // ]
 // }
 
-class StoreMenuList extends Store {
+class StoreMenus extends Store {
   List<MenuSection> menuSection;
 
-  StoreMenuList(
+  StoreMenus(
       {required String id,
       required String name,
       required int minOrder,
@@ -71,7 +71,7 @@ class StoreMenuList extends Store {
       required this.menuSection})
       : super(id: id, name: name, minOrder: minOrder, fee: fee);
 
-  StoreMenuList.fromJson(Map<String, dynamic> json)
+  StoreMenus.fromJson(Map<String, dynamic> json)
       : menuSection = List<MenuSection>.from(
             json['menus'].map((x) => MenuSection.fromJson(x))),
         super.fromJson(json);
