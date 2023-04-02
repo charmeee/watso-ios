@@ -6,11 +6,10 @@ class Store {
   int minOrder;
   int fee;
 
-  Store(
-      {required this.id,
-      required this.name,
-      required this.minOrder,
-      required this.fee});
+  Store({required this.id,
+    required this.name,
+    required this.minOrder,
+    required this.fee});
 
   Store.fromJson(Map<String, dynamic> json)
       : id = json['_id'],
@@ -25,11 +24,10 @@ class PostOption {
   int minMember;
   int maxMember;
 
-  PostOption(
-      {required this.place,
-      required this.orderTime,
-      required this.minMember,
-      required this.maxMember});
+  PostOption({required this.place,
+    required this.orderTime,
+    required this.minMember,
+    required this.maxMember});
 
   PostOption.fromJson(Map<String, dynamic> json)
       : place = json['place'],
@@ -44,11 +42,10 @@ class Order {
   int price;
   Menu menu;
 
-  Order(
-      {required this.id,
-      required this.quantity,
-      required this.price,
-      required this.menu});
+  Order({required this.id,
+    required this.quantity,
+    required this.price,
+    required this.menu});
 
   Order.fromJson(Map<String, dynamic> json)
       : id = json['_id'],
@@ -69,18 +66,17 @@ class Menu {
         price = json['price'],
         groups = json['groups'] != null
             ? List<MenuOptionGroup>.from(
-                json['groups'].map((x) => MenuOptionGroup.fromJson(x)))
+            json['groups'].map((x) => MenuOptionGroup.fromJson(x)))
             : null;
 }
 
 class MenuSection extends Menu {
   String section;
 
-  MenuSection(
-      {required this.section,
-      required String name,
-      required int price,
-      List<MenuOptionGroup>? groups})
+  MenuSection({required this.section,
+    required String name,
+    required int price,
+    List<MenuOptionGroup>? groups})
       : super(name: name, price: price);
 
   MenuSection.fromJson(Map<String, dynamic> json)
@@ -91,16 +87,24 @@ class MenuSection extends Menu {
 class MenuOptionGroup {
   String id;
   String name;
+  int minOptionNum;
+  int maxOptionNum;
   List<MenuOption> options;
 
-  MenuOptionGroup(
-      {required this.id, required this.name, required this.options});
+  MenuOptionGroup({required this.id,
+    required this.name,
+    required this.options,
+    required this.minOptionNum,
+    required this.maxOptionNum});
 
   MenuOptionGroup.fromJson(Map<String, dynamic> json)
       : id = json['_id'],
         name = json['name'],
+        minOptionNum = json['min_order_quantity'],
+        maxOptionNum = json['max_order_quantity'],
         options = List<MenuOption>.from(
             json['options'].map((x) => MenuOption.fromJson(x)));
+
 }
 
 class MenuOption {
@@ -108,7 +112,11 @@ class MenuOption {
   String name;
   int price;
 
-  MenuOption({required this.id, required this.name, required this.price});
+  MenuOption({
+    required this.id,
+    required this.name,
+    required this.price,
+  });
 
   MenuOption.fromJson(Map<String, dynamic> json)
       : id = json['_id'],

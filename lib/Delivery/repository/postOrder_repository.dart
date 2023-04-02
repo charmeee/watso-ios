@@ -8,7 +8,7 @@ import '../models/post_model.dart';
 import '../models/post_response_model.dart';
 
 final postOrderRepositoryProvider = Provider<PostOrderRepository>(
-  (ref) {
+      (ref) {
     final dio = ref.watch(dioProvider);
 
     const staticUrl = '/api/delivery/post';
@@ -36,4 +36,6 @@ class PostOrderRepository {
       throw Exception(e);
     }
   }
+
+
 }
