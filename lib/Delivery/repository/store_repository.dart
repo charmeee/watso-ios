@@ -42,4 +42,16 @@ class StoreRepository {
       throw Exception(e);
     }
   }
+
+  Future<Menu> getDetailMenu(storeId, menuName) async {
+    try {
+      final response = await _dio.get('$staticUrl/$storeId/$menuName');
+      Menu menu = Menu.fromJson(response.data);
+      if (menu.groups == null) throw Exception('메뉴가 없습니다.');
+      return Menu.fromJson(response.data);
+    } catch (e) {
+      log(e.toString());
+      throw Exception(e);
+    }
+  }
 }
