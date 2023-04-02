@@ -4,8 +4,8 @@ import 'package:sangsangtalk/Common/commonType.dart';
 import 'package:sangsangtalk/Common/widget/appbar.dart';
 
 import '../models/post_response_model.dart';
-import '../my_deliver_provider.dart';
 import '../repository/store_repository.dart';
+import 'menu_option_page.dart';
 
 class MenuListPage extends ConsumerStatefulWidget {
   const MenuListPage({
@@ -56,7 +56,6 @@ class _MenuListPageState extends ConsumerState<MenuListPage> {
       );
     }
     List<String> sections = storeMenus!.sections;
-    final postState = ref.watch(postOrderNotifierProvider);
 
     return Scaffold(
       appBar: customAppBar(context, title: storeMenus!.name),
@@ -116,7 +115,15 @@ class _MenuListPageState extends ConsumerState<MenuListPage> {
                             ),
                           ),
                           onTap: () {
-                            //postState.addMenu(menuList[index]);
+                            //navigate to menu option page
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => MenuOptionPage(
+                                  storeId: widget.storeId,
+                                  menuName: menuList[index].name,
+                                ),
+                              ),
+                            );
                           },
                         );
                       },
