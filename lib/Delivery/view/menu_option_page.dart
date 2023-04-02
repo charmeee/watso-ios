@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sangsangtalk/Common/widget/appbar.dart';
+import 'package:sangsangtalk/Common/widget/floating_bottom_button.dart';
 
 import '../../Common/commonType.dart';
 import '../models/post_model.dart';
@@ -143,6 +144,9 @@ class _MenuOptionPageState extends ConsumerState<MenuOptionPage> {
           ),
         ),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: customFloatingBottomButton(context,
+          child: Text('메뉴 담기'), onPressed: () {}),
     );
   }
 }

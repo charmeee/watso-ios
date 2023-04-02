@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sangsangtalk/Common/commonType.dart';
 import 'package:sangsangtalk/Common/widget/appbar.dart';
 
+import '../../Common/widget/floating_bottom_button.dart';
 import '../models/post_response_model.dart';
 import '../repository/store_repository.dart';
 import 'menu_option_page.dart';
@@ -139,22 +140,26 @@ class _MenuListPageState extends ConsumerState<MenuListPage> {
           ),
         ],
       ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: ElevatedButton(
-          onPressed: () {
-            Navigator.of(context).pushNamed('/delivery/order');
-          },
-          style: ElevatedButton.styleFrom(
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10.0)),
-              ),
-              minimumSize: const Size.fromHeight(50),
-              backgroundColor: Colors.indigo),
-          child: const Icon(Icons.shopping_cart),
-        ),
+      floatingActionButton: customFloatingBottomButton(
+        context,
+        child: floatingButtonLabel(),
+        onPressed: navigateToBasket,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
+  }
+
+  navigateToBasket() {
+    //navigate to 장바구니
+    // Navigator.of(context).push(
+    //   MaterialPageRoute(
+    //     builder: (context) =>
+    //
+    //   ),
+    // );
+  }
+
+  Widget floatingButtonLabel() {
+    return const Icon(Icons.shopping_cart);
   }
 }
