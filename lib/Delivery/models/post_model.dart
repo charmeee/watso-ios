@@ -148,7 +148,7 @@ class MenuOptionGroup {
   }
 
   Map toJson() => {
-        'id': id,
+        '_id': id,
         'options': options.map((e) => e.id).toList(),
       };
 }
