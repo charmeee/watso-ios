@@ -2,8 +2,9 @@ import 'dart:developer';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../repository/store_repository.dart';
-import 'post_model.dart';
+import 'models/post_model.dart';
+import 'my_deliver_provider.dart';
+import 'repository/store_repository.dart';
 
 final menuOptionNotifierProvider =
     StateNotifierProvider<MenuOptionNotifier, OrderMenu?>((ref) {
@@ -20,12 +21,12 @@ class MenuOptionNotifier extends StateNotifier<OrderMenu?> {
       final Menu value = await ref
           .read(storeRepositoryProvider)
           .getDetailMenu(storeId, menuName);
-      log('value: ${value.groups![0].options.length}');
 
       state = OrderMenu.fromMenu(quantity: 1, menu: Menu.clone(value));
       setLeastOneOption();
       return value;
     } catch (e) {
+      log("setMenu" + e.toString());
       throw Exception(e);
     }
   }
@@ -80,6 +81,12 @@ class MenuOptionNotifier extends StateNotifier<OrderMenu?> {
       }
     }
     state = tmp;
+  }
+
+  addInMyOrder() {
+    final tmp = OrderMenu.clone(state!);
+    ref.read(postOrderNotifierProvider.notifier).addMyDeliverOrder(tmp);
+    state = null;
   }
 }
 
