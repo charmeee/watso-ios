@@ -1,11 +1,15 @@
+import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sangsangtalk/Common/commonType.dart';
 import 'package:sangsangtalk/Common/widget/appbar.dart';
 
 import '../../Common/widget/floating_bottom_button.dart';
+import '../models/post_model.dart';
 import '../models/post_response_model.dart';
+import '../my_deliver_provider.dart';
 import '../repository/store_repository.dart';
+import 'menu_basket_page.dart';
 import 'menu_option_page.dart';
 
 class MenuListPage extends ConsumerStatefulWidget {
@@ -57,7 +61,7 @@ class _MenuListPageState extends ConsumerState<MenuListPage> {
       );
     }
     List<String> sections = storeMenus!.sections;
-
+    List<OrderMenu> orderMenus = ref.watch(postOrderNotifierProvider).orders;
     return Scaffold(
       appBar: customAppBar(context, title: storeMenus!.name),
       body: CustomScrollView(
@@ -140,26 +144,42 @@ class _MenuListPageState extends ConsumerState<MenuListPage> {
           ),
         ],
       ),
-      floatingActionButton: customFloatingBottomButton(
-        context,
-        child: floatingButtonLabel(),
-        onPressed: navigateToBasket,
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: orderMenus.isNotEmpty
+          ? customFloatingBottomButton(
+              context,
+              child: floatingButtonLabel((orderMenus.fold(
+                  0,
+                  (previousValue, element) =>
+                      previousValue + element.quantity)).toString()),
+              onPressed: navigateToBasket,
+            )
+          : null,
+      floatingActionButtonLocation: orderMenus.isNotEmpty
+          ? FloatingActionButtonLocation.centerFloat
+          : null,
     );
   }
 
   navigateToBasket() {
-    //navigate to 장바구니
-    // Navigator.of(context).push(
-    //   MaterialPageRoute(
-    //     builder: (context) =>
-    //
-    //   ),
-    // );
+    Navigator.of(context).push(
+      MaterialPageRoute(
+          builder: (context) => MenuBasketPage(storeName: storeMenus!.name)),
+    );
   }
 
-  Widget floatingButtonLabel() {
-    return const Icon(Icons.shopping_cart);
+  Widget floatingButtonLabel(badgeContent) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Badge(
+            badgeContent: Text(badgeContent),
+            child: const Icon(Icons.shopping_cart)),
+        const SizedBox(width: 16),
+        Text(
+          '장바구니',
+          style: const TextStyle(fontSize: 18),
+        ),
+      ],
+    );
   }
 }
