@@ -5,10 +5,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../Common/dio.dart';
 import '../models/post_model.dart';
+import '../models/post_request_model.dart';
 import '../models/post_response_model.dart';
 
 final postOrderRepositoryProvider = Provider<PostOrderRepository>(
-      (ref) {
+  (ref) {
     final dio = ref.watch(dioProvider);
 
     const staticUrl = '/api/delivery/post';
@@ -37,5 +38,13 @@ class PostOrderRepository {
     }
   }
 
-
+  Future postDelivery(PostOrder postOrder) async {
+    try {
+      final response = await _dio.post(staticUrl, data: postOrder.toJson());
+      return response.data;
+    } catch (e) {
+      log(e.toString());
+      throw Exception(e);
+    }
+  }
 }
