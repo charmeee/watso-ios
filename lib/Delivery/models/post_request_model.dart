@@ -30,9 +30,28 @@ class PostOrder extends PostOption {
         store: Store.init(),
         place: '생자대',
         orderTime: DateTime.now(),
-        minMember: 0,
+        minMember: 1,
         maxMember: 999);
   }
+
+  factory PostOrder.clone(PostOrder postOrder) {
+    return PostOrder(
+        orders: postOrder.orders.map((e) => OrderMenu.clone(e)).toList(),
+        store: postOrder.store,
+        place: postOrder.place,
+        orderTime: postOrder.orderTime,
+        minMember: postOrder.minMember,
+        maxMember: postOrder.maxMember);
+  }
+
+  Map toJson() => {
+        'orders': orders.map((e) => e.toJson()).toList(),
+        'store_id': store.id,
+        'place': place,
+        'order_time': orderTime.toIso8601String(),
+        'min_member': minMember,
+        'max_member': maxMember,
+      };
 
   bool get isStoreSelected => store.id.isNotEmpty;
 
