@@ -6,7 +6,7 @@ import 'package:sangsangtalk/Common/widget/appbar.dart';
 import 'package:sangsangtalk/Common/widget/floating_bottom_button.dart';
 
 import '../../Common/commonType.dart';
-import '../models/menu_option_provider.dart';
+import '../menu_option_provider.dart';
 import '../models/post_model.dart';
 
 class MenuOptionPage extends ConsumerStatefulWidget {
@@ -38,11 +38,11 @@ class _MenuOptionPageState extends ConsumerState<MenuOptionPage> {
         .read(menuOptionNotifierProvider.notifier)
         .setMenu(widget.storeId, widget.menuName)
         .then((value) {
-      log('value: ${value.groups![0].options.length}');
       setState(() {
         menu = value;
       });
     }).onError((error, stackTrace) {
+      log('getDetailMenu: $error');
       setState(() {
         loadState = LoadState.error;
       });
@@ -65,6 +65,7 @@ class _MenuOptionPageState extends ConsumerState<MenuOptionPage> {
     }
     if (menu == null || loadState == LoadState.error || orderMenu == null) {
       return Scaffold(
+        appBar: customAppBar(context, title: '메뉴 옵션'),
         body: const Center(child: Text('에러')),
       );
     }
@@ -179,7 +180,10 @@ class _MenuOptionPageState extends ConsumerState<MenuOptionPage> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: customFloatingBottomButton(context,
-          child: Text('$sumPrice원 담기'), onPressed: () {}),
+          child: Text('$sumPrice원 담기'), onPressed: () {
+        ref.read(menuOptionNotifierProvider.notifier).addInMyOrder();
+        Navigator.pop(context);
+      }),
     );
   }
 }
