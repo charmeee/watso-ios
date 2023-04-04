@@ -3,11 +3,11 @@ import 'package:sangsangtalk/Delivery/models/post_model.dart';
 //post /post
 class PostOrder extends PostOption {
   List<OrderMenu> orders;
-  String storeId;
+  Store store;
 
   PostOrder(
       {required this.orders,
-      required this.storeId,
+      required this.store,
       required String place,
       required DateTime orderTime,
       required int minMember,
@@ -21,20 +21,20 @@ class PostOrder extends PostOption {
   PostOrder.fromJson(Map<String, dynamic> json)
       : orders = List<OrderMenu>.from(
             json['orders'].map((x) => OrderMenu.fromJson(x))),
-        storeId = json['store_id'],
+        store = Store.fromJson(json['store']),
         super.fromJson(json);
 
   factory PostOrder.init() {
     return PostOrder(
         orders: [],
-        storeId: '',
+        store: Store.init(),
         place: '생자대',
         orderTime: DateTime.now(),
         minMember: 0,
         maxMember: 999);
   }
 
-  bool get isStoreSelected => storeId.isNotEmpty;
+  bool get isStoreSelected => store.id.isNotEmpty;
 
   bool get isMemberLogical => minMember <= maxMember;
 
@@ -43,7 +43,7 @@ class PostOrder extends PostOption {
 
   bool get canNotOrder =>
       orders.isEmpty ||
-      storeId.isEmpty ||
+      store.id.isEmpty ||
       place.isEmpty ||
       orderTime.isBefore(DateTime.now()) ||
       minMember > maxMember;

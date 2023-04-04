@@ -12,6 +12,12 @@ class Store {
       required this.minOrder,
       required this.fee});
 
+  Store.init()
+      : id = '',
+        name = '',
+        minOrder = 1,
+        fee = 0;
+
   Store.fromJson(Map<String, dynamic> json)
       : id = json['_id'],
         name = json['name'],
@@ -84,13 +90,12 @@ class Menu {
       price: menu.price,
       groups: menu.groups != null
           ? menu.groups!.map((e) => MenuOptionGroup.clone(e)).toList()
-          : null,
+          : [],
     );
   }
 
   Map toJson() => {
         'name': name,
-        'price': price,
         'groups':
             groups != null ? groups!.map((e) => e.toJson()).toList() : null,
       };
@@ -144,10 +149,7 @@ class MenuOptionGroup {
 
   Map toJson() => {
         'id': id,
-        'name': name,
-        'minOptionNum': minOptionNum,
-        'maxOptionNum': maxOptionNum,
-        'options': options.map((e) => e.toJson()).toList(),
+        'options': options.map((e) => e.id).toList(),
       };
 }
 
@@ -174,10 +176,4 @@ class MenuOption {
       price: menuOption.price,
     );
   }
-
-  Map toJson() => {
-        'id': id,
-        'name': name,
-        'price': price,
-      };
 }

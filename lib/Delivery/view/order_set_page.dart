@@ -61,7 +61,8 @@ class OrderSetPage extends ConsumerWidget {
                   final postState = ref.read(postOrderNotifierProvider);
                   log(postState.minMember.toString());
                   log(postState.maxMember.toString());
-                  log(postState.storeId.toString());
+                  log(postState.store.fee.toString());
+                  log(postState.store.id.toString());
                   log(postState.place.toString());
 
                   if (!postState.isStoreSelected ||
@@ -102,7 +103,7 @@ class OrderSetPage extends ConsumerWidget {
                     context,
                     MaterialPageRoute(
                         builder: (context) =>
-                            MenuListPage(storeId: postState.storeId)),
+                            MenuListPage(storeId: postState.store.id)),
                   );
                 },
                 child: Text("주문하기"),

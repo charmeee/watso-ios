@@ -36,7 +36,7 @@ class _StoreSelectorState extends ConsumerState<StoreSelector> {
 
   @override
   Widget build(BuildContext context) {
-    String myStore = ref.watch(postOrderNotifierProvider).storeId;
+    String myStore = ref.watch(postOrderNotifierProvider).store.id;
     return Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -60,7 +60,9 @@ class _StoreSelectorState extends ConsumerState<StoreSelector> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(myStore.isEmpty ? "가계를 선택해 주세요" : nowStoreName,
-                    style: TextStyle(fontSize: 20, color: Colors.grey)),
+                    style: TextStyle(
+                        fontSize: 20,
+                        color: myStore.isEmpty ? Colors.grey : Colors.black)),
                 Icon(Icons.arrow_drop_down),
               ],
             ),
@@ -89,7 +91,7 @@ class _StoreSelectorState extends ConsumerState<StoreSelector> {
                   onTap: () {
                     ref
                         .read(postOrderNotifierProvider.notifier)
-                        .setMyDeliverStore(_storeList[index].id);
+                        .setMyDeliverStore(_storeList[index]);
                     setState(() {
                       nowStoreName = _storeList[index].name;
                     });
