@@ -162,8 +162,7 @@ class _MenuListPageState extends ConsumerState<MenuListPage> {
 
   navigateToBasket() {
     Navigator.of(context).push(
-      MaterialPageRoute(
-          builder: (context) => MenuBasketPage(storeName: storeMenus!.name)),
+      MaterialPageRoute(builder: (context) => MenuBasketPage()),
     );
   }
 
