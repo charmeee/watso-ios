@@ -23,7 +23,9 @@ class MenuOptionNotifier extends StateNotifier<OrderMenu?> {
           .getDetailMenu(storeId, menuName);
 
       state = OrderMenu.fromMenu(quantity: 1, menu: Menu.clone(value));
-      setLeastOneOption();
+      if (state!.menu.groups != null && state!.menu.groups!.isNotEmpty) {
+        setLeastOneOption();
+      }
       return value;
     } catch (e) {
       log("setMenu" + e.toString());
