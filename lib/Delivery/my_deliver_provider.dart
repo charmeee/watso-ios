@@ -52,6 +52,30 @@ class PostOrderNotifier extends StateNotifier<PostOrder> {
     );
     log('addMyDeliverOrder: ${state.orders.length}');
   }
+
+  deleteMyDeliverOrder(int index) {
+    state = PostOrder(
+      orders: [...state.orders]..removeAt(index),
+      store: state.store,
+      place: state.place,
+      orderTime: state.orderTime,
+      minMember: state.minMember,
+      maxMember: state.maxMember,
+    );
+    log('deleteMyDeliverOrder: ${state.orders.length}');
+  }
+
+  void decreaseQuantity(int index) {
+    PostOrder tmp = PostOrder.clone(state);
+    tmp.orders[index].quantity--;
+    state = tmp;
+  }
+
+  void increaseQuantity(index) {
+    PostOrder tmp = PostOrder.clone(state);
+    tmp.orders[index].quantity++;
+    state = tmp;
+  }
 }
 
 final sumPriceByOrderProvider = Provider<List<int>>((ref) {

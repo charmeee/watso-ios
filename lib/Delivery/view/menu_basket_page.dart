@@ -6,21 +6,16 @@ import 'package:sangsangtalk/Common/widget/floating_bottom_button.dart';
 import '../models/post_model.dart';
 import '../models/post_request_model.dart';
 import '../my_deliver_provider.dart';
+import '../post_list_provider.dart';
+import '../repository/postOrder_repository.dart';
 
-class MenuBasketPage extends ConsumerStatefulWidget {
+class MenuBasketPage extends ConsumerWidget {
   const MenuBasketPage({
     Key? key,
-    required this.storeName,
   }) : super(key: key);
-  final String storeName;
 
   @override
-  ConsumerState createState() => _MenuBasketPageState();
-}
-
-class _MenuBasketPageState extends ConsumerState<MenuBasketPage> {
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     PostOrder postOrder = ref.watch(postOrderNotifierProvider);
     List<int> sumPrice = ref.watch(sumPriceByOrderProvider);
     int totalSumPrice =
@@ -34,7 +29,7 @@ class _MenuBasketPageState extends ConsumerState<MenuBasketPage> {
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Text(
-                widget.storeName,
+                postOrder.store.name,
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
             ),
@@ -52,72 +47,118 @@ class _MenuBasketPageState extends ConsumerState<MenuBasketPage> {
                         height: 1,
                         thickness: 1,
                       ),
-                      Container(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  orderMenu.menu.name,
-                                  style: TextStyle(fontSize: 16),
-                                ),
-                                IconButton(
-                                    onPressed: () {}, icon: Icon(Icons.close))
-                              ],
-                            ),
-                            if (orderMenu.menu.groups != null &&
-                                orderMenu.menu.groups!.isNotEmpty)
-                              Column(mainAxisSize: MainAxisSize.min, children: [
-                                for (var group in orderMenu.menu.groups!)
-                                  if (group.options.isNotEmpty)
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          ' · ${group.name} : ',
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                orderMenu.menu.name,
+                                style: TextStyle(fontSize: 16),
+                              ),
+                              IconButton(
+                                  onPressed: () {
+                                    if (postOrder.orders.length == 1) {
+                                      showDialog(
+                                          context: context,
+                                          builder: (context) => AlertDialog(
+                                                title: Text(
+                                                    '주문하기 위해 최소 하나의 메뉴가 필요합니다.'),
+                                                actions: [
+                                                  TextButton(
+                                                      onPressed: () {
+                                                        Navigator.pop(context);
+                                                      },
+                                                      child: Text('취소')),
+                                                  TextButton(
+                                                      onPressed: () {
+                                                        Navigator.pop(
+                                                            context, true);
+                                                        ref
+                                                            .read(
+                                                                postOrderNotifierProvider
+                                                                    .notifier)
+                                                            .deleteMyDeliverOrder(
+                                                                index);
+                                                      },
+                                                      child: Text('삭제')),
+                                                ],
+                                              )).then((value) {
+                                        if (value == true) {
+                                          Navigator.pop(context);
+                                        }
+                                      });
+                                    } else {
+                                      ref
+                                          .read(postOrderNotifierProvider
+                                              .notifier)
+                                          .deleteMyDeliverOrder(index);
+                                    }
+                                  },
+                                  icon: Icon(Icons.close))
+                            ],
+                          ),
+                          if (orderMenu.menu.groups != null &&
+                              orderMenu.menu.groups!.isNotEmpty)
+                            Column(mainAxisSize: MainAxisSize.min, children: [
+                              for (var group in orderMenu.menu.groups!)
+                                if (group.options.isNotEmpty)
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        ' · ${group.name} : ',
+                                        style: TextStyle(
+                                            color: Colors.grey, fontSize: 12),
+                                      ),
+                                      RichText(
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 3,
+                                        text: TextSpan(
+                                          text: group.options.fold(
+                                              '',
+                                              (previousValue, element) =>
+                                                  previousValue! +
+                                                  element.name),
                                           style: TextStyle(
                                               color: Colors.grey, fontSize: 12),
                                         ),
-                                        RichText(
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 3,
-                                          text: TextSpan(
-                                            text: group.options.fold(
-                                                '',
-                                                (previousValue, element) =>
-                                                    previousValue! +
-                                                    element.name),
-                                            style: TextStyle(
-                                                color: Colors.grey,
-                                                fontSize: 12),
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                              ]),
-                            Row(
-                              children: [
-                                Text(
-                                  '${sumPrice[index]}원',
-                                  style: TextStyle(
-                                    fontSize: 14,
+                                      )
+                                    ],
                                   ),
+                            ]),
+                          Row(
+                            children: [
+                              Text(
+                                '${sumPrice[index]}원',
+                                style: TextStyle(
+                                  fontSize: 14,
                                 ),
-                                const Spacer(),
-                                IconButton(
-                                    onPressed: () {},
-                                    icon: Icon(Icons.remove_circle)),
-                                Text('${orderMenu.quantity}'),
-                                IconButton(
-                                    onPressed: () {},
-                                    icon: Icon(Icons.add_circle)),
-                              ],
-                            )
-                          ],
-                        ),
+                              ),
+                              const Spacer(),
+                              IconButton(
+                                  onPressed: () {
+                                    if (orderMenu.quantity > 1) {
+                                      ref
+                                          .read(postOrderNotifierProvider
+                                              .notifier)
+                                          .decreaseQuantity(index);
+                                    }
+                                  },
+                                  icon: Icon(Icons.remove_circle)),
+                              Text('${orderMenu.quantity}'),
+                              IconButton(
+                                  onPressed: () {
+                                    ref
+                                        .read(
+                                            postOrderNotifierProvider.notifier)
+                                        .increaseQuantity(index);
+                                  },
+                                  icon: Icon(Icons.add_circle)),
+                            ],
+                          )
+                        ],
                       ),
                     ],
                   );
@@ -180,7 +221,7 @@ class _MenuBasketPageState extends ConsumerState<MenuBasketPage> {
                         style: TextStyle(fontSize: 16, color: Colors.black),
                       ),
                       Text(
-                        '${expectDeliverFee}원',
+                        '$expectDeliverFee원',
                         style: TextStyle(fontSize: 16, color: Colors.black),
                       ),
                     ],
