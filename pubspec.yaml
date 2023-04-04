@@ -42,6 +42,7 @@ dependencies:
   flutter_secure_storage: ^8.0.0
   flutter_native_splash: ^2.2.18
   intl: ^0.18.0
+  badges: ^3.0.3
 
 dev_dependencies:
   flutter_test:
