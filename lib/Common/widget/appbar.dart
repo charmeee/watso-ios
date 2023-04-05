@@ -1,5 +1,6 @@
 //make custom appbar
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 PreferredSizeWidget customAppBar(context,
     {String? title, int? titleSize, List<Widget>? action, bool? isCenter}) {
@@ -21,5 +22,6 @@ PreferredSizeWidget customAppBar(context,
           )
         : null,
     actions: action,
+    systemOverlayStyle: SystemUiOverlayStyle.dark,
   );
 }
