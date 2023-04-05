@@ -5,6 +5,7 @@ import '../../Common/commonType.dart';
 import '../models/post_model.dart';
 import '../models/post_response_model.dart';
 import '../repository/postOrder_repository.dart';
+import 'index_common_listTile.dart';
 
 class PostList extends ConsumerStatefulWidget {
   const PostList({
@@ -69,7 +70,7 @@ class _PostListState extends ConsumerState<PostList> {
       );
     }
     return SliverPadding(
-      padding: EdgeInsets.symmetric(horizontal: 16),
+      padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
       sliver: SliverList(
         delegate: SliverChildBuilderDelegate(
           (BuildContext context, int index) {
@@ -77,38 +78,9 @@ class _PostListState extends ConsumerState<PostList> {
             return Padding(
               padding: EdgeInsets.symmetric(vertical: 4),
               child: Card(
-                child: InkWell(
-                  onTap: () {},
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      children: [
-                        Image.network(
-                          'http://www.ikbc.co.kr/data/kbc/cache/2022/08/02/kbc202208020053.800x.9.png',
-                          height: 80.0,
-                          width: 80.0,
-                          fit: BoxFit.contain,
-                        ),
-                        SizedBox(
-                          width: 20,
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              data.title.toString(),
-                              style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.bold),
-                            ),
-                            Text(data.place.toString()),
-                            Text(data.orderTime.toString()),
-                            Text(data.nickname.toString()),
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  child: indexCommonListTile(data, context),
                 ),
               ),
             );
