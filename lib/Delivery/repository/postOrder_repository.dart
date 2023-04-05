@@ -47,4 +47,14 @@ class PostOrderRepository {
       throw Exception(e);
     }
   }
+
+  Future<ResponsePost> getPostDetail(String postId) async {
+    try {
+      final response = await _dio.get('$staticUrl/$postId');
+      return ResponsePost.fromJson(response.data);
+    } catch (e) {
+      log(e.toString());
+      throw Exception(e);
+    }
+  }
 }

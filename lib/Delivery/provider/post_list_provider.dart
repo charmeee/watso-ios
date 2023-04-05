@@ -9,3 +9,8 @@ final myPostListProvider = FutureProvider<List<ResponsePost>>((ref) async {
       .read(postOrderRepositoryProvider)
       .getDeliveryList(PostFilter.joined);
 });
+
+final postDetailProvider = FutureProvider.autoDispose
+    .family<ResponsePost, String>((ref, postId) async {
+  return await ref.read(postOrderRepositoryProvider).getPostDetail(postId);
+});
