@@ -7,7 +7,7 @@ import 'package:sangsangtalk/Common/widget/appbar.dart';
 import '../../Common/widget/floating_bottom_button.dart';
 import '../models/post_model.dart';
 import '../models/post_response_model.dart';
-import '../my_deliver_provider.dart';
+import '../provider/my_deliver_provider.dart';
 import '../repository/store_repository.dart';
 import 'menu_basket_page.dart';
 import 'menu_option_page.dart';

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/post_model.dart';
-import '../my_deliver_provider.dart';
+import '../provider/my_deliver_provider.dart';
 import '../repository/store_repository.dart';
 
 class StoreSelector extends ConsumerStatefulWidget {

@@ -5,8 +5,8 @@ import 'package:sangsangtalk/Common/widget/floating_bottom_button.dart';
 
 import '../models/post_model.dart';
 import '../models/post_request_model.dart';
-import '../my_deliver_provider.dart';
-import '../post_list_provider.dart';
+import '../provider/my_deliver_provider.dart';
+import '../provider/post_list_provider.dart';
 import '../repository/postOrder_repository.dart';
 
 class MenuBasketPage extends ConsumerWidget {

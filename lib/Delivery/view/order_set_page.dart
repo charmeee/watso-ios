@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sangsangtalk/Common/widget/appbar.dart';
 
-import '../my_deliver_provider.dart';
+import '../provider/my_deliver_provider.dart';
 import '../widgets/order_set_place.dart';
 import '../widgets/order_set_recuit.dart';
 import '../widgets/order_set_store.dart';

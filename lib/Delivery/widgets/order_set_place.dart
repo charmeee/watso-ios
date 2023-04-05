@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../my_deliver_provider.dart';
+import '../provider/my_deliver_provider.dart';
 
 class PlaceSelector extends ConsumerWidget {
   const PlaceSelector({

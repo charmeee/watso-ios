@@ -6,8 +6,8 @@ import 'package:sangsangtalk/Common/widget/appbar.dart';
 import 'package:sangsangtalk/Common/widget/floating_bottom_button.dart';
 
 import '../../Common/commonType.dart';
-import '../menu_option_provider.dart';
 import '../models/post_model.dart';
+import '../provider/menu_option_provider.dart';
 
 class MenuOptionPage extends ConsumerStatefulWidget {
   const MenuOptionPage({

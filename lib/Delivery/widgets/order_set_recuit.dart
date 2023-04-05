@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sangsangtalk/Delivery/my_deliver_provider.dart';
+
+import '../provider/my_deliver_provider.dart';
 
 class RecuitNumSelector extends ConsumerStatefulWidget {
   final GlobalKey<FormState> recruitFormKey;

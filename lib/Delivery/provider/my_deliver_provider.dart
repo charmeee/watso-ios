@@ -2,8 +2,8 @@ import 'dart:developer';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'models/post_model.dart';
-import 'models/post_request_model.dart';
+import '../models/post_model.dart';
+import '../models/post_request_model.dart';
 
 final postOrderNotifierProvider =
     StateNotifierProvider<PostOrderNotifier, PostOrder>((ref) {
