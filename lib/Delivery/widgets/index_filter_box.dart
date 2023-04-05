@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-const List<String> list = <String>['최근 등록', '가까운 시간', 'Three', 'Four'];
-String dropdownValue = list.first;
+const List<String> filterTime = <String>['최근 등록', '가까운 시간'];
+const List<String> filterPlace = <String>['생자대', '기숙사'];
 
 class FilterBox extends StatelessWidget {
   const FilterBox({Key? key}) : super(key: key);
@@ -17,7 +17,7 @@ class FilterBox extends StatelessWidget {
           child: Row(
             children: [
               DropdownButton(
-                value: dropdownValue,
+                value: filterTime.first,
                 icon: const Icon(Icons.arrow_downward),
                 elevation: 16,
                 style: const TextStyle(color: Colors.deepPurple),
@@ -28,17 +28,20 @@ class FilterBox extends StatelessWidget {
                   //   dropdownValue = value!;
                   // });
                 },
-                items: list.map<DropdownMenuItem<String>>((String value) {
+                items: filterTime.map<DropdownMenuItem<String>>((String value) {
                   return DropdownMenuItem<String>(
                     value: value,
                     child: Text(value),
                   );
                 }).toList(),
               ),
-              SizedBox(width: 8),
+              SizedBox(width: 20),
               DropdownButton(
-                value: dropdownValue,
-                icon: const Icon(Icons.arrow_downward),
+                value: filterPlace.first,
+                icon: Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: const Icon(Icons.arrow_downward),
+                ),
                 elevation: 16,
                 style: const TextStyle(color: Colors.deepPurple),
                 underline: SizedBox(),
@@ -48,7 +51,8 @@ class FilterBox extends StatelessWidget {
                   //   dropdownValue = value!;
                   // });
                 },
-                items: list.map<DropdownMenuItem<String>>((String value) {
+                items:
+                    filterPlace.map<DropdownMenuItem<String>>((String value) {
                   return DropdownMenuItem<String>(
                     value: value,
                     child: Text(value),
