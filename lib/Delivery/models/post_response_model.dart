@@ -3,7 +3,7 @@ import 'package:sangsangtalk/Delivery/models/post_model.dart';
 import '../../Auth/models/user_model.dart';
 
 //get /post
-class ResponsePostList extends PostOption {
+class ResponsePost extends PostOption {
   String id;
   String title;
   String userId;
@@ -13,7 +13,7 @@ class ResponsePostList extends PostOption {
   bool orderCompleted;
   List<User> userOrders;
 
-  ResponsePostList(
+  ResponsePost(
       {required this.id,
       required this.title,
       required this.userId,
@@ -33,7 +33,7 @@ class ResponsePostList extends PostOption {
           orderTime: orderTime,
         );
 
-  ResponsePostList.fromJson(Map<String, dynamic> json)
+  ResponsePost.fromJson(Map<String, dynamic> json)
       : id = json['_id'],
         title = json['title'],
         userId = json['user_id'].toString(),

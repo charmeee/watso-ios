@@ -12,15 +12,14 @@ class MyPostBox extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    AsyncValue<List<ResponsePostList>> myPostList =
-        ref.watch(myPostListProvider);
-    return myPostList.when(
-        data: (data) {
-          if (data.isEmpty) {
-            return const SliverToBoxAdapter(child: SizedBox(height: 0));
-          }
-          return SliverToBoxAdapter(
-            child: Padding(
+    AsyncValue<List<ResponsePost>> myPostList = ref.watch(myPostListProvider);
+    return SliverToBoxAdapter(
+      child: myPostList.when(
+          data: (data) {
+            if (data.isEmpty) {
+              return SizedBox(height: 0);
+            }
+            return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Card(
                 child: Column(

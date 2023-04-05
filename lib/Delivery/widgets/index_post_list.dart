@@ -17,7 +17,7 @@ class PostList extends ConsumerStatefulWidget {
 }
 
 class _PostListState extends ConsumerState<PostList> {
-  List<ResponsePostList> postData = [];
+  List<ResponsePost> postData = [];
   LoadState loadState = LoadState.loading;
 
   @override
