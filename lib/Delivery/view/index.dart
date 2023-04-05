@@ -25,6 +25,7 @@ class _DeliveryMainPageState extends ConsumerState<DeliveryMainPage> {
           title: '배달톡', action: actionButtons(), titleSize: 30),
       body: CustomScrollView(
         shrinkWrap: true,
+        physics: const BouncingScrollPhysics(),
         slivers: [
           //구분생각을 해보겟습니다.
           const MyPostBox(),
@@ -41,7 +42,7 @@ class _DeliveryMainPageState extends ConsumerState<DeliveryMainPage> {
             ),
           );
         },
-        child: Icon(Icons.edit),
+        child: Icon(Icons.add),
         backgroundColor: Colors.indigo,
       ),
     );
