@@ -1,15 +1,14 @@
-import 'dart:developer';
-
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../Common/dio.dart';
+import '../../Common/failures.dart';
 import '../models/post_model.dart';
 import '../models/post_request_model.dart';
 import '../models/post_response_model.dart';
 
 final postOrderRepositoryProvider = Provider<PostOrderRepository>(
-      (ref) {
+  (ref) {
     final dio = ref.watch(dioProvider);
 
     const staticUrl = '/api/delivery/post';
@@ -27,14 +26,15 @@ class PostOrderRepository {
   Future<List<ResponsePost>> getDeliveryList(PostFilter filter) async {
     try {
       final response = await _dio.get(staticUrl, queryParameters: {
-        'filter': filter.name,
+        'option': filter.name,
       });
       return (response.data as List)
           .map((e) => ResponsePost.fromJson(e))
           .toList();
+    } on DioError catch (e) {
+      throw ServerException(e);
     } catch (e) {
-      log(e.toString());
-      throw Exception(e);
+      throw DataParsingException(e.toString());
     }
   }
 
@@ -42,9 +42,10 @@ class PostOrderRepository {
     try {
       final response = await _dio.post(staticUrl, data: postOrder.toJson());
       return response.data;
+    } on DioError catch (e) {
+      throw ServerException(e);
     } catch (e) {
-      log(e.toString());
-      throw Exception(e);
+      throw DataParsingException(e.toString());
     }
   }
 
@@ -52,9 +53,10 @@ class PostOrderRepository {
     try {
       final response = await _dio.get('$staticUrl/$postId');
       return ResponsePost.fromJson(response.data);
+    } on DioError catch (e) {
+      throw ServerException(e);
     } catch (e) {
-      log(e.toString());
-      throw Exception(e);
+      throw DataParsingException(e.toString());
     }
   }
 }

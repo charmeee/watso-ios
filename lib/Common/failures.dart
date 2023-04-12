@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 
 class ServerException implements Exception {
@@ -19,21 +21,6 @@ class ServerException implements Exception {
   ServerException(this.error);
 }
 
-class DataParsingException implements Exception {
-  //파싱이 잘못됨.
-  final String error;
-
-  @override
-  String toString() {
-    return '데이터 파싱 실패 : $error';
-  }
-
-  DataParsingException(this.error);
-
-
-}
-
-
 class _ServerBadResponseException implements Exception {
   // 연결을 다시 시도해보세요/
   final DioError error;
@@ -49,4 +36,18 @@ class _ServerBadResponseException implements Exception {
   }
 
   _ServerBadResponseException(this.error);
+}
+
+class DataParsingException implements Exception {
+  //파싱이 잘못됨.
+  final String error;
+
+  @override
+  String toString() {
+    return '옳지 않은 형식입니다.';
+  }
+
+  DataParsingException(this.error) {
+    log('데이터 파싱 실패 : $error');
+  }
 }
