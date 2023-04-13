@@ -91,18 +91,3 @@ class MenuOptionNotifier extends StateNotifier<OrderMenu?> {
     state = null;
   }
 }
-
-final sumPriceProvider = Provider<int>((ref) {
-  final orderMenu = ref.watch(menuOptionNotifierProvider);
-  if (orderMenu == null) {
-    return 0;
-  }
-  var sum = 0;
-  sum += orderMenu.menu.price * orderMenu.quantity;
-  for (var element in orderMenu.menu.groups!) {
-    for (var option in element.options) {
-      sum += option.price * orderMenu.quantity;
-    }
-  }
-  return sum;
-});

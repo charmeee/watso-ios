@@ -17,9 +17,8 @@ class MenuBasketPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     PostOrder postOrder = ref.watch(postOrderNotifierProvider);
-    List<int> sumPrice = ref.watch(sumPriceByOrderProvider);
     int totalSumPrice =
-    sumPrice.fold(0, (previousValue, element) => previousValue + element);
+        postOrder.orders.fold(0, (pre, element) => pre + element.totalPrice);
     int expectDeliverFee = postOrder.store.fee ~/ postOrder.minMember;
     return Scaffold(
       appBar: customAppBar(context, title: '장바구니', isCenter: true),
@@ -38,7 +37,7 @@ class MenuBasketPage extends ConsumerWidget {
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
             sliver: SliverList(
               delegate: SliverChildBuilderDelegate(
-                    (context, index) {
+                (context, index) {
                   OrderMenu orderMenu = postOrder.orders[index];
                   return Column(
                     mainAxisSize: MainAxisSize.min,
@@ -62,8 +61,7 @@ class MenuBasketPage extends ConsumerWidget {
                                     if (postOrder.orders.length == 1) {
                                       showDialog(
                                           context: context,
-                                          builder: (context) =>
-                                              AlertDialog(
+                                          builder: (context) => AlertDialog(
                                                 title: Text(
                                                     '주문하기 위해 최소 하나의 메뉴가 필요합니다.'),
                                                 actions: [
@@ -78,10 +76,10 @@ class MenuBasketPage extends ConsumerWidget {
                                                             context, true);
                                                         ref
                                                             .read(
-                                                            postOrderNotifierProvider
-                                                                .notifier)
+                                                                postOrderNotifierProvider
+                                                                    .notifier)
                                                             .deleteMyDeliverOrder(
-                                                            index);
+                                                                index);
                                                       },
                                                       child: Text('삭제')),
                                                 ],
@@ -93,7 +91,7 @@ class MenuBasketPage extends ConsumerWidget {
                                     } else {
                                       ref
                                           .read(postOrderNotifierProvider
-                                          .notifier)
+                                              .notifier)
                                           .deleteMyDeliverOrder(index);
                                     }
                                   },
@@ -119,8 +117,8 @@ class MenuBasketPage extends ConsumerWidget {
                                         text: TextSpan(
                                           text: group.options.fold(
                                               '',
-                                                  (previousValue, element) =>
-                                              previousValue! +
+                                              (previousValue, element) =>
+                                                  previousValue! +
                                                   element.name),
                                           style: TextStyle(
                                               color: Colors.grey, fontSize: 12),
@@ -132,7 +130,7 @@ class MenuBasketPage extends ConsumerWidget {
                           Row(
                             children: [
                               Text(
-                                '${sumPrice[index]}원',
+                                '${postOrder.orders[index].totalPrice}원',
                                 style: TextStyle(
                                   fontSize: 14,
                                 ),
@@ -143,7 +141,7 @@ class MenuBasketPage extends ConsumerWidget {
                                     if (orderMenu.quantity > 1) {
                                       ref
                                           .read(postOrderNotifierProvider
-                                          .notifier)
+                                              .notifier)
                                           .decreaseQuantity(index);
                                     }
                                   },
@@ -153,7 +151,7 @@ class MenuBasketPage extends ConsumerWidget {
                                   onPressed: () {
                                     ref
                                         .read(
-                                        postOrderNotifierProvider.notifier)
+                                            postOrderNotifierProvider.notifier)
                                         .increaseQuantity(index);
                                   },
                                   icon: Icon(Icons.add_circle)),
@@ -258,48 +256,46 @@ class MenuBasketPage extends ConsumerWidget {
       ),
       floatingActionButton: customFloatingBottomButton(context,
           child: Text("배달톡 등록"), onPressed: () {
-            if (postOrder.canNotOrder) {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text('문제가 발생하였습니다.'),
-              ));
-            } else {
-              ref
-                  .read(postOrderRepositoryProvider)
-                  .postDelivery(postOrder)
-                  .then((value) {
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: Text('배달톡이 등록되었습니다.'),
-                ));
-                ref.invalidate(myPostListProvider);
-                ref.read(postOrderNotifierProvider.notifier).deleteMyDeliver();
-                Navigator.of(context).popUntil((route) => route.isFirst);
-              }).onError((error, stackTrace) {
-                showDialog(
-                    context: context,
-                    builder: (context) =>
-                        AlertDialog(
-                          title: Text('문제가 발생하였습니다.'),
-                          actions: [
-                            TextButton(
-                                onPressed: () {
-                                  ref
-                                      .read(postOrderNotifierProvider.notifier)
-                                      .deleteMyDeliver();
-                                  Navigator.of(context)
-                                      .popUntil((route) => route.isFirst);
-                                },
-                                child: Text('배달 취소')),
-                            TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: Text('확인')),
-
-                          ],
-                        ));
-              });
-            }
-          }),
+        if (postOrder.canNotOrder) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text('문제가 발생하였습니다.'),
+          ));
+        } else {
+          ref
+              .read(postOrderRepositoryProvider)
+              .postDelivery(postOrder)
+              .then((value) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text('배달톡이 등록되었습니다.'),
+            ));
+            ref.invalidate(myPostListProvider);
+            ref.read(postOrderNotifierProvider.notifier).deleteMyDeliver();
+            Navigator.of(context).popUntil((route) => route.isFirst);
+          }).onError((error, stackTrace) {
+            showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                      title: Text('문제가 발생하였습니다.'),
+                      actions: [
+                        TextButton(
+                            onPressed: () {
+                              ref
+                                  .read(postOrderNotifierProvider.notifier)
+                                  .deleteMyDeliver();
+                              Navigator.of(context)
+                                  .popUntil((route) => route.isFirst);
+                            },
+                            child: Text('배달 취소')),
+                        TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: Text('확인')),
+                      ],
+                    ));
+          });
+        }
+      }),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }

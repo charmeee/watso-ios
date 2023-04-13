@@ -77,21 +77,3 @@ class PostOrderNotifier extends StateNotifier<PostOrder> {
     state = tmp;
   }
 }
-
-final sumPriceByOrderProvider = Provider<List<int>>((ref) {
-  final orderMenus = ref.watch(postOrderNotifierProvider).orders;
-  List<int> sum = [];
-  for (var orderMenu in orderMenus) {
-    var orderSum = orderMenu.menu.price * orderMenu.quantity;
-    if (orderMenu.menu.groups == null) {
-      continue;
-    }
-    for (var group in orderMenu.menu.groups!) {
-      for (var option in group.options) {
-        orderSum += option.price * orderMenu.quantity;
-      }
-    }
-    sum.add(orderSum);
-  }
-  return sum;
-});

@@ -53,7 +53,6 @@ class _MenuOptionPageState extends ConsumerState<MenuOptionPage> {
   @override
   Widget build(BuildContext context) {
     OrderMenu? orderMenu = ref.watch(menuOptionNotifierProvider);
-    int sumPrice = ref.watch(sumPriceProvider);
     if (loadState == LoadState.loading && menu == null) {
       return Scaffold(
         body: const Center(child: CircularProgressIndicator()),
@@ -188,7 +187,7 @@ class _MenuOptionPageState extends ConsumerState<MenuOptionPage> {
           Padding(
             padding: const EdgeInsets.only(bottom: 32.0),
             child: customFloatingBottomButton(context,
-                child: Text('$sumPrice원 담기'), onPressed: () {
+                child: Text('${orderMenu.totalPrice}원 담기'), onPressed: () {
               ref.read(menuOptionNotifierProvider.notifier).addInMyOrder();
               Navigator.pop(context);
             }),

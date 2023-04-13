@@ -67,6 +67,18 @@ class OrderMenu {
         'quantity': quantity,
         'menu': menu.toJson(),
       };
+
+  int get totalPrice {
+    int totalPrice = menu.price * quantity;
+    if (menu.groups != null) {
+      for (MenuOptionGroup group in menu.groups!) {
+        for (MenuOption option in group.options) {
+          totalPrice += option.price * quantity;
+        }
+      }
+    }
+    return totalPrice;
+  }
 }
 
 class Menu {
