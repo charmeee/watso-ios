@@ -45,7 +45,7 @@ class PostOrder extends PostOption {
   }
 
   Map toJson() => {
-        'orders': orders.map((e) => e.toJson()).toList(),
+        'order_lines': orders.map((e) => e.toJson()).toList(),
         'store_id': store.id,
         'place': place,
         'order_time': orderTime.toIso8601String(),

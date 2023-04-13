@@ -1,7 +1,5 @@
 import 'package:sangsangtalk/Delivery/models/post_model.dart';
 
-import '../../Auth/models/user_model.dart';
-
 //get /post
 class ResponsePost extends PostOption {
   String id;
@@ -9,9 +7,10 @@ class ResponsePost extends PostOption {
   String userId;
   String nickname;
   Store store;
-  bool open;
+  bool recruitment;
   bool orderCompleted;
-  List<User> userOrders;
+  bool orderConfirmed;
+  List<String> users;
 
   ResponsePost(
       {required this.id,
@@ -23,9 +22,10 @@ class ResponsePost extends PostOption {
       required maxMember,
       required orderTime,
       required this.store,
-      required this.open,
+      required this.recruitment,
       required this.orderCompleted,
-      required this.userOrders})
+      required this.orderConfirmed,
+      required this.users})
       : super(
           place: place,
           minMember: minMember,
@@ -39,10 +39,10 @@ class ResponsePost extends PostOption {
         userId = json['user_id'].toString(),
         nickname = json['nickname'],
         store = Store.fromJson(json['store']),
-        open = json['open'],
+        recruitment = json['recruitment'],
         orderCompleted = json['order_completed'],
-        userOrders =
-            List<User>.from(json['user_orders'].map((x) => User.fromJson(x))),
+        orderConfirmed = json['order_confirmed'] ?? false,
+        users = List<String>.from(json['users'].map((x) => x.toString())),
         super.fromJson(json);
 }
 
@@ -73,27 +73,6 @@ class StoreMenus extends Store {
 
   StoreMenus.fromJson(Map<String, dynamic> json)
       : menuSection = List<MenuSection>.from(
-            json['menus'].map((x) => MenuSection.fromJson(x))),
+            json['sections'].map((x) => MenuSection.fromJson(x))),
         super.fromJson(json);
-
-  //get menu by section
-  List<Menu> getMenuBySection(String section) {
-    List<Menu> menuList = [];
-    for (MenuSection menuSection in this.menuSection) {
-      if (menuSection.section == section) {
-        menuList.add(Menu(name: menuSection.name, price: menuSection.price));
-      }
-    }
-    return menuList;
-  }
-
-  List<String> get sections {
-    List<String> sections = [];
-    for (MenuSection menuSection in this.menuSection) {
-      if (!sections.contains(menuSection.section)) {
-        sections.add(menuSection.section);
-      }
-    }
-    return sections;
-  }
 }

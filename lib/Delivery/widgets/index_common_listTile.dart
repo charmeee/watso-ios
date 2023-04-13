@@ -8,20 +8,24 @@ Widget indexCommonListTile(ResponsePost data, context) {
     leading: ClipRRect(
         borderRadius: BorderRadius.circular(8.0),
         child: Image.network(
-            'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg',
-            width: 50,
-            height: 50,
-            fit: BoxFit.cover)),
+            'https://www.momstouch.co.kr/assets/images/brand/new_logo_brand_1.png',
+            width: 60,
+            height: 60,
+            fit: BoxFit.fitWidth)),
     title: Text(data.title),
-    subtitle: Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(data.place),
-        Text('${data.userOrders.length} / ${data.maxMember} 명 '),
-      ],
+    subtitle: Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(data.place),
+          Text('${data.users.length} / ${data.maxMember} 명 '),
+        ],
+      ),
     ),
     trailing: Text(data.nickname),
+    // contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 10),
     onTap: () {
       //navigate to PostDetailPage
       Navigator.push(

@@ -31,8 +31,7 @@ class _PostDetailPageState extends ConsumerState<PostPage> {
       appBar: customAppBar(context, title: widget.postTitle),
       body: postData.when(
           data: (data) {
-            bool joined =
-                data.userOrders.any((element) => element.id == userId);
+            bool joined = data.users.any((element) => element == userId);
             return CustomScrollView(
               shrinkWrap: true,
               physics: const BouncingScrollPhysics(),
@@ -67,12 +66,12 @@ class _PostDetailPageState extends ConsumerState<PostPage> {
                               icon: Icons.people,
                               title: "현재 모인 인원",
                               content:
-                                  "${data.userOrders.length} 명 (최소 ${data.minMember}명 필요)"),
+                                  "${data.users.length} 명 (최소 ${data.minMember}명 필요)"),
                           _informationTile(
                               icon: Icons.attach_money,
                               title: "예상 배달비",
                               content:
-                                  "${data.store.fee ~/ data.userOrders.length}원"),
+                                  "${data.store.fee ~/ data.users.length}원"),
                           if (joined)
                             Padding(
                               padding: const EdgeInsets.symmetric(

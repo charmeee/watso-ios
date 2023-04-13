@@ -40,6 +40,7 @@ class _MenuListPageState extends ConsumerState<MenuListPage> {
         .then((value) {
       setState(() {
         storeMenus = value;
+        loadState = LoadState.success;
       });
     }).onError((error, stackTrace) {
       setState(() {
@@ -60,103 +61,112 @@ class _MenuListPageState extends ConsumerState<MenuListPage> {
         body: const Center(child: Text('에러')),
       );
     }
-    List<String> sections = storeMenus!.sections;
     List<OrderMenu> orderMenus = ref.watch(postOrderNotifierProvider).orders;
     return Scaffold(
       appBar: customAppBar(context, title: storeMenus!.name),
-      body: CustomScrollView(
-        shrinkWrap: true,
-        physics: const BouncingScrollPhysics(),
-        slivers: [
-          SliverToBoxAdapter(
-            child: Container(
-              padding: const EdgeInsets.only(left: 16.0, bottom: 8.0),
-              height: 80,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Text('예상 배달비 : ${storeMenus!.fee}원',
-                      style:
-                          const TextStyle(fontSize: 16, color: Colors.black54)),
-                  Text('최소 배달 금액 : ${storeMenus!.minOrder}원',
-                      style:
-                          const TextStyle(fontSize: 16, color: Colors.black54)),
-                ],
-              ),
-            ),
-          ),
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                final menuList = storeMenus!.getMenuBySection(sections[index]);
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16.0, vertical: 8.0),
-                      color: Colors.grey[200],
-                      child: Text(sections[index]),
+      body: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Expanded(
+            child: CustomScrollView(
+              shrinkWrap: true,
+              physics: const BouncingScrollPhysics(),
+              slivers: [
+                SliverToBoxAdapter(
+                  child: Container(
+                    padding: const EdgeInsets.only(left: 16.0, bottom: 8.0),
+                    height: 80,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Text('예상 배달비 : ${storeMenus!.fee}원',
+                            style: const TextStyle(
+                                fontSize: 16, color: Colors.black54)),
+                        Text('최소 배달 금액 : ${storeMenus!.minOrder}원',
+                            style: const TextStyle(
+                                fontSize: 16, color: Colors.black54)),
+                      ],
                     ),
-                    ListView.separated(
-                      padding: EdgeInsets.zero,
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: menuList.length,
-                      itemBuilder: (context, index) {
-                        return ListTile(
-                          title: Text(
-                            menuList[index].name,
-                            style: const TextStyle(
-                              fontSize: 18,
-                            ),
+                  ),
+                ),
+                SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, indexOfSection) {
+                      List<MenuSection> menuSection = storeMenus!.menuSection;
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16.0, vertical: 8.0),
+                            color: Colors.grey[200],
+                            child: Text(menuSection[indexOfSection].section),
                           ),
-                          trailing: Text(
-                            '${menuList[index].price}원',
-                            style: const TextStyle(
-                              fontSize: 18,
-                            ),
-                          ),
-                          onTap: () {
-                            //navigate to menu option page
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => MenuOptionPage(
-                                  storeId: widget.storeId,
-                                  menuName: menuList[index].name,
+                          ListView.separated(
+                            padding: EdgeInsets.zero,
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: menuSection[indexOfSection].menus.length,
+                            itemBuilder: (context, indexOfMenu) {
+                              Menu menu = menuSection[indexOfSection]
+                                  .menus[indexOfMenu];
+                              return ListTile(
+                                title: Text(
+                                  menu.name,
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                  ),
                                 ),
-                              ),
-                            );
-                          },
-                        );
-                      },
-                      separatorBuilder: (context, index) {
-                        return const Divider(height: 2);
-                      },
-                    ),
-                  ],
-                );
-              },
-              childCount: sections.length,
+                                trailing: Text(
+                                  '${menu.price}원',
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                  ),
+                                ),
+                                onTap: () {
+                                  //navigate to menu option page
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => MenuOptionPage(
+                                        storeId: widget.storeId,
+                                        menuId: menu.id,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                            separatorBuilder: (context, index) {
+                              return const Divider(height: 2);
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                    childCount: storeMenus!.menuSection.length,
+                  ),
+                ),
+              ],
             ),
           ),
+          orderMenus.isNotEmpty
+              ? Padding(
+                  padding: const EdgeInsets.only(bottom: 32.0),
+                  child: customFloatingBottomButton(
+                    context,
+                    child: floatingButtonLabel((orderMenus.fold(
+                        0,
+                        (previousValue, element) =>
+                            previousValue + element.quantity)).toString()),
+                    onPressed: navigateToBasket,
+                  ),
+                )
+              : const SizedBox(height: 32),
         ],
       ),
-      floatingActionButton: orderMenus.isNotEmpty
-          ? customFloatingBottomButton(
-              context,
-              child: floatingButtonLabel((orderMenus.fold(
-                  0,
-                  (previousValue, element) =>
-                      previousValue + element.quantity)).toString()),
-              onPressed: navigateToBasket,
-            )
-          : null,
-      floatingActionButtonLocation: orderMenus.isNotEmpty
-          ? FloatingActionButtonLocation.centerFloat
-          : null,
     );
   }
 

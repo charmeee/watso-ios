@@ -16,11 +16,11 @@ class MenuOptionNotifier extends StateNotifier<OrderMenu?> {
 
   final Ref ref;
 
-  Future<Menu> setMenu(storeId, menuName) async {
+  Future<Menu> setMenu(storeId, menuId) async {
     try {
       final Menu value = await ref
           .read(storeRepositoryProvider)
-          .getDetailMenu(storeId, menuName);
+          .getDetailMenu(storeId, menuId);
 
       state = OrderMenu.fromMenu(quantity: 1, menu: Menu.clone(value));
       if (state!.menu.groups != null && state!.menu.groups!.isNotEmpty) {
@@ -101,7 +101,7 @@ final sumPriceProvider = Provider<int>((ref) {
   sum += orderMenu.menu.price * orderMenu.quantity;
   for (var element in orderMenu.menu.groups!) {
     for (var option in element.options) {
-      sum += option.price;
+      sum += option.price * orderMenu.quantity;
     }
   }
   return sum;

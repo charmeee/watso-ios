@@ -19,10 +19,10 @@ class Store {
         fee = 0;
 
   Store.fromJson(Map<String, dynamic> json)
-      : id = json['_id'],
-        name = json['name'],
-        minOrder = json['min_order'],
-        fee = json['fee'];
+      : id = json['_id'].toString(),
+        name = json['name'].toString(),
+        minOrder = int.tryParse(json['min_order'].toString()) ?? 0,
+        fee = int.tryParse(json['fee'].toString()) ?? 0;
 }
 
 class PostOption {
@@ -70,15 +70,18 @@ class OrderMenu {
 }
 
 class Menu {
+  String id;
   String name;
   int price;
   List<MenuOptionGroup>? groups;
 
-  Menu({required this.name, required this.price, this.groups});
+  Menu(
+      {required this.id, required this.name, required this.price, this.groups});
 
   Menu.fromJson(Map<String, dynamic> json)
-      : name = json['name'],
-        price = json['price'],
+      : id = json['_id'].toString(),
+        name = json['name'].toString(),
+        price = int.tryParse(json['price'].toString()) ?? 0,
         groups = json['groups'] != null
             ? List<MenuOptionGroup>.from(
                 json['groups'].map((x) => MenuOptionGroup.fromJson(x)))
@@ -86,6 +89,7 @@ class Menu {
 
   factory Menu.clone(Menu menu) {
     return Menu(
+      id: menu.id,
       name: menu.name,
       price: menu.price,
       groups: menu.groups != null
@@ -95,24 +99,23 @@ class Menu {
   }
 
   Map toJson() => {
+        '_id': id,
+        'price': price,
         'name': name,
         'groups':
             groups != null ? groups!.map((e) => e.toJson()).toList() : null,
       };
 }
 
-class MenuSection extends Menu {
+class MenuSection {
   String section;
+  List<Menu> menus;
 
-  MenuSection({
-    required this.section,
-    required String name,
-    required int price,
-  }) : super(name: name, price: price);
+  MenuSection({required this.section, required this.menus});
 
   MenuSection.fromJson(Map<String, dynamic> json)
-      : section = json['section'],
-        super.fromJson(json);
+      : section = json['section_name'].toString(),
+        menus = List<Menu>.from(json['menus'].map((x) => Menu.fromJson(x)));
 }
 
 class MenuOptionGroup {
@@ -149,7 +152,10 @@ class MenuOptionGroup {
 
   Map toJson() => {
         '_id': id,
-        'options': options.map((e) => e.id).toList(),
+        'name': name,
+        'min_order_quantity': minOptionNum,
+        'max_order_quantity': maxOptionNum,
+        'options': options.map((e) => e.toJson()).toList(),
       };
 }
 
@@ -176,4 +182,10 @@ class MenuOption {
       price: menuOption.price,
     );
   }
+
+  Map toJson() => {
+        '_id': id,
+        'name': name,
+        'price': price,
+      };
 }
