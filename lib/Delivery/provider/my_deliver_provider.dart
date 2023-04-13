@@ -88,7 +88,7 @@ final sumPriceByOrderProvider = Provider<List<int>>((ref) {
     }
     for (var group in orderMenu.menu.groups!) {
       for (var option in group.options) {
-        orderSum += option.price;
+        orderSum += option.price * orderMenu.quantity;
       }
     }
     sum.add(orderSum);
