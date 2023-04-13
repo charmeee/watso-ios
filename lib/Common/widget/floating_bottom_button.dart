@@ -6,7 +6,7 @@ Widget customFloatingBottomButton(
   required VoidCallback onPressed,
 }) {
   return Padding(
-    padding: const EdgeInsets.all(8.0),
+    padding: const EdgeInsets.all(4.0),
     child: ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
