@@ -35,7 +35,7 @@ class OrderRepository {
   Future<List<PostDetailOrder>> getPostOrder(String postId) async {
     try {
       final response = await _dio.get('$staticUrl/$postId');
-      return (response.data as List)
+      return (response.data['orders'] as List)
           .map((e) => PostDetailOrder.fromJson(e))
           .toList();
     } on DioError catch (e) {
