@@ -81,7 +81,18 @@ class _PostDetailPageState extends ConsumerState<PostPage> {
                                 children: [
                                   Expanded(
                                     child: ElevatedButton(
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    PostOrderDetailPage(
+                                                      postId: widget.postId,
+                                                      store: data.store,
+                                                      orderNum:
+                                                          data.users.length,
+                                                    )));
+                                      },
                                       child: Text("내 배달 상세"),
                                       style: ElevatedButton.styleFrom(
                                           shape: const RoundedRectangleBorder(
