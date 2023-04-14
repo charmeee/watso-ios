@@ -78,3 +78,18 @@ class StoreMenus extends Store {
             json['sections'].map((x) => MenuSection.fromJson(x))),
         super.fromJson(json);
 }
+
+class PostDetailOrder extends User {
+  List<OrderMenu> orderLines;
+
+  PostDetailOrder({required this.orderLines, required User user})
+      : super(
+          id: user.id,
+          nickname: user.nickname,
+        );
+
+  PostDetailOrder.fromJson(Map<String, dynamic> json)
+      : orderLines = List<OrderMenu>.from(
+            json['order_lines'].map((x) => OrderMenu.fromJson(x))),
+        super.fromJson(json);
+}
