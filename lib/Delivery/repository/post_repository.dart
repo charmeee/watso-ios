@@ -7,18 +7,18 @@ import '../models/post_model.dart';
 import '../models/post_request_model.dart';
 import '../models/post_response_model.dart';
 
-final postOrderRepositoryProvider = Provider<PostOrderRepository>(
+final postRepositoryProvider = Provider<PostRepository>(
   (ref) {
     final dio = ref.watch(dioProvider);
 
     const staticUrl = '/api/delivery/post';
 
-    return PostOrderRepository(dio, staticUrl);
+    return PostRepository(dio, staticUrl);
   },
 );
 
-class PostOrderRepository {
-  PostOrderRepository(this._dio, this.staticUrl);
+class PostRepository {
+  PostRepository(this._dio, this.staticUrl);
 
   final String staticUrl;
   final Dio _dio;

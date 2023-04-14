@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../Common/commonType.dart';
 import '../models/post_model.dart';
 import '../models/post_response_model.dart';
-import '../repository/postOrder_repository.dart';
+import '../repository/post_repository.dart';
 import 'index_common_listTile.dart';
 
 class PostList extends ConsumerStatefulWidget {
@@ -28,7 +28,7 @@ class _PostListState extends ConsumerState<PostList> {
 
   getPostData() {
     ref
-        .read(postOrderRepositoryProvider)
+        .read(postRepositoryProvider)
         .getDeliveryList(PostFilter.joinable)
         .then((value) {
       setState(() {

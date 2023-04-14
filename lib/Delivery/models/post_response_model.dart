@@ -1,5 +1,7 @@
 import 'package:sangsangtalk/Delivery/models/post_model.dart';
 
+import '../../Auth/models/user_model.dart';
+
 //get /post
 class ResponsePost extends PostOption {
   String id;

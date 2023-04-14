@@ -1,16 +1,16 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sangsangtalk/Delivery/repository/postOrder_repository.dart';
+import 'package:sangsangtalk/Delivery/repository/post_repository.dart';
 
 import '../models/post_model.dart';
 import '../models/post_response_model.dart';
 
 final myPostListProvider = FutureProvider<List<ResponsePost>>((ref) async {
   return await ref
-      .read(postOrderRepositoryProvider)
+      .read(postRepositoryProvider)
       .getDeliveryList(PostFilter.joined);
 });
 
 final postDetailProvider = FutureProvider.autoDispose
     .family<ResponsePost, String>((ref, postId) async {
-  return await ref.read(postOrderRepositoryProvider).getPostDetail(postId);
+  return await ref.read(postRepositoryProvider).getPostDetail(postId);
 });

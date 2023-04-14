@@ -7,7 +7,7 @@ import '../models/post_model.dart';
 import '../models/post_request_model.dart';
 import '../provider/my_deliver_provider.dart';
 import '../provider/post_list_provider.dart';
-import '../repository/postOrder_repository.dart';
+import '../repository/post_repository.dart';
 
 class MenuBasketPage extends ConsumerWidget {
   const MenuBasketPage({
@@ -262,7 +262,7 @@ class MenuBasketPage extends ConsumerWidget {
           ));
         } else {
           ref
-              .read(postOrderRepositoryProvider)
+              .read(postRepositoryProvider)
               .postDelivery(postOrder)
               .then((value) {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
