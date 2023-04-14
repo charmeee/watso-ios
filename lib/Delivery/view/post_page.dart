@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:sangsangtalk/Common/widget/appbar.dart';
-import 'package:sangsangtalk/Delivery/view/post_order_detail_page.dart';
 
 import '../../Auth/auth_provider.dart';
 import '../models/post_response_model.dart';
 import '../provider/post_list_provider.dart';
+import 'post_order_detail_page.dart';
+import 'post_order_me_detail_page.dart';
 
 class PostPage extends ConsumerStatefulWidget {
   const PostPage({
@@ -86,7 +87,7 @@ class _PostDetailPageState extends ConsumerState<PostPage> {
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) =>
-                                                    PostOrderDetailPage(
+                                                    MyPostOrderDetailPage(
                                                       postId: widget.postId,
                                                       store: data.store,
                                                       orderNum:
@@ -108,7 +109,15 @@ class _PostDetailPageState extends ConsumerState<PostPage> {
                                   ),
                                   Expanded(
                                     child: ElevatedButton(
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    PostOrderDetailPage(
+                                                        postId:
+                                                            widget.postId)));
+                                      },
                                       child: Text("전체 배달"),
                                       style: ElevatedButton.styleFrom(
                                           shape: const RoundedRectangleBorder(
