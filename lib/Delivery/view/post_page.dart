@@ -9,7 +9,7 @@ import '../provider/post_list_provider.dart';
 import 'post_order_detail_page.dart';
 import 'post_order_me_detail_page.dart';
 
-class PostPage extends ConsumerStatefulWidget {
+class PostPage extends ConsumerWidget {
   const PostPage({
     Key? key,
     required this.postId,
@@ -19,18 +19,12 @@ class PostPage extends ConsumerStatefulWidget {
   final String postTitle;
 
   @override
-  ConsumerState createState() => _PostDetailPageState();
-}
-
-class _PostDetailPageState extends ConsumerState<PostPage> {
-  @override
-  Widget build(BuildContext context) {
-    AsyncValue<ResponsePost> postData =
-        ref.watch(postDetailProvider(widget.postId));
+  Widget build(BuildContext context, WidgetRef ref) {
+    AsyncValue<ResponsePost> postData = ref.watch(postDetailProvider(postId));
     String userId = ref.watch(userNotifierProvider)!.id;
 
     return Scaffold(
-      appBar: customAppBar(context, title: widget.postTitle),
+      appBar: customAppBar(context, title: postTitle),
       body: postData.when(
           data: (data) {
             bool joined = data.users.any((element) => element == userId);
