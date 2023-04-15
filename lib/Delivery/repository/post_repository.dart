@@ -59,4 +59,20 @@ class PostRepository {
       throw DataParsingException(e.toString());
     }
   }
+
+  Future updatePostStatus(String postId, bool recruitment, bool orderCompleted,
+      bool orderConfirmed) async {
+    try {
+      await _dio.patch('$staticUrl/$postId/status', data: {
+        'recruitment': recruitment,
+        'order_completed': orderCompleted,
+        'order_confirmed': orderConfirmed,
+      });
+      return true;
+    } on DioError catch (e) {
+      throw ServerException(e);
+    } catch (e) {
+      throw DataParsingException(e.toString());
+    }
+  }
 }
