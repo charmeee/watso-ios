@@ -6,6 +6,8 @@ import 'package:sangsangtalk/Common/widget/appbar.dart';
 import '../../Auth/auth_provider.dart';
 import '../models/post_response_model.dart';
 import '../provider/post_list_provider.dart';
+import '../repository/post_repository.dart';
+import 'menu_list_page.dart';
 import 'post_order_detail_page.dart';
 import 'post_order_me_detail_page.dart';
 
@@ -28,6 +30,7 @@ class PostPage extends ConsumerWidget {
       body: postData.when(
           data: (data) {
             bool joined = data.users.any((element) => element == userId);
+            bool isOwner = data.userId == userId;
             return CustomScrollView(
               shrinkWrap: true,
               physics: const BouncingScrollPhysics(),
@@ -82,7 +85,7 @@ class PostPage extends ConsumerWidget {
                                             MaterialPageRoute(
                                                 builder: (context) =>
                                                     MyPostOrderDetailPage(
-                                                      postId: widget.postId,
+                                                      postId: postId,
                                                       store: data.store,
                                                       orderNum:
                                                           data.users.length,
@@ -109,8 +112,7 @@ class PostPage extends ConsumerWidget {
                                             MaterialPageRoute(
                                                 builder: (context) =>
                                                     PostOrderDetailPage(
-                                                        postId:
-                                                            widget.postId)));
+                                                        postId: postId)));
                                       },
                                       child: Text("전체 배달"),
                                       style: ElevatedButton.styleFrom(
@@ -125,24 +127,9 @@ class PostPage extends ConsumerWidget {
                                 ],
                               ),
                             ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 8.0, vertical: 2.0),
-                            child: Padding(
-                              padding: const EdgeInsets.only(bottom: 6.0),
-                              child: ElevatedButton(
-                                onPressed: () {},
-                                child: Text(joined ? "배달 확정" : "배달 참가"),
-                                style: ElevatedButton.styleFrom(
-                                    shape: const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(10.0)),
-                                    ),
-                                    minimumSize: const Size.fromHeight(40),
-                                    backgroundColor: Colors.indigo),
-                              ),
-                            ),
-                          ),
+                          if (joined && isOwner) _statusButton(data, ref),
+                          if (!joined && !isOwner)
+                            _joinButton(data.store.id, context),
                         ]),
                   ),
                 )),
@@ -383,5 +370,81 @@ class PostPage extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  Widget _statusButton(ResponsePost data, WidgetRef ref) {
+    String nextStatusText = "";
+    data.recruitment ? nextStatusText = "주문 확정" : nextStatusText = "배달 참가";
+
+    if (data.recruitment && data.orderConfirmed) {
+      nextStatusText = "배달 완료";
+    }
+    if (data.orderCompleted) {
+      return const SizedBox(
+        height: 0,
+      );
+    }
+
+    onButtonClick() {
+      var recruitment = data.recruitment;
+      var orderConfirmed = data.orderConfirmed;
+      var orderCompleted = data.orderCompleted;
+      if (nextStatusText == "배달 참가") {
+        recruitment = true;
+      }
+      if (nextStatusText == "주문 확정") {
+        orderConfirmed = true;
+      }
+      if (nextStatusText == "배달 완료") {
+        orderCompleted = true;
+      }
+      ref.read(postRepositoryProvider).updatePostStatus(
+          data.id, recruitment, orderConfirmed, orderCompleted);
+    }
+
+    return (Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 6.0),
+        child: ElevatedButton(
+          onPressed: onButtonClick,
+          child: Text(data.recruitment
+              ? (data.orderCompleted ? "배달 완료" : "주문 확정")
+              : "배달 참가"),
+          style: ElevatedButton.styleFrom(
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10.0)),
+              ),
+              minimumSize: const Size.fromHeight(40),
+              backgroundColor: Colors.indigo),
+        ),
+      ),
+    ));
+  }
+
+  Widget _joinButton(String storeId, context) {
+    onButtonClick() {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => MenuListPage(storeId: storeId)),
+      );
+    }
+
+    return (Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 6.0),
+        child: ElevatedButton(
+          onPressed: onButtonClick,
+          child: Text("배달 참가"),
+          style: ElevatedButton.styleFrom(
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10.0)),
+              ),
+              minimumSize: const Size.fromHeight(40),
+              backgroundColor: Colors.indigo),
+        ),
+      ),
+    ));
   }
 }
