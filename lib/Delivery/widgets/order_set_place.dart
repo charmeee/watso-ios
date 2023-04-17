@@ -10,7 +10,7 @@ class PlaceSelector extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    String place = ref.watch(postOrderNotifierProvider).place;
+    String place = ref.watch(myDeliveryNotifierProvider).place;
     return Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -26,7 +26,7 @@ class PlaceSelector extends ConsumerWidget {
                 groupValue: place,
                 onChanged: (value) {
                   ref
-                      .read(postOrderNotifierProvider.notifier)
+                      .read(myDeliveryNotifierProvider.notifier)
                       .setMyDeliverOption(place: value.toString());
                 },
               ),
@@ -36,7 +36,7 @@ class PlaceSelector extends ConsumerWidget {
                 groupValue: place,
                 onChanged: (value) {
                   ref
-                      .read(postOrderNotifierProvider.notifier)
+                      .read(myDeliveryNotifierProvider.notifier)
                       .setMyDeliverOption(place: value.toString());
                 },
               ),

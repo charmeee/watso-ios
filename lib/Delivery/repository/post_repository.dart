@@ -40,7 +40,8 @@ class PostRepository {
 
   Future postDelivery(PostOrder postOrder) async {
     try {
-      final response = await _dio.post(staticUrl, data: postOrder.toJson());
+      final response =
+          await _dio.post(staticUrl, data: postOrder.newPostToJson());
       return response.data;
     } on DioError catch (e) {
       throw ServerException(e);

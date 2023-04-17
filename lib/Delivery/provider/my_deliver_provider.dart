@@ -5,13 +5,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/post_model.dart';
 import '../models/post_request_model.dart';
 
-final postOrderNotifierProvider =
-    StateNotifierProvider<PostOrderNotifier, PostOrder>((ref) {
-  return PostOrderNotifier(ref);
+final myDeliveryNotifierProvider =
+StateNotifierProvider<MyDeliveryNotifier, PostOrder>((ref) {
+  return MyDeliveryNotifier(ref);
 });
 
-class PostOrderNotifier extends StateNotifier<PostOrder> {
-  PostOrderNotifier(this.ref) : super(PostOrder.init());
+class MyDeliveryNotifier extends StateNotifier<PostOrder> {
+  MyDeliveryNotifier(this.ref) : super(PostOrder.init());
 
   final Ref ref;
 

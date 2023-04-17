@@ -36,7 +36,7 @@ class _StoreSelectorState extends ConsumerState<StoreSelector> {
 
   @override
   Widget build(BuildContext context) {
-    String myStore = ref.watch(postOrderNotifierProvider).store.id;
+    String myStore = ref.watch(myDeliveryNotifierProvider).store.id;
     return Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -90,7 +90,7 @@ class _StoreSelectorState extends ConsumerState<StoreSelector> {
                   ),
                   onTap: () {
                     ref
-                        .read(postOrderNotifierProvider.notifier)
+                        .read(myDeliveryNotifierProvider.notifier)
                         .setMyDeliverStore(_storeList[index]);
                     setState(() {
                       nowStoreName = _storeList[index].name;

@@ -44,11 +44,11 @@ class _RecuitNumSelectorState extends ConsumerState<RecuitNumSelector> {
             onSaved: (value) {
               if (minChecked && value!.isNotEmpty) {
                 ref
-                    .read(postOrderNotifierProvider.notifier)
+                    .read(myDeliveryNotifierProvider.notifier)
                     .setMyDeliverOption(minMember: int.parse(value));
               } else if (!minChecked) {
                 ref
-                    .read(postOrderNotifierProvider.notifier)
+                    .read(myDeliveryNotifierProvider.notifier)
                     .setMyDeliverOption(minMember: 1);
               }
             },
@@ -71,11 +71,11 @@ class _RecuitNumSelectorState extends ConsumerState<RecuitNumSelector> {
                   onSaved: (value) {
                     if (maxChecked && value!.isNotEmpty) {
                       ref
-                          .read(postOrderNotifierProvider.notifier)
+                          .read(myDeliveryNotifierProvider.notifier)
                           .setMyDeliverOption(maxMember: int.parse(value));
                     } else if (!maxChecked) {
                       ref
-                          .read(postOrderNotifierProvider.notifier)
+                          .read(myDeliveryNotifierProvider.notifier)
                           .setMyDeliverOption(maxMember: 999);
                     }
                   })),

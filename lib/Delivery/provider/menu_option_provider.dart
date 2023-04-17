@@ -87,7 +87,7 @@ class MenuOptionNotifier extends StateNotifier<OrderMenu?> {
 
   addInMyOrder() {
     final tmp = OrderMenu.clone(state!);
-    ref.read(postOrderNotifierProvider.notifier).addMyDeliverOrder(tmp);
+    ref.read(myDeliveryNotifierProvider.notifier).addMyDeliverOrder(tmp);
     state = null;
   }
 }

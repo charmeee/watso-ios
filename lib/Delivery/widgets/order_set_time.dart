@@ -46,7 +46,7 @@ class _TimeSelectorState extends ConsumerState<TimeSelector> {
                   onDateTimeChanged: (DateTime newDateTime) {
                     setState(() => _dateTime = newDateTime);
                     ref
-                        .read(postOrderNotifierProvider.notifier)
+                        .read(myDeliveryNotifierProvider.notifier)
                         .setMyDeliverOption(orderTime: newDateTime);
                   },
                 ),
@@ -56,7 +56,7 @@ class _TimeSelectorState extends ConsumerState<TimeSelector> {
 
   @override
   Widget build(BuildContext context) {
-    final orderTime = ref.watch(postOrderNotifierProvider).orderTime;
+    final orderTime = ref.watch(myDeliveryNotifierProvider).orderTime;
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,

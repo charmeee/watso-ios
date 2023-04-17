@@ -16,7 +16,7 @@ class MenuBasketPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    PostOrder postOrder = ref.watch(postOrderNotifierProvider);
+    PostOrder postOrder = ref.watch(myDeliveryNotifierProvider);
     int totalSumPrice =
         postOrder.orders.fold(0, (pre, element) => pre + element.totalPrice);
     int expectDeliverFee = postOrder.store.fee ~/ postOrder.minMember;
