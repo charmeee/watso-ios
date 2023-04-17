@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../Common/dio.dart';
 import '../../Common/failures.dart';
+import '../models/post_model.dart';
 import '../models/post_response_model.dart';
 
 final orderRepositoryProvider = Provider<OrderRepository>(
@@ -38,6 +39,17 @@ class OrderRepository {
       return (response.data['orders'] as List)
           .map((e) => PostDetailOrder.fromJson(e))
           .toList();
+    } on DioError catch (e) {
+      throw ServerException(e);
+    } catch (e) {
+      throw DataParsingException(e.toString());
+    }
+  }
+
+  Future postOrder(String postId, List<OrderMenu> orders) async {
+    try {
+      await _dio.post('$staticUrl/$postId',
+          data: {'order_lines': orders.map((e) => e.toJson()).toList()});
     } on DioError catch (e) {
       throw ServerException(e);
     } catch (e) {
