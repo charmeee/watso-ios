@@ -4,6 +4,7 @@ import 'package:sangsangtalk/Delivery/models/post_model.dart';
 class PostOrder extends PostOption {
   List<OrderMenu> orders;
   Store store;
+  String? postId;
 
   PostOrder(
       {required this.orders,
@@ -11,7 +12,8 @@ class PostOrder extends PostOption {
       required String place,
       required DateTime orderTime,
       required int minMember,
-      required int maxMember})
+      required int maxMember,
+      this.postId})
       : super(
             place: place,
             orderTime: orderTime,
@@ -41,10 +43,11 @@ class PostOrder extends PostOption {
         place: postOrder.place,
         orderTime: postOrder.orderTime,
         minMember: postOrder.minMember,
-        maxMember: postOrder.maxMember);
+        maxMember: postOrder.maxMember,
+        postId: postOrder.postId);
   }
 
-  Map toJson() => {
+  Map newPostToJson() => {
         'order_lines': orders.map((e) => e.toJson()).toList(),
         'store_id': store.id,
         'place': place,
@@ -60,10 +63,12 @@ class PostOrder extends PostOption {
   bool get isOrderTimeLogical =>
       orderTime.isAfter(DateTime.now().add(Duration(minutes: 10)));
 
-  bool get canNotOrder =>
+  bool get disableToPost =>
       orders.isEmpty ||
       store.id.isEmpty ||
       place.isEmpty ||
       orderTime.isBefore(DateTime.now()) ||
       minMember > maxMember;
+
+  bool get checkOrderTime => orderTime.isBefore(DateTime.now());
 }
