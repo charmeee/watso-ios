@@ -6,6 +6,7 @@ import 'package:sangsangtalk/Common/widget/appbar.dart';
 
 import '../../Common/widget/floating_bottom_button.dart';
 import '../models/post_model.dart';
+import '../models/post_request_model.dart';
 import '../models/post_response_model.dart';
 import '../provider/my_deliver_provider.dart';
 import '../repository/store_repository.dart';
@@ -51,17 +52,21 @@ class _MenuListPageState extends ConsumerState<MenuListPage> {
 
   @override
   Widget build(BuildContext context) {
+    PostOrder myOrder = ref.watch(myDeliveryNotifierProvider);
     if (loadState == LoadState.loading && storeMenus == null) {
       return Scaffold(
         body: const Center(child: CircularProgressIndicator()),
       );
     }
-    if (storeMenus == null || loadState == LoadState.error) {
+    if (storeMenus == null ||
+        loadState == LoadState.error ||
+        (loadState != LoadState.loading &&
+            myOrder.store.id != widget.storeId)) {
       return Scaffold(
         body: const Center(child: Text('에러')),
       );
     }
-    List<OrderMenu> orderMenus = ref.watch(postOrderNotifierProvider).orders;
+    List<OrderMenu> orderMenus = myOrder.orders;
     return Scaffold(
       appBar: customAppBar(context, title: storeMenus!.name),
       body: Column(
