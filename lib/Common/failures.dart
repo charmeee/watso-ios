@@ -29,7 +29,7 @@ class _ServerBadResponseException implements Exception {
   String toString() {
     if (error.response?.statusCode == null) return '서버 에러가 발생하였습니다.';
     if (error.response!.statusCode! >= 400) {
-      return '잘못된 접근입니다.';
+      return '에러가 발생하였습니다..';
     } else {
       return '서버 에러가 발생하였습니다.';
     }
