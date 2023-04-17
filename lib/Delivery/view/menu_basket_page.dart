@@ -252,48 +252,9 @@ class MenuBasketPage extends ConsumerWidget {
           )
         ],
       ),
-      floatingActionButton: customFloatingBottomButton(context,
-          child: Text("배달톡 등록"), onPressed: () {
-        if (postOrder.canNotOrder) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text('문제가 발생하였습니다.'),
-          ));
-        } else {
-          ref
-              .read(postRepositoryProvider)
-              .postDelivery(postOrder)
-              .then((value) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text('배달톡이 등록되었습니다.'),
-            ));
-            ref.invalidate(myPostListProvider);
-            ref.read(postOrderNotifierProvider.notifier).deleteMyDeliver();
-            Navigator.of(context).popUntil((route) => route.isFirst);
-          }).onError((error, stackTrace) {
-            showDialog(
-                context: context,
-                builder: (context) => AlertDialog(
-                      title: Text('문제가 발생하였습니다.'),
-                      actions: [
-                        TextButton(
-                            onPressed: () {
-                              ref
-                                  .read(postOrderNotifierProvider.notifier)
-                                  .deleteMyDeliver();
-                              Navigator.of(context)
-                                  .popUntil((route) => route.isFirst);
-                            },
-                            child: Text('배달 취소')),
-                        TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: Text('확인')),
-                      ],
-                    ));
-          });
-        }
-      }),
+      floatingActionButton: BasketSubmitButton(
+        postOrder: postOrder,
+      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
