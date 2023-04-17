@@ -19,15 +19,19 @@ class MyDeliveryNotifier extends StateNotifier<PostOrder> {
     state = PostOrder.init();
   }
 
-  setMyDeliverOption(
-      {String? place, DateTime? orderTime, int? minMember, int? maxMember}) {
+  setMyDeliverOption({String? place,
+    DateTime? orderTime,
+    int? minMember,
+    int? maxMember,
+    String? postId}) {
     state = PostOrder(
         orders: state.orders,
         store: state.store,
         place: place ?? state.place,
         orderTime: orderTime ?? state.orderTime,
         minMember: minMember ?? state.minMember,
-        maxMember: maxMember ?? state.maxMember);
+        maxMember: maxMember ?? state.maxMember,
+        postId: postId);
   }
 
   setMyDeliverStore(Store store) {
@@ -38,6 +42,7 @@ class MyDeliveryNotifier extends StateNotifier<PostOrder> {
       orderTime: state.orderTime,
       minMember: state.minMember,
       maxMember: state.maxMember,
+      postId: state.postId,
     );
   }
 
@@ -49,7 +54,9 @@ class MyDeliveryNotifier extends StateNotifier<PostOrder> {
       orderTime: state.orderTime,
       minMember: state.minMember,
       maxMember: state.maxMember,
+      postId: state.postId,
     );
+
     log('addMyDeliverOrder: ${state.orders.length}');
   }
 
@@ -61,6 +68,7 @@ class MyDeliveryNotifier extends StateNotifier<PostOrder> {
       orderTime: state.orderTime,
       minMember: state.minMember,
       maxMember: state.maxMember,
+      postId: state.postId,
     );
     log('deleteMyDeliverOrder: ${state.orders.length}');
   }
