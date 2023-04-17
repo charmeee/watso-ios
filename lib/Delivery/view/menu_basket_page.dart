@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sangsangtalk/Common/widget/appbar.dart';
-import 'package:sangsangtalk/Common/widget/floating_bottom_button.dart';
 
 import '../models/post_model.dart';
 import '../models/post_request_model.dart';
 import '../provider/my_deliver_provider.dart';
-import '../provider/post_list_provider.dart';
-import '../repository/post_repository.dart';
+import '../widgets/basket_submit_button.dart';
 
 class MenuBasketPage extends ConsumerWidget {
   const MenuBasketPage({
@@ -76,7 +74,7 @@ class MenuBasketPage extends ConsumerWidget {
                                                             context, true);
                                                         ref
                                                             .read(
-                                                                postOrderNotifierProvider
+                                                                myDeliveryNotifierProvider
                                                                     .notifier)
                                                             .deleteMyDeliverOrder(
                                                                 index);
@@ -90,7 +88,7 @@ class MenuBasketPage extends ConsumerWidget {
                                       });
                                     } else {
                                       ref
-                                          .read(postOrderNotifierProvider
+                                          .read(myDeliveryNotifierProvider
                                               .notifier)
                                           .deleteMyDeliverOrder(index);
                                     }
@@ -140,7 +138,7 @@ class MenuBasketPage extends ConsumerWidget {
                                   onPressed: () {
                                     if (orderMenu.quantity > 1) {
                                       ref
-                                          .read(postOrderNotifierProvider
+                                          .read(myDeliveryNotifierProvider
                                               .notifier)
                                           .decreaseQuantity(index);
                                     }
@@ -151,7 +149,7 @@ class MenuBasketPage extends ConsumerWidget {
                                   onPressed: () {
                                     ref
                                         .read(
-                                            postOrderNotifierProvider.notifier)
+                                            myDeliveryNotifierProvider.notifier)
                                         .increaseQuantity(index);
                                   },
                                   icon: Icon(Icons.add_circle)),

@@ -58,7 +58,7 @@ class OrderSetPage extends ConsumerWidget {
               child: ElevatedButton(
                 onPressed: () {
                   _recruitFormKey.currentState!.save();
-                  final postState = ref.read(postOrderNotifierProvider);
+                  final postState = ref.read(myDeliveryNotifierProvider);
                   log(postState.minMember.toString());
                   log(postState.maxMember.toString());
                   log(postState.store.fee.toString());
