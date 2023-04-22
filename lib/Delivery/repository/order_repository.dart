@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../Common/dio.dart';
 import '../../Common/failures.dart';
 import '../models/post_model.dart';
-import '../models/post_response_model.dart';
 
 final orderRepositoryProvider = Provider<OrderRepository>(
   (ref) {
@@ -22,10 +21,10 @@ class OrderRepository {
   final String staticUrl;
   final Dio _dio;
 
-  Future<PostDetailOrder> getMyPostOrder(String postId) async {
+  Future<Order> getMyPostOrder(String postId) async {
     try {
       final response = await _dio.get('$staticUrl/$postId/me');
-      return PostDetailOrder.fromJson(response.data['order']);
+      return Order.fromJson(response.data);
     } on DioError catch (e) {
       throw ServerException(e);
     } catch (e) {
@@ -33,11 +32,11 @@ class OrderRepository {
     }
   }
 
-  Future<List<PostDetailOrder>> getPostOrder(String postId) async {
+  Future<List<Order>> getPostOrder(String postId) async {
     try {
       final response = await _dio.get('$staticUrl/$postId');
       return (response.data['orders'] as List)
-          .map((e) => PostDetailOrder.fromJson(e))
+          .map((e) => Order.fromJson(e))
           .toList();
     } on DioError catch (e) {
       throw ServerException(e);
@@ -46,10 +45,9 @@ class OrderRepository {
     }
   }
 
-  Future postOrder(String postId, List<OrderMenu> orders) async {
+  Future postOrder(String postId, Order order) async {
     try {
-      await _dio.post('$staticUrl/$postId',
-          data: {'order_lines': orders.map((e) => e.toJson()).toList()});
+      await _dio.post('$staticUrl/$postId', data: order.toJson());
     } on DioError catch (e) {
       throw ServerException(e);
     } catch (e) {

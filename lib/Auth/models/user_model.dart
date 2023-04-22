@@ -27,4 +27,13 @@ class User {
   User.fromJson(Map<String, dynamic> json)
       : id = (json['id'] ?? json['user_id']).toString(),
         nickname = json['nickname'];
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'nickname': nickname,
+      };
+
+  User.clone(User user)
+      : id = user.id,
+        nickname = user.nickname;
 }

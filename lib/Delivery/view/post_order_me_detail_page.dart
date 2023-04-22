@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../Common/widget/appbar.dart';
 import '../models/post_model.dart';
-import '../models/post_response_model.dart';
 import '../repository/order_repository.dart';
 
 class MyPostOrderDetailPage extends ConsumerWidget {
@@ -79,12 +78,12 @@ class MyPostOrderDetailPage extends ConsumerWidget {
             SizedBox(
               height: 8,
             ),
-            FutureBuilder<PostDetailOrder>(
+            FutureBuilder<Order>(
                 future:
                     ref.watch(orderRepositoryProvider).getMyPostOrder(postId),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                    final myOrderData = snapshot.data!;
+                    final Order myOrderData = snapshot.data!;
                     int totalSumPrice = myOrderData.orderLines
                         .fold(0, (pre, element) => pre + element.totalPrice);
                     int expectDeliverFee = store.fee ~/ orderNum;

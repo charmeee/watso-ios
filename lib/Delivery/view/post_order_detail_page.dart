@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../Common/widget/appbar.dart';
 import '../models/post_model.dart';
-import '../models/post_response_model.dart';
 import '../repository/order_repository.dart';
 
 class PostOrderDetailPage extends ConsumerWidget {
@@ -22,17 +21,17 @@ class PostOrderDetailPage extends ConsumerWidget {
           title: '팀원 주문 내역',
           isCenter: true,
         ),
-        body: FutureBuilder<List<PostDetailOrder>>(
+        body: FutureBuilder<List<Order>>(
           future: ref.watch(orderRepositoryProvider).getPostOrder(postId),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              final List<PostDetailOrder> orderDataList = snapshot.data!;
+              final List<Order> orderDataList = snapshot.data!;
               return ListView.separated(
                 itemCount: snapshot.data!.length,
                 shrinkWrap: true,
                 physics: BouncingScrollPhysics(),
                 itemBuilder: (context, index) {
-                  final PostDetailOrder postDetailOrder = orderDataList[index];
+                  final Order postDetailOrder = orderDataList[index];
                   final int sum = postDetailOrder.orderLines.fold(
                       0,
                       (previousValue, element) =>

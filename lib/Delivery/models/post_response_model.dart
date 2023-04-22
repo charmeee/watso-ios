@@ -1,7 +1,5 @@
 import 'package:sangsangtalk/Delivery/models/post_model.dart';
 
-import '../../Auth/models/user_model.dart';
-
 //get /post
 class ResponsePost extends PostOption {
   String id;
@@ -48,20 +46,6 @@ class ResponsePost extends PostOption {
         super.fromJson(json);
 }
 
-// {
-// "_id": "6345a45f1c32cd7c4b64d895",
-// "name": "맘스터치",
-// "min_order": 12000,
-// "fee": 3000,
-// "menus": [
-// {
-// "section": "세트메뉴",
-// "name": "딥치즈버거",
-// "price": 6800
-// }
-// ]
-// }
-
 class StoreMenus extends Store {
   List<MenuSection> menuSection;
 
@@ -76,23 +60,5 @@ class StoreMenus extends Store {
   StoreMenus.fromJson(Map<String, dynamic> json)
       : menuSection = List<MenuSection>.from(
             json['sections'].map((x) => MenuSection.fromJson(x))),
-        super.fromJson(json);
-}
-
-class PostDetailOrder extends User {
-  List<OrderMenu> orderLines;
-  String requestComment;
-
-  PostDetailOrder(
-      {required this.orderLines, required User user, this.requestComment = ''})
-      : super(
-          id: user.id,
-          nickname: user.nickname,
-        );
-
-  PostDetailOrder.fromJson(Map<String, dynamic> json)
-      : orderLines = List<OrderMenu>.from(
-            json['order_lines'].map((x) => OrderMenu.fromJson(x))),
-        requestComment = json['request_comment'] ?? '',
         super.fromJson(json);
 }

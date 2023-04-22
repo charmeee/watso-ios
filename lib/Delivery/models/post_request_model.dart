@@ -1,20 +1,20 @@
 import 'package:sangsangtalk/Delivery/models/post_model.dart';
 
+import '../../Auth/models/user_model.dart';
+
 //post /post
 class PostOrder extends PostOption {
-  List<OrderMenu> orders;
+  Order order;
   Store store;
   String? postId;
-  String requestComment;
 
   PostOrder(
-      {required this.orders,
+      {required this.order,
       required this.store,
       required String place,
       required DateTime orderTime,
       required int minMember,
       required int maxMember,
-      this.requestComment = '',
       this.postId})
       : super(
             place: place,
@@ -23,15 +23,13 @@ class PostOrder extends PostOption {
             maxMember: maxMember);
 
   PostOrder.fromJson(Map<String, dynamic> json)
-      : orders = List<OrderMenu>.from(
-            json['orders'].map((x) => OrderMenu.fromJson(x))),
+      : order = Order.fromJson(json['order']),
         store = Store.fromJson(json['store']),
-        requestComment = json['request_comment'] ?? '',
         super.fromJson(json);
 
-  factory PostOrder.init() {
+  factory PostOrder.init(User user) {
     return PostOrder(
-        orders: [],
+        order: Order.init(user),
         store: Store.init(),
         place: '생자대',
         orderTime: DateTime.now(),
@@ -39,26 +37,18 @@ class PostOrder extends PostOption {
         maxMember: 999);
   }
 
-  factory PostOrder.clone(PostOrder postOrder) {
-    return PostOrder(
-        orders: postOrder.orders.map((e) => OrderMenu.clone(e)).toList(),
-        store: postOrder.store,
-        place: postOrder.place,
-        orderTime: postOrder.orderTime,
-        minMember: postOrder.minMember,
-        maxMember: postOrder.maxMember,
-        postId: postOrder.postId,
-        requestComment: postOrder.requestComment);
-  }
+  PostOrder.clone(PostOrder postOrder)
+      : order = Order.clone(postOrder.order),
+        store = Store.clone(postOrder.store),
+        super.clone(postOrder);
 
   Map newPostToJson() => {
-        'order_lines': orders.map((e) => e.toJson()).toList(),
+        'order': order.toJson(),
         'store_id': store.id,
         'place': place,
         'order_time': orderTime.toIso8601String(),
         'min_member': minMember,
         'max_member': maxMember,
-        'request_comment': requestComment,
       };
 
   bool get isStoreSelected => store.id.isNotEmpty;
@@ -69,7 +59,7 @@ class PostOrder extends PostOption {
       orderTime.isAfter(DateTime.now().add(Duration(minutes: 10)));
 
   bool get disableToPost =>
-      orders.isEmpty ||
+      order.orderLines.isEmpty ||
       store.id.isEmpty ||
       place.isEmpty ||
       orderTime.isBefore(DateTime.now()) ||

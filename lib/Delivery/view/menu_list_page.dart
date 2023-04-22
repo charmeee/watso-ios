@@ -66,7 +66,7 @@ class _MenuListPageState extends ConsumerState<MenuListPage> {
         body: const Center(child: Text('에러')),
       );
     }
-    List<OrderMenu> orderMenus = myOrder.orders;
+    List<OrderMenu> orderMenus = myOrder.order.orderLines;
     return Scaffold(
       appBar: customAppBar(context, title: storeMenus!.name),
       body: Column(

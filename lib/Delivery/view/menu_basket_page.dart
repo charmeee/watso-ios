@@ -15,8 +15,8 @@ class MenuBasketPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     PostOrder postOrder = ref.watch(myDeliveryNotifierProvider);
-    int totalSumPrice =
-        postOrder.orders.fold(0, (pre, element) => pre + element.totalPrice);
+    int totalSumPrice = postOrder.order.orderLines
+        .fold(0, (pre, element) => pre + element.totalPrice);
     int expectDeliverFee = postOrder.store.fee ~/ postOrder.minMember;
     return Scaffold(
       appBar: customAppBar(context, title: '장바구니', isCenter: true),
@@ -36,7 +36,7 @@ class MenuBasketPage extends ConsumerWidget {
             sliver: SliverList(
               delegate: SliverChildBuilderDelegate(
                 (context, index) {
-                  OrderMenu orderMenu = postOrder.orders[index];
+                  OrderMenu orderMenu = postOrder.order.orderLines[index];
                   return Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -56,7 +56,8 @@ class MenuBasketPage extends ConsumerWidget {
                               ),
                               IconButton(
                                   onPressed: () {
-                                    if (postOrder.orders.length == 1) {
+                                    if (postOrder.order.orderLines.length ==
+                                        1) {
                                       showDialog(
                                           context: context,
                                           builder: (context) => AlertDialog(
@@ -128,7 +129,7 @@ class MenuBasketPage extends ConsumerWidget {
                           Row(
                             children: [
                               Text(
-                                '${postOrder.orders[index].totalPrice}원',
+                                '${postOrder.order.orderLines[index].totalPrice}원',
                                 style: TextStyle(
                                   fontSize: 14,
                                 ),
@@ -160,7 +161,7 @@ class MenuBasketPage extends ConsumerWidget {
                     ],
                   );
                 },
-                childCount: postOrder.orders.length,
+                childCount: postOrder.order.orderLines.length,
               ),
             ),
           ),

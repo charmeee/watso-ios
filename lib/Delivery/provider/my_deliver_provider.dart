@@ -1,22 +1,29 @@
 import 'dart:developer';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sangsangtalk/Auth/models/user_model.dart';
 
+import '../../Auth/auth_provider.dart';
 import '../models/post_model.dart';
 import '../models/post_request_model.dart';
 
 final myDeliveryNotifierProvider =
     StateNotifierProvider<MyDeliveryNotifier, PostOrder>((ref) {
-  return MyDeliveryNotifier(ref);
+  UserInfo? user = ref.watch(userNotifierProvider);
+  if (user == null) {
+    throw Exception('user is null');
+  }
+  return MyDeliveryNotifier(ref, user: user);
 });
 
 class MyDeliveryNotifier extends StateNotifier<PostOrder> {
-  MyDeliveryNotifier(this.ref) : super(PostOrder.init());
-
+  MyDeliveryNotifier(this.ref, {required this.user})
+      : super(PostOrder.init(user));
+  final UserInfo user;
   final Ref ref;
 
   deleteMyDeliver() {
-    state = PostOrder.init();
+    state = PostOrder.init(user);
   }
 
   setMyDeliverOption(
@@ -27,64 +34,45 @@ class MyDeliveryNotifier extends StateNotifier<PostOrder> {
       String? postId,
       String? requestComment}) {
     state = PostOrder(
-        orders: state.orders,
+        order: state.order,
         store: state.store,
         place: place ?? state.place,
         orderTime: orderTime ?? state.orderTime,
         minMember: minMember ?? state.minMember,
         maxMember: maxMember ?? state.maxMember,
-        postId: postId ?? state.postId,
-        requestComment: requestComment ?? state.requestComment);
+        postId: postId ?? state.postId);
   }
 
   setMyDeliverStore(Store store) {
-    state = PostOrder(
-        orders: state.orders,
-        store: store,
-        place: state.place,
-        orderTime: state.orderTime,
-        minMember: state.minMember,
-        maxMember: state.maxMember,
-        postId: state.postId,
-        requestComment: state.requestComment);
+    PostOrder tmp = PostOrder.clone(state);
+    tmp.store = store;
+    state = tmp;
   }
 
   addMyDeliverOrder(OrderMenu order) {
-    state = PostOrder(
-        orders: [...state.orders, order],
-        store: state.store,
-        place: state.place,
-        orderTime: state.orderTime,
-        minMember: state.minMember,
-        maxMember: state.maxMember,
-        postId: state.postId,
-        requestComment: state.requestComment);
+    PostOrder tmp = PostOrder.clone(state);
+    tmp.order.orderLines.add(order);
+    state = tmp;
 
-    log('addMyDeliverOrder: ${state.orders.length}');
+    log('addMyDeliverOrder: ${state.order.orderLines.length}');
   }
 
   deleteMyDeliverOrder(int index) {
-    state = PostOrder(
-        orders: [...state.orders]..removeAt(index),
-        store: state.store,
-        place: state.place,
-        orderTime: state.orderTime,
-        minMember: state.minMember,
-        maxMember: state.maxMember,
-        postId: state.postId,
-        requestComment: state.requestComment);
-    log('deleteMyDeliverOrder: ${state.orders.length}');
+    PostOrder tmp = PostOrder.clone(state);
+    tmp.order.orderLines.removeAt(index);
+    state = tmp;
+    log('deleteMyDeliverOrder: ${state.order.orderLines.length}');
   }
 
   void decreaseQuantity(int index) {
     PostOrder tmp = PostOrder.clone(state);
-    tmp.orders[index].quantity--;
+    tmp.order.orderLines[index].quantity--;
     state = tmp;
   }
 
   void increaseQuantity(index) {
     PostOrder tmp = PostOrder.clone(state);
-    tmp.orders[index].quantity++;
+    tmp.order.orderLines[index].quantity++;
     state = tmp;
   }
 }
