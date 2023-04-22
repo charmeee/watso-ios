@@ -7,8 +7,7 @@ import 'package:sangsangtalk/Auth/auth_provider.dart';
 
 import 'Auth/view/signIn.dart';
 import 'Common/global.dart';
-import 'Delivery/view/index.dart';
-
+import 'Delivery/view/post_list_page.dart';
 
 void main() {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -26,7 +25,7 @@ void main() {
             // scaffoldBackgroundColor: backgroundColor,
             // textTheme: TextTheme()
             //     .apply(bodyColor: Colors.white, displayColor: Colors.white)
-        ),
+            ),
         home: const MyApp(),
       ),
     ),
@@ -54,13 +53,15 @@ class _MyAppState extends ConsumerState<MyApp> {
     // TODO: implement build
     return initState.when(
         data: (data) {
-          return (data==AuthState.authenticated) ?DeliveryMainPage():SignInPage();
+          return (data == AuthState.authenticated)
+              ? DeliveryMainPage()
+              : SignInPage();
         },
         loading: () => const Scaffold(
-          body: Center(
-            child: Text('로딩'),
-          ),
-        ),
+              body: Center(
+                child: Text('로딩'),
+              ),
+            ),
         error: (e, s) {
           log(e.toString());
           return const Scaffold(
@@ -70,5 +71,4 @@ class _MyAppState extends ConsumerState<MyApp> {
           );
         });
   }
-  
 }
