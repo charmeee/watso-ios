@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sangsangtalk/Common/widget/appbar.dart';
 
-import '../models/post_model.dart';
 import '../models/post_request_model.dart';
 import '../provider/my_deliver_provider.dart';
-import '../widgets/basket_submit_button.dart';
+//주요 위젯
+import '../widgets/menu_basket/basket_addMore_btn.dart';
+import '../widgets/menu_basket/basket_calculate_box.dart';
+import '../widgets/menu_basket/basket_order_list.dart';
+import '../widgets/menu_basket/basket_submit_button.dart';
 
 class MenuBasketPage extends ConsumerWidget {
   const MenuBasketPage({
@@ -31,226 +34,14 @@ class MenuBasketPage extends ConsumerWidget {
               ),
             ),
           ),
-          SliverPadding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
-            sliver: SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  OrderMenu orderMenu = postOrder.order.orderLines[index];
-                  return Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Divider(
-                        height: 1,
-                        thickness: 1,
-                      ),
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                orderMenu.menu.name,
-                                style: TextStyle(fontSize: 16),
-                              ),
-                              IconButton(
-                                  onPressed: () {
-                                    if (postOrder.order.orderLines.length ==
-                                        1) {
-                                      showDialog(
-                                          context: context,
-                                          builder: (context) => AlertDialog(
-                                                title: Text(
-                                                    '주문하기 위해 최소 하나의 메뉴가 필요합니다.'),
-                                                actions: [
-                                                  TextButton(
-                                                      onPressed: () {
-                                                        Navigator.pop(context);
-                                                      },
-                                                      child: Text('취소')),
-                                                  TextButton(
-                                                      onPressed: () {
-                                                        Navigator.pop(
-                                                            context, true);
-                                                        ref
-                                                            .read(
-                                                                myDeliveryNotifierProvider
-                                                                    .notifier)
-                                                            .deleteMyDeliverOrder(
-                                                                index);
-                                                      },
-                                                      child: Text('삭제')),
-                                                ],
-                                              )).then((value) {
-                                        if (value == true) {
-                                          Navigator.pop(context);
-                                        }
-                                      });
-                                    } else {
-                                      ref
-                                          .read(myDeliveryNotifierProvider
-                                              .notifier)
-                                          .deleteMyDeliverOrder(index);
-                                    }
-                                  },
-                                  icon: Icon(Icons.close))
-                            ],
-                          ),
-                          if (orderMenu.menu.groups != null &&
-                              orderMenu.menu.groups!.isNotEmpty)
-                            Column(mainAxisSize: MainAxisSize.min, children: [
-                              for (var group in orderMenu.menu.groups!)
-                                if (group.options.isNotEmpty)
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        ' · ${group.name} : ',
-                                        style: TextStyle(
-                                            color: Colors.grey, fontSize: 12),
-                                      ),
-                                      RichText(
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 3,
-                                        text: TextSpan(
-                                          text: group.options.fold(
-                                              '',
-                                              (previousValue, element) =>
-                                                  previousValue! +
-                                                  element.name),
-                                          style: TextStyle(
-                                              color: Colors.grey, fontSize: 12),
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                            ]),
-                          Row(
-                            children: [
-                              Text(
-                                '${postOrder.order.orderLines[index].totalPrice}원',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                ),
-                              ),
-                              const Spacer(),
-                              IconButton(
-                                  onPressed: () {
-                                    if (orderMenu.quantity > 1) {
-                                      ref
-                                          .read(myDeliveryNotifierProvider
-                                              .notifier)
-                                          .decreaseQuantity(index);
-                                    }
-                                  },
-                                  icon: Icon(Icons.remove_circle)),
-                              Text('${orderMenu.quantity}'),
-                              IconButton(
-                                  onPressed: () {
-                                    ref
-                                        .read(
-                                            myDeliveryNotifierProvider.notifier)
-                                        .increaseQuantity(index);
-                                  },
-                                  icon: Icon(Icons.add_circle)),
-                            ],
-                          )
-                        ],
-                      ),
-                    ],
-                  );
-                },
-                childCount: postOrder.order.orderLines.length,
-              ),
-            ),
+          BasketList(
+            orderLines: postOrder.order.orderLines,
           ),
-          SliverToBoxAdapter(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Divider(
-                  height: 1,
-                  thickness: 1,
-                ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text('+ 더 담으러 가기',
-                      style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold)),
-                ),
-                Divider(
-                  height: 1,
-                  thickness: 1,
-                ),
-              ],
-            ),
+          const AddMoreBtn(),
+          CalculateBox(
+            totalSumPrice: totalSumPrice,
+            expectDeliverFee: expectDeliverFee,
           ),
-          SliverToBoxAdapter(
-            child: Container(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        '총 주문 금액',
-                        style: TextStyle(fontSize: 18, color: Colors.black),
-                      ),
-                      Text(
-                        '${totalSumPrice}원',
-                        style: TextStyle(fontSize: 18, color: Colors.black),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        '1인당 예상 배달비(최소 인원 달성 시)',
-                        style: TextStyle(fontSize: 16, color: Colors.black),
-                      ),
-                      Text(
-                        '$expectDeliverFee원',
-                        style: TextStyle(fontSize: 16, color: Colors.black),
-                      ),
-                    ],
-                  ),
-                  Divider(
-                    height: 20,
-                    thickness: 2,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        '예상 본인 부담 금액',
-                        style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black),
-                      ),
-                      Text(
-                        '${totalSumPrice + expectDeliverFee}원',
-                        style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          )
         ],
       ),
       floatingActionButton: BasketSubmitButton(
