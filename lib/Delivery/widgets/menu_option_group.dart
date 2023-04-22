@@ -4,13 +4,14 @@ import '../models/post_model.dart';
 import 'menu_option_select_box.dart';
 
 class MenuOptionGroupBox extends StatelessWidget {
-  const MenuOptionGroupBox({Key? key, required this.optionGroup})
+  const MenuOptionGroupBox(
+      {Key? key, required this.optionGroup, required this.selectedOptions})
       : super(key: key);
   final MenuOptionGroup optionGroup;
+  final List<MenuOption> selectedOptions;
 
   @override
   Widget build(BuildContext context) {
-    final List<MenuOption> selectedOptions = optionGroup.options;
     final bool isRadio =
         optionGroup.minOptionNum == 1 && optionGroup.maxOptionNum == 1;
     return Column(
@@ -28,12 +29,12 @@ class MenuOptionGroupBox extends StatelessWidget {
             ],
           ),
         ),
-        if (selectedOptions.isNotEmpty)
-          for (var i = 0; i < selectedOptions.length; i++)
+        if (optionGroup.options.isNotEmpty)
+          for (var i = 0; i < optionGroup.options.length; i++)
             MenuOptionSelectBox(
               isRadio: isRadio,
               selectedOptions: selectedOptions,
-              optionGroupId: optionGroup.id,
+              optionGroup: optionGroup,
               index: i,
             ),
       ],

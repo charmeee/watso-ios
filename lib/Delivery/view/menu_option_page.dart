@@ -3,11 +3,14 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sangsangtalk/Common/widget/appbar.dart';
-import 'package:sangsangtalk/Common/widget/floating_bottom_button.dart';
 
 import '../../Common/commonType.dart';
 import '../models/post_model.dart';
 import '../provider/menu_option_provider.dart';
+import '../repository/store_repository.dart';
+import '../widgets/menu_option_add_btn.dart';
+import '../widgets/menu_option_count_btn.dart';
+import '../widgets/menu_option_group.dart';
 
 class MenuOptionPage extends ConsumerStatefulWidget {
   const MenuOptionPage({
@@ -56,7 +59,7 @@ class _MenuOptionPageState extends ConsumerState<MenuOptionPage> {
   @override
   Widget build(BuildContext context) {
     OrderMenu? orderMenu = ref.watch(menuOptionNotifierProvider);
-    if (loadState == LoadState.loading && menu == null) {
+    if (loadState == LoadState.loading && loadMenu == null) {
       return Scaffold(
         appBar: customAppBar(
           context,
@@ -65,16 +68,17 @@ class _MenuOptionPageState extends ConsumerState<MenuOptionPage> {
         body: const Center(child: CircularProgressIndicator()),
       );
     }
-    if (menu == null || loadState == LoadState.error || orderMenu == null) {
+    if (loadMenu == null || loadState == LoadState.error || orderMenu == null) {
       return Scaffold(
         appBar: customAppBar(context, title: '메뉴 옵션'),
         body: const Center(child: Text('에러')),
       );
     }
+    Menu menu = loadMenu!;
     return Scaffold(
       appBar: customAppBar(
         context,
-        title: menu!.name + ' : ' + menu!.price.toString() + '원',
+        title: menu.name,
       ),
       body: Column(
         mainAxisSize: MainAxisSize.min,
@@ -83,126 +87,57 @@ class _MenuOptionPageState extends ConsumerState<MenuOptionPage> {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: ListView.separated(
-                itemCount: menu!.groups!.length + 1,
+              child: CustomScrollView(
                 shrinkWrap: true,
-                padding: EdgeInsets.zero,
                 physics: const BouncingScrollPhysics(),
-                itemBuilder: (context, index) {
-                  if (index == menu!.groups!.length) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('개수', style: const TextStyle(fontSize: 20)),
-                          Row(
-                            children: [
-                              IconButton(
-                                onPressed: () {
-                                  ref
-                                      .read(menuOptionNotifierProvider.notifier)
-                                      .decreaseQuantity();
-                                },
-                                icon: const Icon(Icons.remove),
-                              ),
-                              Text('${orderMenu.quantity}개'),
-                              IconButton(
-                                onPressed: () {
-                                  ref
-                                      .read(menuOptionNotifierProvider.notifier)
-                                      .increaseQuantity();
-                                },
-                                icon: const Icon(Icons.add),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    );
-                  }
-                  final MenuOptionGroup optionGroup = menu!.groups![index];
-                  List<MenuOption> selectedOptions =
-                      orderMenu.menu.groups![index].options;
-                  final bool isRadio = optionGroup.minOptionNum == 1 &&
-                      optionGroup.maxOptionNum == 1;
-                  final selectIcon = isRadio
-                      ? Icons.radio_button_checked
-                      : Icons.check_box_outlined;
-                  final unSelectIcon = isRadio
-                      ? Icons.radio_button_unchecked
-                      : Icons.check_box_outline_blank;
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(optionGroup.name,
-                                style: const TextStyle(fontSize: 20)),
-                            const SizedBox(width: 10),
-                            Text(isRadio
-                                ? '필수'
-                                : '최대 ${optionGroup.maxOptionNum} 선택 가능'),
-                          ],
+                slivers: [
+                  SliverToBoxAdapter(
+                    child: Container(
+                      padding: const EdgeInsets.only(left: 16.0, bottom: 8.0),
+                      child: Text(
+                        '기본 가격 : ${menu.price}원',
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                      if (optionGroup.options.isNotEmpty)
-                        for (var i = 0; i < optionGroup.options.length; i++)
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    ),
+                  ),
+                  if (menu.groups != null)
+                    SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            mainAxisSize: MainAxisSize.min,
                             children: [
-                              Row(
-                                children: [
-                                  IconButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          ref
-                                              .read(menuOptionNotifierProvider
-                                                  .notifier)
-                                              .setOption(
-                                                  isRadio,
-                                                  optionGroup.id,
-                                                  optionGroup.options[i]);
-                                        });
-                                      },
-                                      icon: Icon(selectedOptions.any(
-                                              (element) =>
-                                                  element.id ==
-                                                  optionGroup.options[i].id)
-                                          ? selectIcon
-                                          : unSelectIcon)),
-                                  Text(optionGroup.options[i].name),
-                                ],
+                              MenuOptionGroupBox(
+                                optionGroup: menu.groups![index],
+                                selectedOptions:
+                                    orderMenu.menu.groups![index].options,
                               ),
-                              Text('${optionGroup.options[i].price}원'),
+                              const Divider(
+                                height: 3,
+                                thickness: 2,
+                              ),
                             ],
-                          ),
-                    ],
-                  );
-                },
-                separatorBuilder: (context, index) => const Divider(
-                  height: 3,
-                  thickness: 2,
-                ),
+                          );
+                        },
+                        childCount: menu.groups!.length,
+                      ),
+                    ),
+                  MenuCountBtn(
+                    orderMenu: orderMenu,
+                  ),
+                ],
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 32.0),
-            child: customFloatingBottomButton(context,
-                child: Text('${orderMenu.totalPrice}원 담기'), onPressed: () {
-              ref.read(menuOptionNotifierProvider.notifier).addInMyOrder();
-              Navigator.pop(context);
-            }),
+          MenuOptionAddBtn(
+            orderMenu: orderMenu,
           ),
         ],
       ),
     );
   }
 }
-//todo: 메뉴 담기 기능
-//todo: 개수 조절 마지막에 추가
