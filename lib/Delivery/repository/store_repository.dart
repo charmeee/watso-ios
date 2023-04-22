@@ -48,7 +48,7 @@ class StoreRepository {
     try {
       final response = await _dio.get('$staticUrl/$storeId/$menuName');
       Menu menu = Menu.fromJson(response.data);
-      if (menu.groups == null) throw Exception('메뉴가 없습니다.');
+      if (menu.optionGroups == null) throw Exception('메뉴가 없습니다.');
       return Menu.fromJson(response.data);
     } on DioError catch (e) {
       throw ServerException(e);

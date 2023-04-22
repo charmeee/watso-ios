@@ -117,15 +117,15 @@ class MyPostOrderDetailPage extends ConsumerWidget {
                                       style: TextStyle(
                                           color: Colors.grey, fontSize: 12),
                                     ),
-                                    if (orderMenu.menu.groups != null &&
-                                        orderMenu.menu.groups!.isNotEmpty)
+                                    if (orderMenu.menu.optionGroups != null &&
+                                        orderMenu.menu.optionGroups!.isNotEmpty)
                                       Column(
                                           mainAxisSize: MainAxisSize.min,
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
                                             for (var group
-                                                in orderMenu.menu.groups!)
+                                                in orderMenu.menu.optionGroups!)
                                               if (group.options.isNotEmpty)
                                                 Row(
                                                   mainAxisAlignment:

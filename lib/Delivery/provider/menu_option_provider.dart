@@ -17,14 +17,15 @@ class MenuOptionNotifier extends StateNotifier<OrderMenu?> {
 
   setMenu(Menu menu) async {
     state = OrderMenu.fromMenu(quantity: 1, menu: Menu.clone(menu));
-    if (state!.menu.groups != null && state!.menu.groups!.isNotEmpty) {
+    if (state!.menu.optionGroups != null &&
+        state!.menu.optionGroups!.isNotEmpty) {
       setLeastOneOption();
     }
   }
 
   setLeastOneOption() {
     final tmp = OrderMenu.clone(state!);
-    for (var element in tmp.menu.groups!) {
+    for (var element in tmp.menu.optionGroups!) {
       if (element.minOptionNum > 0) {
         final option = element.options[0];
         element.options = [option];
@@ -32,7 +33,7 @@ class MenuOptionNotifier extends StateNotifier<OrderMenu?> {
         element.options = [];
       }
     }
-    log('state: ${state!.menu.groups![0].options[0].name}');
+    log('state: ${state!.menu.optionGroups![0].options[0].name}');
     state = tmp;
   }
 
@@ -52,20 +53,20 @@ class MenuOptionNotifier extends StateNotifier<OrderMenu?> {
   setOption(bool isRadio, String optionGroupId, MenuOption option) {
     final tmp = OrderMenu.clone(state!);
     if (isRadio) {
-      tmp.menu.groups!
+      tmp.menu.optionGroups!
           .firstWhere((element) => element.id == optionGroupId)
           .options = [option];
     } else {
-      for (var i = 0; i < tmp.menu.groups!.length; i++) {
-        if (tmp.menu.groups![i].id == optionGroupId) {
-          for (var j = 0; j < tmp.menu.groups![i].options.length; j++) {
-            if (tmp.menu.groups![i].options[j].id == option.id) {
-              tmp.menu.groups![i].options.removeAt(j);
+      for (var i = 0; i < tmp.menu.optionGroups!.length; i++) {
+        if (tmp.menu.optionGroups![i].id == optionGroupId) {
+          for (var j = 0; j < tmp.menu.optionGroups![i].options.length; j++) {
+            if (tmp.menu.optionGroups![i].options[j].id == option.id) {
+              tmp.menu.optionGroups![i].options.removeAt(j);
               state = tmp;
               return;
             }
           }
-          tmp.menu.groups![i].options.add(option);
+          tmp.menu.optionGroups![i].options.add(option);
           state = tmp;
           return;
         }

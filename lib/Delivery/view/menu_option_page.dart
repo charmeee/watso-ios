@@ -103,7 +103,7 @@ class _MenuOptionPageState extends ConsumerState<MenuOptionPage> {
                       ),
                     ),
                   ),
-                  if (menu.groups != null)
+                  if (menu.optionGroups != null)
                     SliverList(
                       delegate: SliverChildBuilderDelegate(
                         (context, index) {
@@ -112,9 +112,9 @@ class _MenuOptionPageState extends ConsumerState<MenuOptionPage> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               MenuOptionGroupBox(
-                                optionGroup: menu.groups![index],
+                                optionGroup: menu.optionGroups![index],
                                 selectedOptions:
-                                    orderMenu.menu.groups![index].options,
+                                    orderMenu.menu.optionGroups![index].options,
                               ),
                               const Divider(
                                 height: 3,
@@ -123,7 +123,7 @@ class _MenuOptionPageState extends ConsumerState<MenuOptionPage> {
                             ],
                           );
                         },
-                        childCount: menu.groups!.length,
+                        childCount: menu.optionGroups!.length,
                       ),
                     ),
                   MenuCountBtn(
