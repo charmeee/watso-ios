@@ -6,7 +6,7 @@ import '../models/post_model.dart';
 import '../models/post_request_model.dart';
 
 final myDeliveryNotifierProvider =
-StateNotifierProvider<MyDeliveryNotifier, PostOrder>((ref) {
+    StateNotifierProvider<MyDeliveryNotifier, PostOrder>((ref) {
   return MyDeliveryNotifier(ref);
 });
 
@@ -19,11 +19,13 @@ class MyDeliveryNotifier extends StateNotifier<PostOrder> {
     state = PostOrder.init();
   }
 
-  setMyDeliverOption({String? place,
-    DateTime? orderTime,
-    int? minMember,
-    int? maxMember,
-    String? postId}) {
+  setMyDeliverOption(
+      {String? place,
+      DateTime? orderTime,
+      int? minMember,
+      int? maxMember,
+      String? postId,
+      String? requestComment}) {
     state = PostOrder(
         orders: state.orders,
         store: state.store,
@@ -31,45 +33,46 @@ class MyDeliveryNotifier extends StateNotifier<PostOrder> {
         orderTime: orderTime ?? state.orderTime,
         minMember: minMember ?? state.minMember,
         maxMember: maxMember ?? state.maxMember,
-        postId: postId);
+        postId: postId ?? state.postId,
+        requestComment: requestComment ?? state.requestComment);
   }
 
   setMyDeliverStore(Store store) {
     state = PostOrder(
-      orders: state.orders,
-      store: store,
-      place: state.place,
-      orderTime: state.orderTime,
-      minMember: state.minMember,
-      maxMember: state.maxMember,
-      postId: state.postId,
-    );
+        orders: state.orders,
+        store: store,
+        place: state.place,
+        orderTime: state.orderTime,
+        minMember: state.minMember,
+        maxMember: state.maxMember,
+        postId: state.postId,
+        requestComment: state.requestComment);
   }
 
   addMyDeliverOrder(OrderMenu order) {
     state = PostOrder(
-      orders: [...state.orders, order],
-      store: state.store,
-      place: state.place,
-      orderTime: state.orderTime,
-      minMember: state.minMember,
-      maxMember: state.maxMember,
-      postId: state.postId,
-    );
+        orders: [...state.orders, order],
+        store: state.store,
+        place: state.place,
+        orderTime: state.orderTime,
+        minMember: state.minMember,
+        maxMember: state.maxMember,
+        postId: state.postId,
+        requestComment: state.requestComment);
 
     log('addMyDeliverOrder: ${state.orders.length}');
   }
 
   deleteMyDeliverOrder(int index) {
     state = PostOrder(
-      orders: [...state.orders]..removeAt(index),
-      store: state.store,
-      place: state.place,
-      orderTime: state.orderTime,
-      minMember: state.minMember,
-      maxMember: state.maxMember,
-      postId: state.postId,
-    );
+        orders: [...state.orders]..removeAt(index),
+        store: state.store,
+        place: state.place,
+        orderTime: state.orderTime,
+        minMember: state.minMember,
+        maxMember: state.maxMember,
+        postId: state.postId,
+        requestComment: state.requestComment);
     log('deleteMyDeliverOrder: ${state.orders.length}');
   }
 

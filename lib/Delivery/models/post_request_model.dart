@@ -5,6 +5,7 @@ class PostOrder extends PostOption {
   List<OrderMenu> orders;
   Store store;
   String? postId;
+  String requestComment;
 
   PostOrder(
       {required this.orders,
@@ -13,6 +14,7 @@ class PostOrder extends PostOption {
       required DateTime orderTime,
       required int minMember,
       required int maxMember,
+      this.requestComment = '',
       this.postId})
       : super(
             place: place,
@@ -24,6 +26,7 @@ class PostOrder extends PostOption {
       : orders = List<OrderMenu>.from(
             json['orders'].map((x) => OrderMenu.fromJson(x))),
         store = Store.fromJson(json['store']),
+        requestComment = json['request_comment'] ?? '',
         super.fromJson(json);
 
   factory PostOrder.init() {
@@ -44,7 +47,8 @@ class PostOrder extends PostOption {
         orderTime: postOrder.orderTime,
         minMember: postOrder.minMember,
         maxMember: postOrder.maxMember,
-        postId: postOrder.postId);
+        postId: postOrder.postId,
+        requestComment: postOrder.requestComment);
   }
 
   Map newPostToJson() => {
@@ -54,6 +58,7 @@ class PostOrder extends PostOption {
         'order_time': orderTime.toIso8601String(),
         'min_member': minMember,
         'max_member': maxMember,
+        'request_comment': requestComment,
       };
 
   bool get isStoreSelected => store.id.isNotEmpty;
@@ -70,5 +75,5 @@ class PostOrder extends PostOption {
       orderTime.isBefore(DateTime.now()) ||
       minMember > maxMember;
 
-  bool get checkOrderTime => orderTime.isBefore(DateTime.now());
+  bool get checkOrderTime => orderTime.isAfter(DateTime.now());
 }
