@@ -138,6 +138,7 @@ class _MenuListPageState extends ConsumerState<MenuListPage> {
                                       builder: (context) => MenuOptionPage(
                                         storeId: widget.storeId,
                                         menuId: menu.id,
+                                        menuName: menu.name,
                                       ),
                                     ),
                                   );

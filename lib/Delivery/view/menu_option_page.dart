@@ -14,9 +14,11 @@ class MenuOptionPage extends ConsumerStatefulWidget {
     Key? key,
     required this.storeId,
     required this.menuId,
+    required this.menuName,
   }) : super(key: key);
   final String storeId;
   final String menuId;
+  final String menuName;
 
   @override
   ConsumerState createState() => _MenuOptionPageState();
@@ -56,6 +58,10 @@ class _MenuOptionPageState extends ConsumerState<MenuOptionPage> {
     OrderMenu? orderMenu = ref.watch(menuOptionNotifierProvider);
     if (loadState == LoadState.loading && menu == null) {
       return Scaffold(
+        appBar: customAppBar(
+          context,
+          title: widget.menuName,
+        ),
         body: const Center(child: CircularProgressIndicator()),
       );
     }
