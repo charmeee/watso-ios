@@ -24,8 +24,7 @@ class MenuOptionPage extends ConsumerStatefulWidget {
 
 class _MenuOptionPageState extends ConsumerState<MenuOptionPage> {
   LoadState loadState = LoadState.loading;
-  Menu? menu;
-  Map<String, List> selectedOptionsIdByGroupId = {};
+  Menu? loadMenu;
 
   @override
   void initState() {
@@ -35,12 +34,14 @@ class _MenuOptionPageState extends ConsumerState<MenuOptionPage> {
 
   getDetailMenu() {
     ref
-        .read(menuOptionNotifierProvider.notifier)
-        .setMenu(widget.storeId, widget.menuId)
+        .read(storeRepositoryProvider)
+        .getDetailMenu(widget.storeId, widget.menuId)
         .then((value) {
       setState(() {
-        menu = value;
+        loadMenu = value;
+        loadState = LoadState.success;
       });
+      ref.read(menuOptionNotifierProvider.notifier).setMenu(value);
     }).onError((error, stackTrace) {
       log('getDetailMenu: $error');
       setState(() {

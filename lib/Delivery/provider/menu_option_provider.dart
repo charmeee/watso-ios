@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/post_model.dart';
-import '../repository/store_repository.dart';
 import 'my_deliver_provider.dart';
 
 final menuOptionNotifierProvider =
@@ -16,20 +15,10 @@ class MenuOptionNotifier extends StateNotifier<OrderMenu?> {
 
   final Ref ref;
 
-  Future<Menu> setMenu(storeId, menuId) async {
-    try {
-      final Menu value = await ref
-          .read(storeRepositoryProvider)
-          .getDetailMenu(storeId, menuId);
-
-      state = OrderMenu.fromMenu(quantity: 1, menu: Menu.clone(value));
-      if (state!.menu.groups != null && state!.menu.groups!.isNotEmpty) {
-        setLeastOneOption();
-      }
-      return value;
-    } catch (e) {
-      log("setMenu" + e.toString());
-      throw Exception(e);
+  setMenu(Menu menu) async {
+    state = OrderMenu.fromMenu(quantity: 1, menu: Menu.clone(menu));
+    if (state!.menu.groups != null && state!.menu.groups!.isNotEmpty) {
+      setLeastOneOption();
     }
   }
 
