@@ -6,7 +6,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-import '../Auth/auth_provider.dart';
+import '../Auth/provider/auth_provider.dart';
 import 'dio_base.dart';
 import 'global.dart';
 
@@ -99,7 +99,7 @@ class CustomInterceptor extends Interceptor {
         log('refresh token 발급');
         final refreshToken = await storage.read(key: 'refreshToken');
         dio.options.headers['Authorization'] = refreshToken;
-        final resp = await dio.get('/auth/signin/refresh');
+        final resp = await dio.get('/auth/refresh');
         final accessToken = resp.headers["authentication"]?[0];
         if (accessToken == null) {
           throw DioError(
@@ -134,6 +134,8 @@ class CustomInterceptor extends Interceptor {
           ref.read(userNotifierProvider.notifier).logout();
         }
         return handler.reject(e);
+      } catch (e) {
+        log('refresh token 실패 ${e.toString()}');
       }
     }
 

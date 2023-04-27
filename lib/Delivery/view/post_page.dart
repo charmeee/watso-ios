@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:sangsangtalk/Common/widget/appbar.dart';
 
-import '../../Auth/auth_provider.dart';
+import '../../Auth/provider/auth_provider.dart';
 import '../models/post_response_model.dart';
 import '../provider/my_deliver_provider.dart';
 import '../provider/post_list_provider.dart';
@@ -39,292 +39,283 @@ class PostPage extends ConsumerWidget {
               slivers: [
                 SliverToBoxAdapter(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Card(
-                        child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding:
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Card(
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding:
                                 const EdgeInsets.only(top: 16.0, left: 16.0),
-                                child: Text(
-                                  "모집정보",
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                              _informationTile(
-                                  icon: Icons.store,
-                                  title: "주문가게",
-                                  content: data.store.name),
-                              _informationTile(
-                                  icon: Icons.access_time_rounded,
-                                  title: "주문시간",
-                                  content: DateFormat("M월 d일(E) HH시 mm분")
-                                      .format(data.orderTime)),
-                              //"3월 19일(일) 10시 30분"
-                              _informationTile(
-                                  icon: Icons.people,
-                                  title: "현재 모인 인원",
-                                  content:
-                                  "${data.users.length} 명 (최소 ${data
-                                      .minMember}명 필요)"),
-                              _informationTile(
-                                  icon: Icons.attach_money,
-                                  title: "예상 배달비",
-                                  content:
+                            child: Text(
+                              "모집정보",
+                              style: TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          _informationTile(
+                              icon: Icons.store,
+                              title: "주문가게",
+                              content: data.store.name),
+                          _informationTile(
+                              icon: Icons.access_time_rounded,
+                              title: "주문시간",
+                              content: DateFormat("M월 d일(E) HH시 mm분")
+                                  .format(data.orderTime)),
+                          //"3월 19일(일) 10시 30분"
+                          _informationTile(
+                              icon: Icons.people,
+                              title: "현재 모인 인원",
+                              content:
+                                  "${data.users.length} 명 (최소 ${data.minMember}명 필요)"),
+                          _informationTile(
+                              icon: Icons.attach_money,
+                              title: "예상 배달비",
+                              content:
                                   "${data.store.fee ~/ data.users.length}원"),
-                              if (joined)
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 8.0, vertical: 2),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: ElevatedButton(
-                                          onPressed: () {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        MyPostOrderDetailPage(
-                                                          postId: postId,
-                                                          store: data.store,
-                                                          orderNum:
+                          if (joined)
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8.0, vertical: 2),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    MyPostOrderDetailPage(
+                                                      postId: postId,
+                                                      store: data.store,
+                                                      orderNum:
                                                           data.users.length,
-                                                        )));
-                                          },
-                                          child: Text("내 배달 상세"),
-                                          style: ElevatedButton.styleFrom(
-                                              shape: const RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(10.0)),
-                                              ),
-                                              fixedSize: const Size.fromHeight(
-                                                  40),
-                                              backgroundColor: Colors.grey),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        width: 12,
-                                      ),
-                                      Expanded(
-                                        child: ElevatedButton(
-                                          onPressed: () {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        PostOrderDetailPage(
-                                                            postId: postId)));
-                                          },
-                                          child: Text("전체 배달"),
-                                          style: ElevatedButton.styleFrom(
-                                              shape: const RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(10.0)),
-                                              ),
-                                              fixedSize: const Size.fromHeight(
-                                                  40),
-                                              backgroundColor: Colors.grey),
-                                        ),
-                                      ),
-                                    ],
+                                                    )));
+                                      },
+                                      child: Text("내 배달 상세"),
+                                      style: ElevatedButton.styleFrom(
+                                          shape: const RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(10.0)),
+                                          ),
+                                          fixedSize: const Size.fromHeight(40),
+                                          backgroundColor: Colors.grey),
+                                    ),
                                   ),
-                                ),
-                              if (joined && isOwner) _statusButton(data, ref),
-                              if (!joined && !isOwner && data.recruitment)
-                                _joinButton(data, context, ref),
-                            ]),
-                      ),
-                    )),
+                                  SizedBox(
+                                    width: 12,
+                                  ),
+                                  Expanded(
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    PostOrderDetailPage(
+                                                        postId: postId)));
+                                      },
+                                      child: Text("전체 배달"),
+                                      style: ElevatedButton.styleFrom(
+                                          shape: const RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(10.0)),
+                                          ),
+                                          fixedSize: const Size.fromHeight(40),
+                                          backgroundColor: Colors.grey),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          if (joined && isOwner) _statusButton(data, ref),
+                          if (!joined && !isOwner && data.recruitment)
+                            _joinButton(data, context, ref),
+                        ]),
+                  ),
+                )),
                 SliverToBoxAdapter(
                     child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         child: Card(
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 16.0, vertical: 16.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16.0, vertical: 16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Row(
                                 children: [
-                                  Row(
-                                    children: [
-                                      Text(
-                                        "댓글",
-                                        style: TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      SizedBox(
-                                        width: 10,
-                                      ),
-                                      Text(
-                                        "해당 배달관련 문의사항은 댓글로 적어주세요",
-                                        style: TextStyle(fontSize: 14),
-                                      ),
-                                    ],
-                                  ),
-                                  Padding(
-                                    padding:
-                                    const EdgeInsets.symmetric(vertical: 8.0),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: Colors.grey[50],
-                                        borderRadius: BorderRadius.circular(5),
-                                      ),
-                                      padding: EdgeInsets.all(10),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                        children: [
-                                          Text("닉네임무언가 · 오늘 10:30 ",
-                                              style: TextStyle(
-                                                fontSize: 16,
-                                              )),
-                                          SizedBox(
-                                            height: 4,
-                                          ),
-                                          RichText(
-                                              text: TextSpan(
-                                                text:
-                                                "대충댓글내용 댓글내용대충댓글내용 댓글내용대충댓글내용 댓글내용대충댓글내용 댓글내용대충댓글내용 댓글내용대충댓글내용 댓글내용대충댓글내용 댓글내용대충댓글내용 댓글내용",
-                                                style: TextStyle(
-                                                    color: Colors.black),
-                                              )),
-                                          SizedBox(
-                                            height: 4,
-                                          ),
-                                          Row(
-                                            children: [
-                                              Icon(
-                                                Icons.comment,
-                                                size: 16,
-                                              ),
-                                              SizedBox(
-                                                width: 4,
-                                              ),
-                                              Text("답글달기",
-                                                  style: TextStyle(
-                                                    fontSize: 16,
-                                                  )),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding:
-                                    const EdgeInsets.symmetric(vertical: 8.0),
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 24.0),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          color: Colors.grey[50],
-                                          borderRadius: BorderRadius.circular(
-                                              5),
-                                        ),
-                                        padding: EdgeInsets.all(10),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                          children: [
-                                            Text("닉네임무언가 · 오늘 10:30 ",
-                                                style: TextStyle(
-                                                  fontSize: 16,
-                                                )),
-                                            SizedBox(
-                                              height: 4,
-                                            ),
-                                            RichText(
-                                                text: TextSpan(
-                                                  text:
-                                                  "충댓글내용 댓글내용대충댓글내용 댓글내용대충댓글내용 댓글내용",
-                                                  style: TextStyle(
-                                                      color: Colors.black),
-                                                )),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding:
-                                    const EdgeInsets.symmetric(vertical: 8.0),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: Colors.grey[50],
-                                        borderRadius: BorderRadius.circular(5),
-                                      ),
-                                      padding: EdgeInsets.all(10),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                        children: [
-                                          Text("닉네임무언가 · 오늘 10:30 ",
-                                              style: TextStyle(
-                                                fontSize: 16,
-                                              )),
-                                          SizedBox(
-                                            height: 4,
-                                          ),
-                                          RichText(
-                                              text: TextSpan(
-                                                text:
-                                                "충댓글내용 댓글내용대충댓글내용 댓글내용대충댓글내용 댓글내용",
-                                                style: TextStyle(
-                                                    color: Colors.black),
-                                              )),
-                                          SizedBox(
-                                            height: 4,
-                                          ),
-                                          Row(
-                                            children: [
-                                              Icon(
-                                                Icons.comment,
-                                                size: 16,
-                                              ),
-                                              SizedBox(
-                                                width: 4,
-                                              ),
-                                              Text("답글달기",
-                                                  style: TextStyle(
-                                                    fontSize: 16,
-                                                  )),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
+                                  Text(
+                                    "댓글",
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold),
                                   ),
                                   SizedBox(
-                                    height: 10,
+                                    width: 10,
                                   ),
-                                  TextField(
-                                    decoration: InputDecoration(
-                                      focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                        borderSide: BorderSide(
-                                          color: Colors.indigo,
-                                        ),
-                                      ),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      hintText: '댓글을 입력해주세요',
-                                      contentPadding: EdgeInsets.all(10),
-                                      suffixIcon: Icon(
-                                        Icons.send_rounded,
-                                        color: Colors.indigo,
-                                      ),
-                                    ),
+                                  Text(
+                                    "해당 배달관련 문의사항은 댓글로 적어주세요",
+                                    style: TextStyle(fontSize: 14),
                                   ),
                                 ],
                               ),
-                            )))),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 8.0),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey[50],
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                  padding: EdgeInsets.all(10),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text("닉네임무언가 · 오늘 10:30 ",
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                          )),
+                                      SizedBox(
+                                        height: 4,
+                                      ),
+                                      RichText(
+                                          text: TextSpan(
+                                        text:
+                                            "대충댓글내용 댓글내용대충댓글내용 댓글내용대충댓글내용 댓글내용대충댓글내용 댓글내용대충댓글내용 댓글내용대충댓글내용 댓글내용대충댓글내용 댓글내용대충댓글내용 댓글내용",
+                                        style: TextStyle(color: Colors.black),
+                                      )),
+                                      SizedBox(
+                                        height: 4,
+                                      ),
+                                      Row(
+                                        children: [
+                                          Icon(
+                                            Icons.comment,
+                                            size: 16,
+                                          ),
+                                          SizedBox(
+                                            width: 4,
+                                          ),
+                                          Text("답글달기",
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                              )),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 8.0),
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 24.0),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey[50],
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                    padding: EdgeInsets.all(10),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text("닉네임무언가 · 오늘 10:30 ",
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                            )),
+                                        SizedBox(
+                                          height: 4,
+                                        ),
+                                        RichText(
+                                            text: TextSpan(
+                                          text:
+                                              "충댓글내용 댓글내용대충댓글내용 댓글내용대충댓글내용 댓글내용",
+                                          style: TextStyle(color: Colors.black),
+                                        )),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 8.0),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey[50],
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                  padding: EdgeInsets.all(10),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text("닉네임무언가 · 오늘 10:30 ",
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                          )),
+                                      SizedBox(
+                                        height: 4,
+                                      ),
+                                      RichText(
+                                          text: TextSpan(
+                                        text:
+                                            "충댓글내용 댓글내용대충댓글내용 댓글내용대충댓글내용 댓글내용",
+                                        style: TextStyle(color: Colors.black),
+                                      )),
+                                      SizedBox(
+                                        height: 4,
+                                      ),
+                                      Row(
+                                        children: [
+                                          Icon(
+                                            Icons.comment,
+                                            size: 16,
+                                          ),
+                                          SizedBox(
+                                            width: 4,
+                                          ),
+                                          Text("답글달기",
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                              )),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              TextField(
+                                decoration: InputDecoration(
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: BorderSide(
+                                      color: Colors.indigo,
+                                    ),
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  hintText: '댓글을 입력해주세요',
+                                  contentPadding: EdgeInsets.all(10),
+                                  suffixIcon: Icon(
+                                    Icons.send_rounded,
+                                    color: Colors.indigo,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        )))),
                 const SliverPadding(
                     padding: EdgeInsets.symmetric(vertical: 20)),
               ],
@@ -343,9 +334,10 @@ class PostPage extends ConsumerWidget {
   // title: Text('맘스터치'),
   // ),
   // ),
-  Widget _informationTile({required IconData icon,
-    required String title,
-    required String content}) {
+  Widget _informationTile(
+      {required IconData icon,
+      required String title,
+      required String content}) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
       child: Row(
@@ -384,7 +376,6 @@ class PostPage extends ConsumerWidget {
 
   Widget _statusButton(ResponsePost data, WidgetRef ref) {
     String nextStatusText = "";
-
 
     if (data.recruitment) {
       nextStatusText = "주문 확정";
@@ -441,20 +432,19 @@ class PostPage extends ConsumerWidget {
   Widget _joinButton(ResponsePost data, context, WidgetRef ref) {
     onButtonClick() {
       ref.read(myDeliveryNotifierProvider.notifier).setMyDeliverOption(
-        place: data.place,
-        orderTime: data.orderTime,
-        minMember: data.minMember,
-        maxMember: data.maxMember,
-        postId: data.id,
-      );
+            place: data.place,
+            orderTime: data.orderTime,
+            minMember: data.minMember,
+            maxMember: data.maxMember,
+            postId: data.id,
+          );
       ref
           .read(myDeliveryNotifierProvider.notifier)
           .setMyDeliverStore(data.store);
       Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) =>
-                MenuListPage(
+            builder: (context) => MenuListPage(
                   storeId: data.store.id,
                 )),
       );

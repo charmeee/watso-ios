@@ -1,9 +1,7 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sangsangtalk/Auth/auth_provider.dart';
+import 'package:sangsangtalk/Auth/provider/auth_provider.dart';
 
 import 'Auth/view/signIn.dart';
 import 'Common/global.dart';
@@ -63,7 +61,6 @@ class _MyAppState extends ConsumerState<MyApp> {
               ),
             ),
         error: (e, s) {
-          log(e.toString());
           return const Scaffold(
             body: Center(
               child: Text('에러'),

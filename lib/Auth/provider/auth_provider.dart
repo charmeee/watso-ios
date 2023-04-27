@@ -2,9 +2,9 @@ import 'dart:developer';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'models/user_model.dart';
-import 'repository/auth_repository.dart';
-import 'repository/user_repository.dart';
+import '../models/user_model.dart';
+import '../repository/auth_repository.dart';
+import '../repository/user_repository.dart';
 
 enum AuthState {
   initial,
@@ -19,7 +19,6 @@ final startProvider = FutureProvider((ref) async {
     try {
       await ref.read(userNotifierProvider.notifier).getUserProfile();
     } catch (e) {
-      log(e.toString());
       ref.read(authStateProvider.notifier).state = AuthState.unauthenticated;
     }
   }

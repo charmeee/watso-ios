@@ -1,10 +1,8 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../auth_provider.dart';
+import '../provider/auth_provider.dart';
 import '../view/signUp.dart';
 
 class SignInForm extends ConsumerStatefulWidget {
@@ -26,9 +24,9 @@ class _EmailSignInState extends ConsumerState<SignInForm> {
           primaryColor: Colors.indigo,
           inputDecorationTheme: InputDecorationTheme(
               labelStyle: TextStyle(
-                color: Colors.indigo,
-                fontSize: 15,
-              ))),
+            color: Colors.indigo,
+            fontSize: 15,
+          ))),
       child: Form(
         key: _signInFormKey,
         child: Column(
@@ -60,7 +58,8 @@ class _EmailSignInState extends ConsumerState<SignInForm> {
               },
               onSaved: (value) => password = value!,
               keyboardType: TextInputType.text,
-              inputFormatters: [//include ! ~ @ ?
+              inputFormatters: [
+                //include ! ~ @ ?
                 FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9!@~?]')),
               ],
             ),
@@ -68,16 +67,19 @@ class _EmailSignInState extends ConsumerState<SignInForm> {
               height: 30,
             ),
             TextButton(
-                onPressed:() async {
-                  if(_signInFormKey.currentState!.validate()){
+                onPressed: () async {
+                  if (_signInFormKey.currentState!.validate()) {
                     _signInFormKey.currentState!.save();
-                     await ref.read(userNotifierProvider.notifier).signIn( username,password)
-                         .onError((error, stackTrace) {
-                           var message = (error is FormatException) ?error.message:error.toString();
-                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
-                     }
-
-                     );
+                    await ref
+                        .read(userNotifierProvider.notifier)
+                        .signIn(username, password)
+                        .onError((error, stackTrace) {
+                      var message = (error is FormatException)
+                          ? error.message
+                          : error.toString();
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(SnackBar(content: Text(message)));
+                    });
                   }
                 },
                 style: TextButton.styleFrom(
@@ -85,11 +87,9 @@ class _EmailSignInState extends ConsumerState<SignInForm> {
                   padding: EdgeInsets.all(20),
                 ),
                 child: Text("로그인하기", style: TextStyle(color: Colors.white))),
-            SizedBox(
-                height: 10
-            ),
+            SizedBox(height: 10),
             TextButton(
-                onPressed:(){
+                onPressed: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
