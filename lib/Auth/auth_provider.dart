@@ -1,11 +1,10 @@
 import 'dart:developer';
 
-import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-import '../Common/dio.dart';
 import 'models/user_model.dart';
+import 'repository/auth_repository.dart';
+import 'repository/user_repository.dart';
 
 enum AuthState {
   initial,
@@ -32,98 +31,46 @@ final authStateProvider = StateProvider<AuthState>((ref) => AuthState.initial);
 
 final userNotifierProvider =
     StateNotifierProvider<UserNotifier, UserInfo?>((ref) {
-  final dio = ref.watch(dioProvider);
-  final storage = ref.watch(secureStorageProvider);
-  const staticUrl = '/auth';
-  return UserNotifier(dio, storage, staticUrl, ref: ref);
+  return UserNotifier(ref);
 });
 
 class UserNotifier extends StateNotifier<UserInfo?> {
   // final AuthRepository authRepo;
-  final Dio dio;
   final Ref ref;
-  final FlutterSecureStorage storage;
-  final String staticUrl;
 
   // UserNotifier( {required this.authRepo,required this.ref}) : super(null);
-  UserNotifier(this.dio, this.storage, this.staticUrl, {required this.ref})
-      : super(null);
+  UserNotifier(this.ref) : super(null);
 
   //로긴됏을때! 머다? authorize 한다.
 
   Future signIn(username, password) async {
-    try {
-      final response = await dio.post('$staticUrl/signin', data: {
-        'username': username,
-        'pw': password,
-        'registration_token': 'string'
-      });
-      if (response.headers["authentication"]?[0] != null) {
-        log(response.headers["authentication"].runtimeType
-            .toString()); //list string
-        final token =
-            response.headers["authentication"]![0].toString().split("/");
-        log("access token 발급 완료  $token");
-        await storage.delete(key: "accessToken");
-        await storage.write(key: "accessToken", value: token[0]);
-        await storage.delete(key: "refreshToken");
-        await storage.write(key: "refreshToken", value: token[1]);
-      } else {
-        throw Exception("access token 발급 실패");
-      }
-      return getUserProfile();
-    } on DioError catch (e) {
-      if (e.type == DioErrorType.badResponse) {
-        log(e.response.toString());
-        throw FormatException("아이디 또는 비밀번호가 틀렸습니다.");
-      }
-      throw Exception("로그인 실패");
-    }
+    await ref.read(authRepositoryProvider).login(username, password);
+    await ref.read(userRepositoryProvider).getUserProfile();
   }
 
   Future signUp(username, nickname, password, email, account) async {
-    try {
-      final response = await dio.post('$staticUrl/signup', data: {
-        'username': username.toString(),
-        'pw': password.toString(),
-        'nickname': nickname.toString(),
-        'account_number': account.toString(),
-        'email': email.toString(),
-      });
-      return true;
-    } on DioError catch (e) {
-      if (e.type == DioErrorType.badResponse) {
-        if (e.response?.data["msg"]) {
-          throw FormatException(e.response?.data["msg"]);
-        }
-      }
-      throw Exception("회원가입 실패");
-    }
+    await ref
+        .read(userRepositoryProvider)
+        .signUp(username, nickname, password, email, account);
   }
 
   Future signUpCheckDuplicate({required field, required value}) async {
-    try {
-      final response = await dio.get('$staticUrl/signup/duplicate-check',
-          queryParameters: {'field': field, 'value': value});
-      if (response.data['is_duplicated'] != null) {
-        return response.data['is_duplicated'];
-      }
-      throw Exception("응답 객체가 없음");
-    } on DioError catch (e) {
-      throw FormatException("일시적인 서비스 장애입니다.");
-    }
+    // try {
+    //   final response = await dio.get('$staticUrl/signup/duplicate-check',
+    //       queryParameters: {'field': field, 'value': value});
+    //   if (response.data['is_duplicated'] != null) {
+    //     return response.data['is_duplicated'];
+    //   }
+    //   throw Exception("응답 객체가 없음");
+    // } on DioError catch (e) {
+    //   throw FormatException("일시적인 서비스 장애입니다.");
+    // }
   }
 
   Future getUserProfile() async {
-    try {
-      final response = await dio.get('$staticUrl/user');
-      state = UserInfo.fromJson(response.data);
-      ref.read(authStateProvider.notifier).state = AuthState.authenticated;
-    } on DioError catch (e) {
-      throw Exception("프로필 불러오기 실패 실패");
-    } catch (e) {
-      throw Exception(e);
-    }
+    final userInfo = await ref.read(userRepositoryProvider).getUserProfile();
+    state = userInfo;
+    ref.read(authStateProvider.notifier).state = AuthState.authenticated;
   }
 
   // Future<LoginState> venderLogin(Vender vender) async {
@@ -173,21 +120,14 @@ class UserNotifier extends StateNotifier<UserInfo?> {
   //   }
   // }
 
-  Future logout() async {
+  Future<void> logout() async {
     try {
-      await dio.get('$staticUrl/logout');
-      storage.delete(key: "accessToken");
-      storage.delete(key: "refreshToken");
-      state = null;
-      ref.read(authStateProvider.notifier).state = AuthState.unauthenticated;
-      return true;
+      await ref.read(authRepositoryProvider).logout();
     } catch (e) {
-      log(e.toString());
-      storage.delete(key: "accessToken");
-      storage.delete(key: "refreshToken");
-      ref.read(authStateProvider.notifier).state = AuthState.unauthenticated;
-      return false;
+      log('로그아웃 실패');
     }
+    ref.read(authStateProvider.notifier).state = AuthState.unauthenticated;
+    state = null;
   }
 
   Future deleteUserProfile() async {
