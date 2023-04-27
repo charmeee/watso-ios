@@ -30,8 +30,8 @@ class _ServerBadResponseException implements Exception {
   String toString() {
     if (error.response?.statusCode == null) return '서버 에러가 발생하였습니다.';
     if (error.response!.statusCode! >= 400) {
-      if (error.response?.data['message'] != null) {
-        return error.response?.data['message'];
+      if (error.response?.data['msg'] != null) {
+        return error.response?.data['msg'];
       }
       if (error.response!.statusCode! >= 401) {
         return '로그인이 필요합니다.';
