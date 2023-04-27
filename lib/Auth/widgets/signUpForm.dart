@@ -1,17 +1,18 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../provider/user_provider.dart';
+import '../models/user_request_model.dart';
+import 'duplicateCheckBtn.dart';
+import 'signUpSubmitBtn.dart';
 
-class SignUpForm extends ConsumerStatefulWidget {
+class SignUpForm extends StatefulWidget {
+  const SignUpForm({Key? key}) : super(key: key);
+
   @override
-  _SignUpFormState createState() => _SignUpFormState();
+  State<SignUpForm> createState() => _SignUpFormState();
 }
 
-class _SignUpFormState extends ConsumerState<SignUpForm> {
+class _SignUpFormState extends State<SignUpForm> {
   final _signUpFormKey = GlobalKey<FormState>();
   final rootEmail = '@pusan.ac.kr';
 
@@ -20,6 +21,20 @@ class _SignUpFormState extends ConsumerState<SignUpForm> {
   String password = '';
   String email = '';
   String account = '';
+
+  setValid(DuplicateCheckField field, bool value) {
+    switch (field) {
+      case DuplicateCheckField.username:
+        checkUsername = value;
+        break;
+      case DuplicateCheckField.nickname:
+        checkNickname = value;
+        break;
+      case DuplicateCheckField.email:
+        checkEmail = value;
+        break;
+    }
+  }
 
   bool checkUsername = false;
   bool checkNickname = false;
@@ -53,58 +68,21 @@ class _SignUpFormState extends ConsumerState<SignUpForm> {
                     return null;
                   },
                   onChanged: (value) {
-                    username = value;
+                    setState(() {
+                      username = value;
+                    });
                   },
                   inputFormatters: [
-                    //no korean
                     FilteringTextInputFormatter.allow(
                         RegExp(r'[a-zA-Z0-9!@~?]')),
                   ],
                 ),
               ),
               SizedBox(width: 15),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.black,
-                  backgroundColor: Colors.grey[300],
-                ),
-                onPressed: () async {
-                  //validator check
-                  log("중복검사");
-                  if (username.isNotEmpty) {
-                    //api 호출
-                    await ref
-                        .read(userNotifierProvider.notifier)
-                        .signUpCheckDuplicate(
-                            field: 'username', value: username)
-                        .then((value) {
-                      if (!value) {
-                        setState(() {
-                          checkUsername = !value;
-                        });
-                      } else {
-                        showDialog(
-                            context: context,
-                            builder: (context) {
-                              return AlertDialog(
-                                title: Text('이미 존재하는 아이디입니다'),
-                                actions: [
-                                  TextButton(
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                      child: Text('확인'))
-                                ],
-                              );
-                            });
-                      }
-                    }).onError((error, stackTrace) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(error.toString())));
-                    });
-                  }
-                },
-                child: Text('중복검사'),
+              DuplicateCheckButton(
+                field: DuplicateCheckField.username,
+                setValid: setValid,
+                value: username,
               ),
             ],
           ),
@@ -119,57 +97,22 @@ class _SignUpFormState extends ConsumerState<SignUpForm> {
                       return '닉네임을 입력해주세요';
                     }
                     if (!checkNickname) {
-                      return '아이디 중복검사를 해주세요';
+                      return '닉네임 중복검사를 해주세요';
                     }
                     return null;
                   },
                   onChanged: (value) {
-                    nickname = value;
+                    setState(() {
+                      nickname = value;
+                    });
                   },
                 ),
               ),
               SizedBox(width: 15),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.black,
-                  backgroundColor: Colors.grey[300],
-                ),
-                onPressed: () async {
-                  log("중복검사");
-                  if (nickname.isNotEmpty) {
-                    await ref
-                        .read(userNotifierProvider.notifier)
-                        .signUpCheckDuplicate(
-                            field: 'nickname', value: nickname)
-                        .then((value) {
-                      if (!value) {
-                        setState(() {
-                          checkNickname = !value;
-                        });
-                      } else {
-                        showDialog(
-                            context: context,
-                            builder: (context) {
-                              return AlertDialog(
-                                title: Text('이미 존재하는 닉네임입니다'),
-                                actions: [
-                                  TextButton(
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                      child: Text('확인'))
-                                ],
-                              );
-                            });
-                      }
-                    }).onError((error, stackTrace) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(error.toString())));
-                    });
-                    //api 호출
-                  }
-                },
-                child: Text('중복검사'),
+              DuplicateCheckButton(
+                field: DuplicateCheckField.nickname,
+                setValid: setValid,
+                value: nickname,
               ),
             ],
           ),
@@ -195,22 +138,19 @@ class _SignUpFormState extends ConsumerState<SignUpForm> {
                     FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9]')),
                   ],
                   onChanged: (value) {
-                    email = value;
+                    setState(() {
+                      email = value;
+                    });
                   },
                   keyboardType: TextInputType.emailAddress,
                 ),
               ),
               Text(rootEmail),
               SizedBox(width: 25),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.black,
-                  backgroundColor: Colors.grey[300],
-                ),
-                onPressed: () {
-                  //api 호출
-                },
-                child: Text('인증'),
+              DuplicateCheckButton(
+                field: DuplicateCheckField.email,
+                setValid: setValid,
+                value: email,
               ),
             ],
           ),
@@ -227,7 +167,9 @@ class _SignUpFormState extends ConsumerState<SignUpForm> {
               return null;
             },
             onSaved: (value) {
-              password = value!;
+              setState(() {
+                password = value!;
+              });
             },
             inputFormatters: [
               //include ! ~ @ ?
@@ -259,61 +201,16 @@ class _SignUpFormState extends ConsumerState<SignUpForm> {
             ],
           ),
           SizedBox(height: 20),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              foregroundColor: Colors.white,
-              backgroundColor: Colors.indigo,
-              padding: EdgeInsets.symmetric(vertical: 15),
-            ),
-            onPressed: () {
-              if (_signUpFormKey.currentState!.validate()) {
-                _signUpFormKey.currentState!.save();
-                log('username: $username, nickname: $nickname, email: $email, password: $password, account: $account');
-                //api 호출
-                ref
-                    .read(userNotifierProvider.notifier)
-                    .signUp(username, nickname, password, email, account)
-                    .then((value) {
-                  showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          title: Text('회원가입이 완료되었습니다'),
-                          actions: [
-                            TextButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                child: Text('확인'))
-                          ],
-                        );
-                      }).then((value) => Navigator.pop(context));
-                }).onError((error, stackTrace) {
-                  ScaffoldMessenger.of(context)
-                      .showSnackBar(SnackBar(content: Text(error.toString())));
-                });
-              }
-            },
-            child: Text('회원가입'),
-          ),
+          SignUpSubmitButton(
+            signUpFormKey: _signUpFormKey,
+            username: username,
+            nickname: nickname,
+            password: password,
+            email: email,
+            account: account,
+          )
         ],
       ),
     );
   }
 }
-
-// TextFormField(
-// decoration: InputDecoration(labelText: '비밀번호 확인'),
-// validator: (value) {
-// if (value == null || value.isEmpty) {
-// return '비밀번호를 입력해주세요';
-// }
-// if (value != passwordForCheck) {
-// return '비밀번호가 일치하지 않습니다';
-// }
-// return null;
-// },
-// inputFormatters: [//include ! ~ @ ?
-// FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9!@~?]')),
-// ],
-// ),
