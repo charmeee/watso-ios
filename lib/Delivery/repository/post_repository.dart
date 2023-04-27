@@ -11,7 +11,7 @@ final postRepositoryProvider = Provider<PostRepository>(
   (ref) {
     final dio = ref.watch(dioProvider);
 
-    const staticUrl = '/api/delivery/post';
+    const staticUrl = '/delivery/post';
 
     return PostRepository(dio, staticUrl);
   },

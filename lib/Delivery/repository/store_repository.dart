@@ -10,7 +10,7 @@ final storeRepositoryProvider = Provider<StoreRepository>(
   (ref) {
     final dio = ref.watch(dioProvider);
 
-    const staticUrl = '/api/delivery/store';
+    const staticUrl = '/delivery/store';
 
     return StoreRepository(dio, staticUrl);
   },

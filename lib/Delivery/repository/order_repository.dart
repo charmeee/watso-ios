@@ -9,7 +9,7 @@ final orderRepositoryProvider = Provider<OrderRepository>(
   (ref) {
     final dio = ref.watch(dioProvider);
 
-    const staticUrl = '/api/delivery/order';
+    const staticUrl = '/delivery/order';
 
     return OrderRepository(dio, staticUrl);
   },
