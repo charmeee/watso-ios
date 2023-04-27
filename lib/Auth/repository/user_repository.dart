@@ -5,6 +5,7 @@ import 'package:sangsangtalk/Auth/models/user_model.dart';
 
 import '../../Common/dio.dart';
 import '../../Common/failures.dart';
+import '../models/user_request_model.dart';
 
 final userRepositoryProvider = Provider<UserRepository>(
   (ref) {
@@ -53,7 +54,20 @@ class UserRepository {
 
   Future<void> updateUserProfile(UserInfo userInfo) async {
     try {
-      await _dio.put('$staticUrl/profile', data: userInfo.toJson());
+      await _dio.patch('$staticUrl/profile', data: userInfo.toJson());
+    } on DioError catch (e) {
+      throw ServerException(e);
+    } catch (e) {
+      throw DataParsingException(e.toString());
+    }
+  }
+
+  Future<bool> checkDuplicated(
+      {required DuplicateCheckField field, required String value}) async {
+    try {
+      final response = await _dio.get('$staticUrl/duplicate-check',
+          queryParameters: {'field': field.name, 'value': value});
+      return response.data['is_duplicated'];
     } on DioError catch (e) {
       throw ServerException(e);
     } catch (e) {
