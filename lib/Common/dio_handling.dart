@@ -6,7 +6,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-import '../Auth/provider/auth_provider.dart';
+import '../Auth/provider/user_provider.dart';
 import 'dio_base.dart';
 import 'global.dart';
 

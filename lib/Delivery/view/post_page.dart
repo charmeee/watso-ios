@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:sangsangtalk/Common/widget/appbar.dart';
 
-import '../../Auth/provider/auth_provider.dart';
+import '../../Auth/provider/user_provider.dart';
 import '../models/post_response_model.dart';
 import '../provider/my_deliver_provider.dart';
 import '../provider/post_list_provider.dart';

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../provider/auth_provider.dart';
+import '../provider/user_provider.dart';
 import '../view/signUp.dart';
 
 class SignInForm extends ConsumerStatefulWidget {
