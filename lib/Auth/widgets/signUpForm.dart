@@ -13,6 +13,8 @@ class SignUpForm extends ConsumerStatefulWidget {
 
 class _SignUpFormState extends ConsumerState<SignUpForm> {
   final _signUpFormKey = GlobalKey<FormState>();
+  final rootEmail = '@pusan.ac.kr';
+
   String username = '';
   String nickname = '';
   String password = '';
@@ -21,6 +23,7 @@ class _SignUpFormState extends ConsumerState<SignUpForm> {
 
   bool checkUsername = false;
   bool checkNickname = false;
+  bool checkEmail = false;
 
   @override
   Widget build(BuildContext context) {
@@ -52,8 +55,14 @@ class _SignUpFormState extends ConsumerState<SignUpForm> {
                   onChanged: (value) {
                     username = value;
                   },
+                  inputFormatters: [
+                    //no korean
+                    FilteringTextInputFormatter.allow(
+                        RegExp(r'[a-zA-Z0-9!@~?]')),
+                  ],
                 ),
               ),
+              SizedBox(width: 15),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.black,
@@ -119,6 +128,7 @@ class _SignUpFormState extends ConsumerState<SignUpForm> {
                   },
                 ),
               ),
+              SizedBox(width: 15),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.black,
@@ -164,19 +174,25 @@ class _SignUpFormState extends ConsumerState<SignUpForm> {
             ],
           ),
           Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Expanded(
                 child: TextFormField(
                   autovalidateMode: AutovalidateMode.onUserInteraction,
-                  decoration: InputDecoration(labelText: '이메일'),
+                  decoration: InputDecoration(
+                    labelText: '이메일',
+                  ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return '이메일을 입력해주세요';
                     }
+                    if (!checkEmail) {
+                      return '이메일 중복검사를 해주세요';
+                    }
                     return null;
                   },
                   inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9@.]')),
+                    FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9]')),
                   ],
                   onChanged: (value) {
                     email = value;
@@ -184,6 +200,8 @@ class _SignUpFormState extends ConsumerState<SignUpForm> {
                   keyboardType: TextInputType.emailAddress,
                 ),
               ),
+              Text(rootEmail),
+              SizedBox(width: 25),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.black,
