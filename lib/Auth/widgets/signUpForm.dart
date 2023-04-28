@@ -18,6 +18,7 @@ class _SignUpFormState extends State<SignUpForm> {
 
   String username = '';
   String nickname = '';
+  String name = '';
   String password = '';
   String email = '';
   String emailValidationCode = '';
@@ -257,11 +258,36 @@ class _SignUpFormState extends State<SignUpForm> {
               FilteringTextInputFormatter.allow(RegExp(r'[0-9ㄱ-ㅎㅏ-ㅣ가-힣 ]')),
             ],
           ),
+          TextFormField(
+            //account
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            decoration: InputDecoration(
+              labelText: '성함',
+              hintText: '홍길동',
+            ),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return '실명을 입력해주세요';
+              }
+              return null;
+            },
+            onChanged: (value) {
+              setState(() {
+                name = value;
+              });
+            },
+            keyboardType: TextInputType.text,
+            inputFormatters: [
+              //number and korean and space
+              FilteringTextInputFormatter.allow(RegExp(r'[ㄱ-ㅎㅏ-ㅣ가-힣 ]')),
+            ],
+          ),
           SizedBox(height: 20),
           SignUpSubmitButton(
             signUpFormKey: _signUpFormKey,
             username: username,
             nickname: nickname,
+            name: name,
             password: password,
             email: email,
             account: account,
