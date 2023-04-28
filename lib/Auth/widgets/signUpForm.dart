@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import '../models/user_request_model.dart';
 import 'duplicateCheckBtn.dart';
 import 'signUpSubmitBtn.dart';
+import 'validCheckBtn.dart';
 
 class SignUpForm extends StatefulWidget {
   const SignUpForm({Key? key}) : super(key: key);
@@ -19,7 +20,9 @@ class _SignUpFormState extends State<SignUpForm> {
   String nickname = '';
   String password = '';
   String email = '';
+  String emailValidationCode = '';
   String account = '';
+  String token = '';
 
   bool checkUsernameDuplicate = false;
   bool checkNicknameDuplicate = false;
@@ -42,9 +45,12 @@ class _SignUpFormState extends State<SignUpForm> {
     });
   }
 
-  bool checkUsername = false;
-  bool checkNickname = false;
-  bool checkEmail = false;
+  setValidFlag(bool value, String token) {
+    setState(() {
+      checkEmailValid = value;
+      this.token = token;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -160,6 +166,45 @@ class _SignUpFormState extends State<SignUpForm> {
               ),
             ],
           ),
+          if (checkEmailDuplicate)
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: TextFormField(
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    decoration: InputDecoration(
+                      labelText: '인증코드',
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return '인증코드를 입력해주세요';
+                      }
+                      if (!checkEmailValid) {
+                        return '인증코드를 확인해주세요';
+                      }
+                      return null;
+                    },
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                    ],
+                    onChanged: (value) {
+                      setState(() {
+                        emailValidationCode = value;
+                      });
+                    },
+                    keyboardType: TextInputType.number,
+                  ),
+                ),
+                SizedBox(width: 25),
+                ValidCheckButton(
+                  setValidFlag: setValidFlag,
+                  checkEmailValid: checkEmailValid,
+                  emailValidationCode: emailValidationCode,
+                  email: email,
+                ),
+              ],
+            ),
           TextFormField(
             autovalidateMode: AutovalidateMode.onUserInteraction,
             decoration: InputDecoration(labelText: '비밀번호'),
@@ -214,6 +259,7 @@ class _SignUpFormState extends State<SignUpForm> {
             password: password,
             email: email,
             account: account,
+            token: token,
           )
         ],
       ),
