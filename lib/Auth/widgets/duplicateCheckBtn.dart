@@ -24,39 +24,33 @@ class DuplicateCheckButton extends ConsumerWidget {
       ),
       onPressed: () async {
         if (value.isNotEmpty) {
-          await ref
-              .read(userRepositoryProvider)
-              .checkDuplicated(field: field, value: value)
-              .then((value) {
-            if (!value) {
-              setValid(field, true);
-            } else {
-              showDialog(
-                  context: context,
-                  builder: (context) {
-                    return AlertDialog(
-                      title: Text('이미 존재하는 ${field.korName}입니다'),
-                      actions: [
-                        TextButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            child: Text('확인'))
-                      ],
-                    );
-                  });
+          try {
+            await ref.read(userRepositoryProvider).checkDuplicated(
+                field: field,
+                value: field == DuplicateCheckField.email
+                    ? value + rootEmail
+                    : value);
+
+            if (field == DuplicateCheckField.email) {
+              //인증 코드 발송
+              await ref
+                  .read(userRepositoryProvider)
+                  .sendValidEmail(value + rootEmail);
             }
-          }).onError((error, stackTrace) {
+            setValid(field, true);
+          } catch (e) {
             ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text(error.toString())));
-          });
+                .showSnackBar(SnackBar(content: Text(e.toString())));
+          }
+
           //api 호출
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text('${field.korName}을 입력해주세요')));
         }
       },
-      child: field == (DuplicateCheckField.email) ? Text('인증하기') : Text('중복검사'),
+      child:
+      field == (DuplicateCheckField.email) ? Text('인증코드 발송') : Text('중복검사'),
     );
   }
 }
