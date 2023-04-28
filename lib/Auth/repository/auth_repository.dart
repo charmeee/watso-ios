@@ -24,7 +24,7 @@ class AuthRepository {
 
   Future<void> login(String username, String password) async {
     try {
-      final response = await _dio.post('$staticUrl/signin', data: {
+      final response = await _dio.post('$staticUrl/login', data: {
         'username': username,
         'pw': password,
         'registration_token': 'string'
