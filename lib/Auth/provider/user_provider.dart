@@ -44,21 +44,13 @@ class UserNotifier extends StateNotifier<UserInfo?> {
 
   Future signIn(username, password) async {
     await ref.read(authRepositoryProvider).login(username, password);
-    await ref.read(userRepositoryProvider).getUserProfile();
-  }
-
-  Future signUp(username, nickname, password, email, account) async {
-    await ref
-        .read(userRepositoryProvider)
-        .signUp(username, nickname, password, email, account);
+    getUserProfile();
   }
 
   Future getUserProfile() async {
     final userInfo = await ref.read(userRepositoryProvider).getUserProfile();
     state = userInfo;
-    ref
-        .read(authStateProvider.notifier)
-        .state = AuthState.authenticated;
+    ref.read(authStateProvider.notifier).state = AuthState.authenticated;
   }
 
   Future<void> logout() async {
