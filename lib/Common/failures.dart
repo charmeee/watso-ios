@@ -34,7 +34,7 @@ class _ServerBadResponseException implements Exception {
         return error.response?.data['msg'];
       }
       if (error.response!.statusCode! >= 401) {
-        return '로그인이 필요합니다.';
+        return '인증이 만료되었습니다.';
       }
       return '에러가 발생하였습니다.';
     } else {
