@@ -82,6 +82,7 @@ class _SignUpFormState extends State<SignUpForm> {
                   onChanged: (value) {
                     setState(() {
                       username = value;
+                      checkUsernameDuplicate = false;
                     });
                   },
                   inputFormatters: [
@@ -116,6 +117,7 @@ class _SignUpFormState extends State<SignUpForm> {
                   onChanged: (value) {
                     setState(() {
                       nickname = value;
+                      checkNicknameDuplicate = false;
                     });
                   },
                 ),
@@ -152,9 +154,13 @@ class _SignUpFormState extends State<SignUpForm> {
                   onChanged: (value) {
                     setState(() {
                       email = value;
+                      checkEmailDuplicate = false;
+                      checkEmailValid = false;
+                      emailValidationCode = '';
+                      token = '';
                     });
                   },
-                  keyboardType: TextInputType.emailAddress,
+                  keyboardType: TextInputType.text,
                 ),
               ),
               Text(rootEmail),
