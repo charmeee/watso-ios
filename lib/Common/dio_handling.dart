@@ -92,7 +92,8 @@ class CustomInterceptor extends Interceptor {
     final isStatus401 = err.response?.statusCode == 401;
     final isPathRefresh = err.requestOptions.path == '/auth/signin/refresh';
     final isPathLogOut = err.requestOptions.path == '/auth/logout';
-    if (isStatus401 && !isPathRefresh) {
+    final isPathSignUp = err.requestOptions.path.contains('/user/signup');
+    if (isStatus401 && !isPathRefresh && !isPathSignUp) {
       final dio = Dio(options);
 
       try {
@@ -131,14 +132,14 @@ class CustomInterceptor extends Interceptor {
         if (ref.read(authStateProvider.notifier).state ==
             AuthState.authenticated) {
           showErrorDialog('다시 로그인 해 주세요');
-          await ref.read(userNotifierProvider.notifier).logout();
+          await ref.read(userNotifierProvider.notifier).init();
         }
       } catch (e) {
         log('refresh token 실패 ${e.toString()}');
       }
+      await storage.delete(key: "accessToken");
+      await storage.delete(key: "refreshToken");
     }
-    await storage.delete(key: "accessToken");
-    await storage.delete(key: "refreshToken");
     return handler.reject(err);
   }
 }

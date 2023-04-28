@@ -19,9 +19,7 @@ final startProvider = FutureProvider((ref) async {
     try {
       await ref.read(userNotifierProvider.notifier).getUserProfile();
     } catch (e) {
-      ref
-          .read(authStateProvider.notifier)
-          .state = AuthState.unauthenticated;
+      ref.read(authStateProvider.notifier).state = AuthState.unauthenticated;
     }
   }
 
@@ -31,7 +29,7 @@ final startProvider = FutureProvider((ref) async {
 final authStateProvider = StateProvider<AuthState>((ref) => AuthState.initial);
 
 final userNotifierProvider =
-StateNotifierProvider<UserNotifier, UserInfo?>((ref) {
+    StateNotifierProvider<UserNotifier, UserInfo?>((ref) {
   return UserNotifier(ref);
 });
 
@@ -69,17 +67,16 @@ class UserNotifier extends StateNotifier<UserInfo?> {
     } catch (e) {
       log('로그아웃 실패');
     }
-    ref
-        .read(authStateProvider.notifier)
-        .state = AuthState.unauthenticated;
-    state = null;
+    init();
   }
 
   Future deleteUserProfile() async {
     log("회원탈퇴");
+    init();
+  }
+
+  init() {
+    ref.read(authStateProvider.notifier).state = AuthState.unauthenticated;
     state = null;
-    ref
-        .read(authStateProvider.notifier)
-        .state = AuthState.unauthenticated;
   }
 }
