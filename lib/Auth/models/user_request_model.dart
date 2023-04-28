@@ -1,3 +1,5 @@
+const rootEmail = '@pusan.ac.kr';
+
 enum DuplicateCheckField {
   email,
   username,
