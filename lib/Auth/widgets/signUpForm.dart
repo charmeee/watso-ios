@@ -14,7 +14,6 @@ class SignUpForm extends StatefulWidget {
 
 class _SignUpFormState extends State<SignUpForm> {
   final _signUpFormKey = GlobalKey<FormState>();
-  final rootEmail = '@pusan.ac.kr';
 
   String username = '';
   String nickname = '';
@@ -23,17 +22,19 @@ class _SignUpFormState extends State<SignUpForm> {
   String account = '';
 
   setValid(DuplicateCheckField field, bool value) {
-    switch (field) {
-      case DuplicateCheckField.username:
-        checkUsername = value;
-        break;
-      case DuplicateCheckField.nickname:
-        checkNickname = value;
-        break;
-      case DuplicateCheckField.email:
-        checkEmail = value;
-        break;
-    }
+    setState(() {
+      switch (field) {
+        case DuplicateCheckField.username:
+          checkUsername = value;
+          break;
+        case DuplicateCheckField.nickname:
+          checkNickname = value;
+          break;
+        case DuplicateCheckField.email:
+          checkEmail = value;
+          break;
+      }
+    });
   }
 
   bool checkUsername = false;
@@ -166,9 +167,9 @@ class _SignUpFormState extends State<SignUpForm> {
               }
               return null;
             },
-            onSaved: (value) {
+            onChanged: (value) {
               setState(() {
-                password = value!;
+                password = value;
               });
             },
             inputFormatters: [
@@ -189,15 +190,15 @@ class _SignUpFormState extends State<SignUpForm> {
               }
               return null;
             },
-            onSaved: (value) {
-              {
-                account = value!;
-              }
+            onChanged: (value) {
+              setState(() {
+                account = value;
+              });
             },
             keyboardType: TextInputType.text,
             inputFormatters: [
-              //number and korean
-              FilteringTextInputFormatter.allow(RegExp(r'[0-9ㄱ-ㅎㅏ-ㅣ가-힣]')),
+              //number and korean and space
+              FilteringTextInputFormatter.allow(RegExp(r'[0-9ㄱ-ㅎㅏ-ㅣ가-힣 ]')),
             ],
           ),
           SizedBox(height: 20),
