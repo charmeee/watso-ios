@@ -24,15 +24,29 @@ class UserRepository {
   final FlutterSecureStorage storage;
   final Dio _dio;
 
-  Future<void> signUp(String username, String nickname, String password,
-      String email, String account) async {
+  Future<void> signUp(String username, String nickname, String name,
+      String password, String email, String account, String token) async {
     try {
       await _dio.post('$staticUrl/signup', data: {
-        'username': username.toString(),
-        'pw': password.toString(),
-        'nickname': nickname.toString(),
-        'account_number': account.toString(),
-        'email': email.toString(),
+        'username': username,
+        'pw': password,
+        'nickname': nickname,
+        'name': name,
+        'account_number': account,
+        'email': email,
+        'auth_token': token,
+      });
+    } on DioError catch (e) {
+      throw ServerException(e);
+    } catch (e) {
+      throw Exception("알 수 없는 에러");
+    }
+  }
+
+  Future<void> sendValidEmail(String email) async {
+    try {
+      await _dio.get('$staticUrl/signup', queryParameters: {
+        'email': email,
       });
     } on DioError catch (e) {
       throw ServerException(e);
