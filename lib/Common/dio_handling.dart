@@ -29,7 +29,7 @@ class CustomInterceptor extends Interceptor {
       RequestOptions options, RequestInterceptorHandler handler) async {
     log('[REQ] [${options.method}] ${options.uri} ${options.data} ${options.headers}');
     final token = await storage.read(key: 'accessToken');
-    log('token: $token');
+    // log('token: $token');
     //실제 토큰으로 대체
     if (token != null) {
       options.headers.addAll({
@@ -131,14 +131,14 @@ class CustomInterceptor extends Interceptor {
         if (ref.read(authStateProvider.notifier).state ==
             AuthState.authenticated) {
           showErrorDialog('다시 로그인 해 주세요');
-          ref.read(userNotifierProvider.notifier).logout();
+          await ref.read(userNotifierProvider.notifier).logout();
         }
-        return handler.reject(e);
       } catch (e) {
         log('refresh token 실패 ${e.toString()}');
       }
     }
-
+    await storage.delete(key: "accessToken");
+    await storage.delete(key: "refreshToken");
     return handler.reject(err);
   }
 }
