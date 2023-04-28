@@ -45,14 +45,17 @@ class AuthRepository {
   Future<void> logout() async {
     try {
       await _dio.delete('$staticUrl/logout');
-      await storage.delete(key: "accessToken");
-      await storage.delete(key: "refreshToken");
+      await initUser();
     } on DioError catch (e) {
-      await storage.delete(key: "accessToken");
-      await storage.delete(key: "refreshToken");
+      await initUser();
       throw ServerException(e);
     } catch (e) {
       throw TokenSetupException(e.toString());
     }
+  }
+
+  Future<void> initUser() async {
+    await storage.delete(key: "accessToken");
+    await storage.delete(key: "refreshToken");
   }
 }
