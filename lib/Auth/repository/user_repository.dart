@@ -41,6 +41,21 @@ class UserRepository {
     }
   }
 
+  Future<String> checkValidEmail(String email, String validCode) async {
+    try {
+      final response = await _dio
+          .get('$staticUrl/signup/validation-check', queryParameters: {
+        'email': email,
+        'auth-code': validCode,
+      });
+      return response.data['auth_token'];
+    } on DioError catch (e) {
+      throw ServerException(e);
+    } catch (e) {
+      throw Exception("알 수 없는 에러");
+    }
+  }
+
   Future<UserInfo> getUserProfile() async {
     try {
       final response = await _dio.get('$staticUrl/profile');
