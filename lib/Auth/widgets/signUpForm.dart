@@ -21,17 +21,22 @@ class _SignUpFormState extends State<SignUpForm> {
   String email = '';
   String account = '';
 
-  setValid(DuplicateCheckField field, bool value) {
+  bool checkUsernameDuplicate = false;
+  bool checkNicknameDuplicate = false;
+  bool checkEmailDuplicate = false;
+  bool checkEmailValid = false;
+
+  setDuplicationFlag(DuplicateCheckField field, bool value) {
     setState(() {
       switch (field) {
         case DuplicateCheckField.username:
-          checkUsername = value;
+          checkUsernameDuplicate = value;
           break;
         case DuplicateCheckField.nickname:
-          checkNickname = value;
+          checkNicknameDuplicate = value;
           break;
         case DuplicateCheckField.email:
-          checkEmail = value;
+          checkEmailDuplicate = value;
           break;
       }
     });
@@ -63,7 +68,7 @@ class _SignUpFormState extends State<SignUpForm> {
                     if (value == null || value.isEmpty) {
                       return '아이디 입력해주세요';
                     }
-                    if (!checkUsername) {
+                    if (!checkUsernameDuplicate) {
                       return '아이디 중복검사를 해주세요';
                     }
                     return null;
@@ -82,7 +87,7 @@ class _SignUpFormState extends State<SignUpForm> {
               SizedBox(width: 15),
               DuplicateCheckButton(
                 field: DuplicateCheckField.username,
-                setValid: setValid,
+                setValid: setDuplicationFlag,
                 value: username,
               ),
             ],
@@ -97,7 +102,7 @@ class _SignUpFormState extends State<SignUpForm> {
                     if (value == null || value.isEmpty) {
                       return '닉네임을 입력해주세요';
                     }
-                    if (!checkNickname) {
+                    if (!checkNicknameDuplicate) {
                       return '닉네임 중복검사를 해주세요';
                     }
                     return null;
@@ -112,7 +117,7 @@ class _SignUpFormState extends State<SignUpForm> {
               SizedBox(width: 15),
               DuplicateCheckButton(
                 field: DuplicateCheckField.nickname,
-                setValid: setValid,
+                setValid: setDuplicationFlag,
                 value: nickname,
               ),
             ],
@@ -130,8 +135,8 @@ class _SignUpFormState extends State<SignUpForm> {
                     if (value == null || value.isEmpty) {
                       return '이메일을 입력해주세요';
                     }
-                    if (!checkEmail) {
-                      return '이메일 중복검사를 해주세요';
+                    if (!checkEmailDuplicate) {
+                      return '인증코드를 발송 해주세요';
                     }
                     return null;
                   },
@@ -150,7 +155,7 @@ class _SignUpFormState extends State<SignUpForm> {
               SizedBox(width: 25),
               DuplicateCheckButton(
                 field: DuplicateCheckField.email,
-                setValid: setValid,
+                setValid: setDuplicationFlag,
                 value: email,
               ),
             ],
