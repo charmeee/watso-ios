@@ -3,18 +3,24 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../Common/widget/appbar.dart';
 import '../models/post_model.dart';
+import '../provider/post_list_provider.dart';
 import '../repository/order_repository.dart';
+import '../repository/post_repository.dart';
 
 class MyPostOrderDetailPage extends ConsumerWidget {
   final String postId;
   final Store store;
   final int orderNum;
+  final bool isOwner;
+  final PostStatus status;
 
   const MyPostOrderDetailPage(
       {Key? key,
       required this.postId,
       required this.store,
-      required this.orderNum})
+      required this.orderNum,
+      required this.isOwner,
+      required this.status})
       : super(key: key);
 
   @override
@@ -33,41 +39,100 @@ class MyPostOrderDetailPage extends ConsumerWidget {
             Padding(
               padding:
                   const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     store.name,
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  SizedBox(
-                    height: 40,
-                    child: Row(
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {},
-                          child: Icon(Icons.delete),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.red[300],
-                          ),
-                        ),
-                        SizedBox(
-                          width: 20,
-                        ),
-                        Expanded(
-                            child: ElevatedButton(
-                          onPressed: () {},
-                          child: Text('가게보기'),
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.grey),
-                        )),
-                      ],
+                  IconButton(
+                    onPressed: () async {
+                      if (isOwner &&
+                          (status == PostStatus.recruiting ||
+                              status == PostStatus.closed)) {
+                        showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                                  title: Text('게시글 삭제'),
+                                  content: Text('게시글을 삭제하시겠습니까?'),
+                                  actions: [
+                                    TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context, true);
+                                        },
+                                        child: Text('삭제')),
+                                    TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context, false);
+                                        },
+                                        child: Text('취소')),
+                                  ],
+                                )).then((value) async {
+                          if (value) {
+                            await ref
+                                .read(postRepositoryProvider)
+                                .deletePost(postId);
+                            ref.invalidate(myPostListProvider);
+                            Navigator.popUntil(
+                                context, (route) => route.isFirst);
+                          }
+                        });
+                        return;
+                      }
+                      if (status == PostStatus.recruiting) {
+                        showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                                  title: Text('게시글 탈퇴'),
+                                  content:
+                                      Text('해당 주문 내역을 모두 취소하고 게시글을 탈퇴하시겠습니까?'),
+                                  actions: [
+                                    TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context, true);
+                                        },
+                                        child: Text('네')),
+                                    TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: Text('아니요')),
+                                  ],
+                                )).then((value) async {
+                          if (value) {
+                            await ref
+                                .read(postRepositoryProvider)
+                                .leavePost(postId);
+                            ref.invalidate(myPostListProvider);
+                            Navigator.popUntil(
+                                context, (route) => route.isFirst);
+                          }
+                        });
+                        return;
+                      }
+                      final errorText = status == PostStatus.closed
+                          ? '모집 마감 상태에서는 주문을 삭제할 수 없습니다. 게시글 대표에게 문의해보세요'
+                          : '${status.korName}상테어서는 주문을 삭제할 수 없습니다.';
+                      showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                                title: Text('에러'),
+                                content: Text(errorText),
+                                actions: [
+                                  TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: Text('확인')),
+                                ],
+                              ));
+                    },
+                    icon: Icon(
+                      Icons.delete,
+                      color: Colors.red[300],
                     ),
-                  ),
+                  )
                 ],
               ),
             ),

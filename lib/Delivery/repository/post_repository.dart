@@ -8,7 +8,7 @@ import '../models/post_request_model.dart';
 import '../models/post_response_model.dart';
 
 final postRepositoryProvider = Provider<PostRepository>(
-  (ref) {
+      (ref) {
     final dio = ref.watch(dioProvider);
 
     const staticUrl = '/delivery/post';
@@ -41,7 +41,7 @@ class PostRepository {
   Future postDelivery(PostOrder postOrder) async {
     try {
       final response =
-          await _dio.post(staticUrl, data: postOrder.newPostToJson());
+      await _dio.post(staticUrl, data: postOrder.newPostToJson());
       return response.data;
     } on DioError catch (e) {
       throw ServerException(e);
@@ -73,4 +73,29 @@ class PostRepository {
       throw DataParsingException(e, s);
     }
   }
+
+  //게시글 삭제
+  Future deletePost(String postId) async {
+    try {
+      await _dio.delete('$staticUrl/$postId');
+      return;
+    } on DioError catch (e) {
+      throw ServerException(e);
+    } catch (e, s) {
+      throw DataParsingException(e, s);
+    }
+  }
+
+  //게시글 탈퇴
+  Future leavePost(String postId) async {
+    try {
+      await _dio.delete('$staticUrl/$postId/me');
+      return;
+    } on DioError catch (e) {
+      throw ServerException(e);
+    } catch (e, s) {
+      throw DataParsingException(e, s);
+    }
+  }
+
 }
