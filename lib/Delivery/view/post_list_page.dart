@@ -1,6 +1,7 @@
 //Main delivery page
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sangsangtalk/Auth/view/setting_page.dart';
 
 import '../../Common/widget/appbar.dart';
 import '../widgets/index_filter_box.dart';
@@ -61,7 +62,16 @@ class _DeliveryMainPageState extends ConsumerState<DeliveryMainPage> {
             );
           },
           icon: Icon(Icons.timelapse_outlined)),
-      IconButton(onPressed: () {}, icon: Icon(Icons.settings)),
+      IconButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => SettingPage(),
+              ),
+            );
+          },
+          icon: Icon(Icons.settings)),
     ];
   }
 }
