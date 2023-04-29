@@ -1,0 +1,179 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sangsangtalk/Delivery/models/comment_model.dart';
+
+import '../../provider/post_list_provider.dart';
+import '../../repository/post_repository.dart';
+
+class CommentBox extends ConsumerWidget {
+  const CommentBox(
+      {Key? key,
+      required this.isOwner,
+      required this.isJoined,
+      required this.comment,
+      required this.isParent,
+      required this.selectedCommentId,
+      required this.selectComment})
+      : super(key: key);
+  final bool isJoined;
+  final bool isOwner;
+  final Comment comment;
+  final bool isParent;
+  final String selectedCommentId;
+  final Function(String commentId) selectComment;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Container(
+        decoration: BoxDecoration(
+          color: selectedCommentId == comment.id
+              ? Colors.indigo[50]
+              : Colors.grey[50],
+          borderRadius: BorderRadius.circular(5),
+        ),
+        padding: EdgeInsets.all(10),
+        child: comment.status == CommentStatus.deleted
+            ? Text("삭제된 댓글입니다.")
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("${comment.nickname} · 날짜추가 ",
+                          style: TextStyle(
+                            fontSize: 16,
+                          )),
+                      InkWell(
+                        child: Icon(
+                          Icons.close,
+                          size: 14,
+                        ),
+                        onTap: () {
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text("댓글 삭제"),
+                                  content: Text("댓글을 삭제하시겠습니까?"),
+                                  actions: [
+                                    TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Text("취소")),
+                                    TextButton(
+                                        onPressed: () {
+                                          ref
+                                              .read(postRepositoryProvider)
+                                              .deleteComment(
+                                                  comment.postId, comment.id)
+                                              .then((value) => ref.invalidate(
+                                                  postCommentListProvider(
+                                                      comment.postId)))
+                                              .onError((error, stackTrace) {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(SnackBar(
+                                                    content: Text(
+                                                        "댓글 삭제에 실패했습니다.")));
+                                          });
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Text("삭제")),
+                                  ],
+                                );
+                              });
+                          //showMenu in center
+                          // showDialog(
+                          //     context: context,
+                          //     builder: (BuildContext context) {
+                          //       return SimpleDialog(
+                          //         alignment: Alignment.center,
+                          //         contentPadding:
+                          //             EdgeInsets.symmetric(horizontal: 16),
+                          //         children: <Widget>[
+                          //           SimpleDialogOption(
+                          //             onPressed: () {
+                          //               ref.read(postRepositoryProvider).updateComment(comment.postId, comment.id, comment)
+                          //               ref.invalidate(
+                          //                   postCommentListProvider(comment.postId));
+                          //
+                          //               Navigator.of(context).pop();
+                          //             },
+                          //             child: Padding(
+                          //               padding: const EdgeInsets.all(8.0),
+                          //               child: const Text(
+                          //                 '수정',
+                          //                 textAlign: TextAlign.center,
+                          //               ),
+                          //             ),
+                          //           ),
+                          //           Divider(
+                          //             height: 1,
+                          //             color: Colors.grey,
+                          //           ),
+                          //           SimpleDialogOption(
+                          //             onPressed: () {
+                          //               Navigator.of(context).pop();
+                          //             },
+                          //             child: Padding(
+                          //               padding: const EdgeInsets.all(8.0),
+                          //               child: const Text(
+                          //                 '삭제',
+                          //                 textAlign: TextAlign.center,
+                          //               ),
+                          //             ),
+                          //           ),
+                          //         ],
+                          //       );
+                          //     });
+                        },
+                      )
+                    ],
+                  ),
+                  SizedBox(
+                    height: 4,
+                  ),
+                  RichText(
+                      text: TextSpan(
+                    text: comment.content,
+                    style: TextStyle(color: Colors.black),
+                  )),
+                  SizedBox(
+                    height: 4,
+                  ),
+                  if (isParent)
+                    InkWell(
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.comment,
+                            size: 16,
+                          ),
+                          Text(
+                            "답글달기",
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ],
+                      ),
+                      onTap: () {
+                        if (selectedCommentId == comment.id) {
+                          selectComment('');
+                        } else {
+                          selectComment(comment.id);
+                        }
+                      },
+                      highlightColor: Colors.red,
+                    ),
+                ],
+              ),
+      ),
+    );
+  }
+}
