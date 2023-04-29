@@ -2,6 +2,26 @@ import '../../Auth/models/user_model.dart';
 
 enum PostFilter { all, joinable, joined }
 
+enum PostStatus { recruiting, closed, ordered, delivered }
+
+//PostStatus to korean
+extension PostStatusExtension on PostStatus {
+  String get korName {
+    switch (this) {
+      case PostStatus.recruiting:
+        return '모집중';
+      case PostStatus.closed:
+        return '마감';
+      case PostStatus.ordered:
+        return '주문완료';
+      case PostStatus.delivered:
+        return '배달완료';
+      default:
+        return '';
+    }
+  }
+}
+
 class Store {
   String id;
   String name;
@@ -77,7 +97,7 @@ class Order extends User {
 
   @override
   Map<String, dynamic> toJson() => {
-        'id': id,
+        'user_id': id,
         'nickname': nickname,
         'order_lines': orderLines.map((e) => e.toJson()).toList(),
         'request_comment': requestComment,

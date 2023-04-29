@@ -61,13 +61,10 @@ class PostRepository {
     }
   }
 
-  Future updatePostStatus(String postId, bool recruitment, bool orderCompleted,
-      bool orderConfirmed) async {
+  Future updatePostStatus(String postId, PostStatus status) async {
     try {
       await _dio.patch('$staticUrl/$postId/status', data: {
-        'recruitment': recruitment,
-        'order_completed': orderCompleted,
-        'order_confirmed': orderConfirmed,
+        'status': status.name,
       });
       return true;
     } on DioError catch (e) {

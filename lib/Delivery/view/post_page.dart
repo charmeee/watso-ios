@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:sangsangtalk/Common/widget/appbar.dart';
+import 'package:sangsangtalk/Delivery/models/post_model.dart';
 
 import '../../Auth/provider/user_provider.dart';
 import '../models/post_response_model.dart';
@@ -43,6 +44,7 @@ class PostPage extends ConsumerWidget {
                   child: Card(
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           Padding(
                             padding:
@@ -129,8 +131,11 @@ class PostPage extends ConsumerWidget {
                                 ],
                               ),
                             ),
-                          if (joined && isOwner) _statusButton(data, ref),
-                          if (!joined && !isOwner && data.recruitment)
+                          if (joined && isOwner)
+                            _statusButton(data, ref, context),
+                          if (!joined &&
+                              !isOwner &&
+                              data.status == PostStatus.recruiting)
                             _joinButton(data, context, ref),
                         ]),
                   ),
@@ -374,59 +379,57 @@ class PostPage extends ConsumerWidget {
     );
   }
 
-  Widget _statusButton(ResponsePost data, WidgetRef ref) {
-    String nextStatusText = "";
-
-    if (data.recruitment) {
-      nextStatusText = "주문 확정";
-    } else {
-      if (data.orderConfirmed) {
-        nextStatusText = "배달 완료";
-      }
-    }
-    if (data.orderCompleted) {
+  Widget _statusButton(ResponsePost data, WidgetRef ref, context) {
+    if (data.status == PostStatus.delivered) {
       return const SizedBox(
         height: 0,
       );
     }
-
+    final int index = data.status.index;
     onButtonClick() {
-      var recruitment = data.recruitment;
-      var orderConfirmed = data.orderConfirmed;
-      var orderCompleted = data.orderCompleted;
-
-      if (nextStatusText == "주문 확정") {
-        recruitment = false;
-        orderConfirmed = true;
-        orderCompleted = false;
+      if (index == PostStatus.values.length - 1) {
+        return;
       }
-      if (nextStatusText == "배달 완료") {
-        recruitment = false;
-        orderConfirmed = true;
-        orderCompleted = true;
-      }
-      ref.read(postRepositoryProvider).updatePostStatus(
-          data.id, recruitment, orderConfirmed, orderCompleted);
+      ref
+          .read(postRepositoryProvider)
+          .updatePostStatus(data.id, PostStatus.values[index + 1])
+          .then((value) {
+        ref.invalidate(postDetailProvider(postId));
+      }).onError((error, stackTrace) {
+        //snackbar
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('에러')));
+      });
     }
 
-    return (Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 6.0),
-        child: ElevatedButton(
-          onPressed: onButtonClick,
-          child: Text(data.recruitment
-              ? (data.orderCompleted ? "배달 완료" : "주문 확정")
-              : "배달 참가"),
-          style: ElevatedButton.styleFrom(
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10.0)),
-              ),
-              minimumSize: const Size.fromHeight(40),
-              backgroundColor: Colors.indigo),
-        ),
-      ),
-    ));
+    // onRecuitBtnClick() {
+    //   ref
+    //       .read(postRepositoryProvider)
+    //       .updatePostStatus(data.id, PostStatus.recruiting)
+    //       .then((value) {
+    //     ref.invalidate(postDetailProvider(postId));
+    //   }).onError((error, stackTrace) {
+    //     //snackbar
+    //     ScaffoldMessenger.of(context)
+    //         .showSnackBar(SnackBar(content: Text('에러')));
+    //   });
+    // }
+
+    return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: 6.0),
+          child: ElevatedButton(
+            onPressed: onButtonClick,
+            style: ElevatedButton.styleFrom(
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                ),
+                minimumSize: const Size.fromHeight(40),
+                backgroundColor: Colors.indigo),
+            child: Text(PostStatus.values[index + 1].korName),
+          ),
+        ));
   }
 
   Widget _joinButton(ResponsePost data, context, WidgetRef ref) {

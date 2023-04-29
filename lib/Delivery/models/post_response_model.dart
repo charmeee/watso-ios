@@ -7,9 +7,7 @@ class ResponsePost extends PostOption {
   String userId;
   String nickname;
   Store store;
-  bool recruitment;
-  bool orderCompleted;
-  bool orderConfirmed;
+  PostStatus status;
   List<String> users;
 
   ResponsePost(
@@ -22,9 +20,7 @@ class ResponsePost extends PostOption {
       required maxMember,
       required orderTime,
       required this.store,
-      required this.recruitment,
-      required this.orderCompleted,
-      required this.orderConfirmed,
+      required this.status,
       required this.users})
       : super(
           place: place,
@@ -39,9 +35,7 @@ class ResponsePost extends PostOption {
         userId = json['user_id'].toString(),
         nickname = json['nickname'],
         store = Store.fromJson(json['store']),
-        recruitment = json['recruitment'],
-        orderCompleted = json['order_completed'],
-        orderConfirmed = json['order_confirmed'] ?? false,
+        status = PostStatus.values.byName(json['status']),
         users = List<String>.from(json['users'].map((x) => x.toString())),
         super.fromJson(json);
 }
