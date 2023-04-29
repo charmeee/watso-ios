@@ -24,7 +24,7 @@ class OrderRepository {
   Future<Order> getMyPostOrder(String postId) async {
     try {
       final response = await _dio.get('$staticUrl/$postId/me');
-      return Order.fromJson(response.data);
+      return Order.fromJson(response.data['order']);
     } on DioError catch (e) {
       throw ServerException(e);
     } catch (e, s) {
