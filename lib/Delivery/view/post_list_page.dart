@@ -31,8 +31,22 @@ class _DeliveryMainPageState extends ConsumerState<DeliveryMainPage> {
         slivers: [
           //구분생각을 해보겟습니다.
           const MyPostBox(),
-          FilterBox(),
-          PostList(),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Card(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    FilterBox(),
+                    Divider(height: 1),
+                    PostList(),
+                  ],
+                ),
+              ),
+            ),
+          ),
         ],
       ),
       floatingActionButton: FloatingActionButton(

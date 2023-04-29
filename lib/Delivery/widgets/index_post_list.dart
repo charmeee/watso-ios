@@ -45,49 +45,40 @@ class _PostListState extends ConsumerState<PostList> {
   @override
   Widget build(BuildContext context) {
     if (loadState == LoadState.loading) {
-      return const SliverToBoxAdapter(
-          child: Center(child: CircularProgressIndicator()));
+      return Center(child: CircularProgressIndicator());
     }
     if (loadState == LoadState.error) {
-      return const SliverToBoxAdapter(
-          child: SizedBox(
-              child: Center(
-                  child: Text(
-                '에러',
-                style: TextStyle(fontSize: 20),
-              )),
-              height: 300));
+      return SizedBox(
+          child: Center(
+              child: Text(
+            '에러',
+            style: TextStyle(fontSize: 20),
+          )),
+          height: 300);
     }
     if (postData.isEmpty) {
-      return const SliverToBoxAdapter(
-        child: SizedBox(
-            child: Center(
-                child: Text(
-              '직접 배달톡을 추가해 보세요',
-              style: TextStyle(fontSize: 20),
-            )),
-            height: 300),
-      );
+      return SizedBox(
+          child: Center(
+              child: Text(
+            '직접 배달톡을 추가해 보세요',
+            style: TextStyle(fontSize: 20),
+          )),
+          height: 300);
     }
-    return SliverPadding(
-      padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
-      sliver: SliverList(
-        delegate: SliverChildBuilderDelegate(
-          (BuildContext context, int index) {
-            final data = postData[index];
-            return Padding(
-              padding: EdgeInsets.symmetric(vertical: 4),
-              child: Card(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4),
-                  child: indexCommonListTile(data, context),
-                ),
-              ),
-            );
-          },
-          childCount: postData.length,
-        ),
-      ),
-    );
+
+    //to ListView
+    return ListView.separated(
+        itemBuilder: (BuildContext context, int index) {
+          final data = postData[index];
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: indexCommonListTile(data, context),
+          );
+        },
+        separatorBuilder: (BuildContext context, int index) => Divider(),
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        padding: EdgeInsets.zero,
+        itemCount: postData.length);
   }
 }
