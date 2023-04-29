@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sangsangtalk/Delivery/models/post_model.dart';
 
 import '../models/post_response_model.dart';
 import '../view/post_page.dart';
@@ -19,8 +20,10 @@ Widget indexCommonListTile(ResponsePost data, context) {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(data.place),
-          Text('${data.users.length} / ${data.maxMember} 명 '),
+          Text('🧑‍🍳${data.status.korName}',
+              style: TextStyle(color: Colors.black87)),
+          Text('🛖${data.place}'),
+          Text('🙋${data.users.length} / ${data.maxMember} 명 '),
         ],
       ),
     ),

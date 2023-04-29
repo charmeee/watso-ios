@@ -42,7 +42,7 @@ class MyPostBox extends ConsumerWidget {
 
   Widget _myPostHeader() {
     return Padding(
-      padding: const EdgeInsets.only(top: 16.0, left: 16.0),
+      padding: const EdgeInsets.only(top: 16.0, left: 16.0, bottom: 8.0),
       child: Text(
         '참여한 배달톡',
         style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
