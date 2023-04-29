@@ -6,6 +6,7 @@ import '../../Common/widget/appbar.dart';
 import '../widgets/index_filter_box.dart';
 import '../widgets/index_myPost_box.dart';
 import '../widgets/index_post_list.dart';
+import 'history_page.dart';
 import 'order_set_page.dart';
 
 class DeliveryMainPage extends ConsumerStatefulWidget {
@@ -50,7 +51,16 @@ class _DeliveryMainPageState extends ConsumerState<DeliveryMainPage> {
 
   List<Widget> actionButtons() {
     return [
-      IconButton(onPressed: () {}, icon: Icon(Icons.timelapse_outlined)),
+      IconButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => DeliverHistoryPage(),
+              ),
+            );
+          },
+          icon: Icon(Icons.timelapse_outlined)),
       IconButton(onPressed: () {}, icon: Icon(Icons.settings)),
     ];
   }
