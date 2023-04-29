@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../Common/dio.dart';
 import '../../Common/failures.dart';
+import '../models/comment_model.dart';
 import '../models/post_model.dart';
 import '../models/post_request_model.dart';
 import '../models/post_response_model.dart';
@@ -98,4 +99,72 @@ class PostRepository {
     }
   }
 
+  //게시글 댓글 가져오기
+  Future<List<ParentComment>> getCommentList(String postId) async {
+    try {
+      final response = await _dio.get('$staticUrl/$postId/comments');
+      return (response.data['comments'] as List)
+          .map((e) => ParentComment.fromJson(e))
+          .toList();
+    } on DioError catch (e) {
+      throw ServerException(e);
+    } catch (e, s) {
+      throw DataParsingException(e, s);
+    }
+  }
+
+  //게시글 댓글 작성
+  Future postComment(String postId, String comment) async {
+    try {
+      await _dio.post('$staticUrl/$postId/comments', data: {
+        'content': comment,
+      });
+      return;
+    } on DioError catch (e) {
+      throw ServerException(e);
+    } catch (e, s) {
+      throw DataParsingException(e, s);
+    }
+  }
+
+  //게시글 대댓글 작성
+  Future postChildComment(String postId, String parentId,
+      String comment) async {
+    try {
+      await _dio.post('$staticUrl/$postId/comments/$parentId', data: {
+        'content': comment,
+      });
+      return;
+    } on DioError catch (e) {
+      throw ServerException(e);
+    } catch (e, s) {
+      throw DataParsingException(e, s);
+    }
+  }
+
+  //댓글 수정
+  Future updateComment(String postId, String commentId, String comment) async {
+    try {
+      await _dio.patch('$staticUrl/$postId/comments/$commentId', data: {
+        'content': comment,
+      });
+      return;
+    } on DioError catch (e) {
+      throw ServerException(e);
+    } catch (e, s) {
+      throw DataParsingException(e, s);
+    }
+  }
+
+  //댓글 삭제
+  Future deleteComment(String postId, String commentId) async {
+    try {
+      await _dio.delete('$staticUrl/$postId/comments/$commentId');
+      return;
+    } on DioError catch (e) {
+      throw ServerException(e);
+    } catch (e, s) {
+      throw DataParsingException(e, s);
+    }
+  }
 }
