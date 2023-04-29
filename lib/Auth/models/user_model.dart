@@ -25,11 +25,11 @@ class User {
   User({required this.id, required this.nickname});
 
   User.fromJson(Map<String, dynamic> json)
-      : id = (json['id'] ?? json['user_id']).toString(),
+      : id = (json['_id'] ?? json['user_id']).toString(),
         nickname = json['nickname'];
 
   Map<String, dynamic> toJson() => {
-        'id': id,
+        '_id': id,
         'nickname': nickname,
       };
 

@@ -30,7 +30,7 @@ class ResponsePost extends PostOption {
         );
 
   ResponsePost.fromJson(Map<String, dynamic> json)
-      : id = json['_id'],
+      : id = json['_id'].toString(),
         title = json['title'],
         userId = json['user_id'].toString(),
         nickname = json['nickname'],
