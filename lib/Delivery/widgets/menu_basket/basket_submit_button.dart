@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -69,6 +71,7 @@ class BasketSubmitButton extends ConsumerWidget {
     return (customFloatingBottomButton(context, child: Text("배달톡 등록"),
         onPressed: () {
       if (postOrder.disableToPost) {
+        log(postOrder.newPostToJson().toString());
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text('문제가 발생하였습니다.'),
         ));

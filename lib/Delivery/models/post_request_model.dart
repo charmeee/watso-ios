@@ -40,6 +40,7 @@ class PostOrder extends PostOption {
   PostOrder.clone(PostOrder postOrder)
       : order = Order.clone(postOrder.order),
         store = Store.clone(postOrder.store),
+        postId = postOrder.postId,
         super.clone(postOrder);
 
   Map newPostToJson() => {
@@ -49,6 +50,7 @@ class PostOrder extends PostOption {
         'order_time': orderTime.toIso8601String(),
         'min_member': minMember,
         'max_member': maxMember,
+        if (postId != null) 'post_id': postId
       };
 
   bool get isStoreSelected => store.id.isNotEmpty;
