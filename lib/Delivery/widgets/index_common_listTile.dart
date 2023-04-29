@@ -21,9 +21,15 @@ Widget indexCommonListTile(ResponsePost data, context) {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('🧑‍🍳${data.status.korName}',
-              style: TextStyle(color: Colors.black87)),
-          Text('🛖${data.place}'),
-          Text('🙋${data.users.length} / ${data.maxMember} 명 '),
+              style: TextStyle(color: Colors.black87, height: 1.2)),
+          Text(
+            '🛖${data.place}',
+            style: TextStyle(height: 1.2),
+          ),
+          Text(
+            '🙋${data.users.length} / ${data.maxMember} 명 ',
+            style: TextStyle(height: 1.2),
+          ),
         ],
       ),
     ),
