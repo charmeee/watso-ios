@@ -20,7 +20,7 @@ class FilterBox extends StatelessWidget {
                 value: filterTime.first,
                 icon: const Icon(Icons.arrow_downward),
                 elevation: 16,
-                style: const TextStyle(color: Colors.deepPurple),
+                style: const TextStyle(color: Colors.black87),
                 underline: SizedBox(),
                 onChanged: (String? value) {
                   // This is called when the user selects an item.
@@ -35,15 +35,17 @@ class FilterBox extends StatelessWidget {
                   );
                 }).toList(),
               ),
-              SizedBox(width: 20),
+              SizedBox(width: 16),
               DropdownButton(
                 value: filterPlace.first,
                 icon: Padding(
                   padding: const EdgeInsets.only(left: 8.0),
-                  child: const Icon(Icons.arrow_downward),
+                  child: const Icon(
+                    Icons.arrow_downward,
+                  ),
                 ),
                 elevation: 16,
-                style: const TextStyle(color: Colors.deepPurple),
+                style: const TextStyle(color: Colors.black87),
                 underline: SizedBox(),
                 onChanged: (String? value) {
                   // This is called when the user selects an item.
