@@ -27,8 +27,8 @@ class OrderRepository {
       return Order.fromJson(response.data);
     } on DioError catch (e) {
       throw ServerException(e);
-    } catch (e) {
-      throw DataParsingException(e.toString());
+    } catch (e, s) {
+      throw DataParsingException(e, s);
     }
   }
 
@@ -40,8 +40,8 @@ class OrderRepository {
           .toList();
     } on DioError catch (e) {
       throw ServerException(e);
-    } catch (e) {
-      throw DataParsingException(e.toString());
+    } catch (e, s) {
+      throw DataParsingException(e, s);
     }
   }
 
@@ -50,8 +50,8 @@ class OrderRepository {
       await _dio.post('$staticUrl/$postId', data: order.toJson());
     } on DioError catch (e) {
       throw ServerException(e);
-    } catch (e) {
-      throw DataParsingException(e.toString());
+    } catch (e, s) {
+      throw DataParsingException(e, s);
     }
   }
 }

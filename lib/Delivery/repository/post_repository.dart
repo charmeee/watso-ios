@@ -33,8 +33,8 @@ class PostRepository {
           .toList();
     } on DioError catch (e) {
       throw ServerException(e);
-    } catch (e) {
-      throw DataParsingException(e.toString());
+    } catch (e, s) {
+      throw DataParsingException(e, s);
     }
   }
 
@@ -45,8 +45,8 @@ class PostRepository {
       return response.data;
     } on DioError catch (e) {
       throw ServerException(e);
-    } catch (e) {
-      throw DataParsingException(e.toString());
+    } catch (e, s) {
+      throw DataParsingException(e, s);
     }
   }
 
@@ -56,8 +56,8 @@ class PostRepository {
       return ResponsePost.fromJson(response.data);
     } on DioError catch (e) {
       throw ServerException(e);
-    } catch (e) {
-      throw DataParsingException(e.toString());
+    } catch (e, s) {
+      throw DataParsingException(e, s);
     }
   }
 
@@ -69,8 +69,8 @@ class PostRepository {
       return true;
     } on DioError catch (e) {
       throw ServerException(e);
-    } catch (e) {
-      throw DataParsingException(e.toString());
+    } catch (e, s) {
+      throw DataParsingException(e, s);
     }
   }
 }

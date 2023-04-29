@@ -41,6 +41,8 @@ class MyDeliveryNotifier extends StateNotifier<PostOrder> {
         minMember: minMember ?? state.minMember,
         maxMember: maxMember ?? state.maxMember,
         postId: postId ?? state.postId);
+
+    log('setMyDeliverOption: ${state.newPostToJson()}');
   }
 
   setMyDeliverStore(Store store) {

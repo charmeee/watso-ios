@@ -28,8 +28,8 @@ class StoreRepository {
       return (response.data as List).map((e) => Store.fromJson(e)).toList();
     } on DioError catch (e) {
       throw ServerException(e);
-    } catch (e) {
-      throw DataParsingException(e.toString());
+    } catch (e, s) {
+      throw DataParsingException(e, s);
     }
   }
 
@@ -39,8 +39,8 @@ class StoreRepository {
       return StoreMenus.fromJson(response.data);
     } on DioError catch (e) {
       throw ServerException(e);
-    } catch (e) {
-      throw DataParsingException(e.toString());
+    } catch (e, s) {
+      throw DataParsingException(e, s);
     }
   }
 
@@ -52,8 +52,8 @@ class StoreRepository {
       return Menu.fromJson(response.data);
     } on DioError catch (e) {
       throw ServerException(e);
-    } catch (e) {
-      throw DataParsingException(e.toString());
+    } catch (e, s) {
+      throw DataParsingException(e, s);
     }
   }
 }

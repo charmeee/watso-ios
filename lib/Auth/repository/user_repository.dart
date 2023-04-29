@@ -76,8 +76,8 @@ class UserRepository {
       return UserInfo.fromJson(response.data);
     } on DioError catch (e) {
       throw ServerException(e);
-    } catch (e) {
-      throw DataParsingException(e.toString());
+    } catch (e, s) {
+      throw DataParsingException(e, s);
     }
   }
 
@@ -86,8 +86,8 @@ class UserRepository {
       await _dio.patch('$staticUrl/profile', data: userInfo.toJson());
     } on DioError catch (e) {
       throw ServerException(e);
-    } catch (e) {
-      throw DataParsingException(e.toString());
+    } catch (e, s) {
+      throw DataParsingException(e, s);
     }
   }
 
@@ -99,8 +99,8 @@ class UserRepository {
       return response.data['is_duplicated'];
     } on DioError catch (e) {
       throw ServerException(e);
-    } catch (e) {
-      throw DataParsingException(e.toString());
+    } catch (e, s) {
+      throw DataParsingException(e, s);
     }
   }
 }

@@ -48,15 +48,17 @@ class _ServerBadResponseException implements Exception {
 //LOCAL ERROR
 class DataParsingException implements Exception {
   //파싱이 잘못됨.
-  final String error;
+  final error;
+  final stackTrace;
 
   @override
   String toString() {
     return '옳지 않은 형식입니다.';
   }
 
-  DataParsingException(this.error) {
+  DataParsingException(this.error, this.stackTrace) {
     log('데이터 파싱 실패 : $error');
+    print(stackTrace);
   }
 }
 
