@@ -1,4 +1,5 @@
 class UserInfo extends User {
+  String name;
   String username;
   String accountNumber;
   String email;
@@ -6,13 +7,15 @@ class UserInfo extends User {
   UserInfo(
       {required id,
       required nickname,
+      required this.name,
       required this.username,
       required this.accountNumber,
       required this.email})
       : super(id: id, nickname: nickname);
 
   UserInfo.fromJson(Map<String, dynamic> json)
-      : username = json['username'],
+      : name = json['name'],
+        username = json['username'],
         accountNumber = json['account_number'],
         email = json['email'],
         super.fromJson(json);
