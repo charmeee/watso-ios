@@ -15,7 +15,8 @@ class ServerException implements Exception {
       case DioErrorType.connectionError:
         return '연결을 다시 시도해주세요.';
       default:
-        return '에러가 발생하였습니다.';
+        // return '${error.requestOptions.uri} ${error.response?.statusCode} ${error.response?.data} ';
+        return '알 수 없는 에러가 발생하였습니다.';
     }
   }
 
@@ -29,17 +30,15 @@ class _ServerBadResponseException implements Exception {
   @override
   String toString() {
     if (error.response?.statusCode == null) return '서버 에러가 발생하였습니다.';
+    if (error.response?.data['msg'] != null) {
+      return error.response?.data['msg'];
+    }
     if (error.response!.statusCode! >= 400) {
-      if (error.response?.data['msg'] != null) {
-        return error.response?.data['msg'];
-      }
       if (error.response!.statusCode! >= 401) {
         return '인증이 만료되었습니다.';
       }
-      return '에러가 발생하였습니다.';
-    } else {
-      return '서버 에러가 발생하였습니다.';
     }
+    return '${error.response!.statusCode} 서버 에러가 발생하였습니다.';
   }
 
   _ServerBadResponseException(this.error);
