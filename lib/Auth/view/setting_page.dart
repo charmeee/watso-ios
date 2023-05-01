@@ -12,7 +12,15 @@ class SettingPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    UserInfo userInfo = ref.watch(userNotifierProvider)!;
+    UserInfo? userInfo = ref.watch(userNotifierProvider);
+    if (userInfo == null)
+      return Scaffold(
+        body: Container(
+          child: Center(
+            child: Text('로그인이 필요합니다.'),
+          ),
+        ),
+      );
 
     return Scaffold(
       appBar: customAppBar(context, title: '설정'),
@@ -105,6 +113,23 @@ class SettingPage extends ConsumerWidget {
                       ),
                     ),
                   ],
+                ),
+              ),
+            ),
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ListTile(
+                  title: Text('로그아웃'),
+                  leading: Icon(Icons.logout),
+                  onTap: () async {
+                    try {
+                      await ref.read(userNotifierProvider.notifier).logout();
+                    } catch (e) {
+                      print(e);
+                    }
+                    Navigator.popUntil(context, (route) => route.isFirst);
+                  },
                 ),
               ),
             ),
