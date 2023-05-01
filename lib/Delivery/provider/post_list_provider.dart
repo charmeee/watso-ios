@@ -11,6 +11,13 @@ final myPostListProvider = FutureProvider<List<ResponsePost>>((ref) async {
       .getDeliveryList(PostFilter.joined);
 });
 
+final joinablePostListProvider =
+    FutureProvider<List<ResponsePost>>((ref) async {
+  return await ref
+      .read(postRepositoryProvider)
+      .getDeliveryList(PostFilter.joinable);
+});
+
 final postDetailProvider = FutureProvider.autoDispose
     .family<ResponsePost, String>((ref, postId) async {
   return await ref.read(postRepositoryProvider).getPostDetail(postId);

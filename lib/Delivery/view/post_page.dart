@@ -41,7 +41,9 @@ class PostPage extends ConsumerWidget {
               bool isOwner = data.userId == userId;
               return CustomScrollView(
                 shrinkWrap: true,
-                physics: const BouncingScrollPhysics(),
+                physics: AlwaysScrollableScrollPhysics(
+                  parent: BouncingScrollPhysics(),
+                ),
                 slivers: [
                   SliverToBoxAdapter(
                       child: Padding(
@@ -67,7 +69,7 @@ class PostPage extends ConsumerWidget {
                             _informationTile(
                                 icon: Icons.access_time_rounded,
                                 title: "주문시간",
-                                content: DateFormat("M월 d일(E) HH시 mm분")
+                                content: DateFormat("M월 d일(E) HH시 mm분", 'ko')
                                     .format(data.orderTime)),
                             //"3월 19일(일) 10시 30분"
                             _informationTile(
@@ -219,8 +221,11 @@ class PostPage extends ConsumerWidget {
                     isOwner: isOwner,
                     isJoined: isJoined,
                   ),
-                  const SliverPadding(
-                      padding: EdgeInsets.symmetric(vertical: 20)),
+                  SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 20)),
+                  ),
                 ],
               );
             },
@@ -230,14 +235,6 @@ class PostPage extends ConsumerWidget {
     );
   }
 
-  // Padding(
-  // padding: const EdgeInsets.symmetric(horizontal: 8.0),
-  // child: ListTile(
-  // tileColor: Colors.white,
-  // leading: Icon(Icons.store),
-  // title: Text('맘스터치'),
-  // ),
-  // ),
   Widget _informationTile(
       {required IconData icon,
       required String title,
@@ -312,19 +309,6 @@ class PostPage extends ConsumerWidget {
             .showSnackBar(SnackBar(content: Text('에러')));
       });
     }
-
-    // onRecuitBtnClick() {
-    //   ref
-    //       .read(postRepositoryProvider)
-    //       .updatePostStatus(data.id, PostStatus.recruiting)
-    //       .then((value) {
-    //     ref.invalidate(postDetailProvider(postId));
-    //   }).onError((error, stackTrace) {
-    //     //snackbar
-    //     ScaffoldMessenger.of(context)
-    //         .showSnackBar(SnackBar(content: Text('에러')));
-    //   });
-    // }
 
     return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
