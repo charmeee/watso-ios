@@ -2,7 +2,7 @@ import '../../Auth/models/user_model.dart';
 
 enum PostFilter { all, joinable, joined }
 
-enum PostStatus { recruiting, closed, ordered, delivered }
+enum PostStatus { recruiting, closed, ordered, delivered, canceled }
 
 //PostStatus to korean
 extension PostStatusExtension on PostStatus {
@@ -16,6 +16,8 @@ extension PostStatusExtension on PostStatus {
         return '주문완료';
       case PostStatus.delivered:
         return '배달완료';
+      case PostStatus.canceled:
+        return '취소';
       default:
         return '';
     }
