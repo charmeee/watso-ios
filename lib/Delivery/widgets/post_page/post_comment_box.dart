@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:sangsangtalk/Delivery/models/comment_model.dart';
 
 import '../../provider/post_list_provider.dart';
@@ -24,6 +25,7 @@ class CommentBox extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    String createdAt = DateFormat("M.d h:m", 'ko').format(comment.createdAt);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Container(
@@ -45,7 +47,7 @@ class CommentBox extends ConsumerWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("${comment.nickname} · 날짜추가 ",
+                      Text("${comment.nickname} · $createdAt ",
                           style: TextStyle(
                             fontSize: 16,
                           )),
@@ -88,50 +90,6 @@ class CommentBox extends ConsumerWidget {
                                   ],
                                 );
                               });
-                          //showMenu in center
-                          // showDialog(
-                          //     context: context,
-                          //     builder: (BuildContext context) {
-                          //       return SimpleDialog(
-                          //         alignment: Alignment.center,
-                          //         contentPadding:
-                          //             EdgeInsets.symmetric(horizontal: 16),
-                          //         children: <Widget>[
-                          //           SimpleDialogOption(
-                          //             onPressed: () {
-                          //               ref.read(postRepositoryProvider).updateComment(comment.postId, comment.id, comment)
-                          //               ref.invalidate(
-                          //                   postCommentListProvider(comment.postId));
-                          //
-                          //               Navigator.of(context).pop();
-                          //             },
-                          //             child: Padding(
-                          //               padding: const EdgeInsets.all(8.0),
-                          //               child: const Text(
-                          //                 '수정',
-                          //                 textAlign: TextAlign.center,
-                          //               ),
-                          //             ),
-                          //           ),
-                          //           Divider(
-                          //             height: 1,
-                          //             color: Colors.grey,
-                          //           ),
-                          //           SimpleDialogOption(
-                          //             onPressed: () {
-                          //               Navigator.of(context).pop();
-                          //             },
-                          //             child: Padding(
-                          //               padding: const EdgeInsets.all(8.0),
-                          //               child: const Text(
-                          //                 '삭제',
-                          //                 textAlign: TextAlign.center,
-                          //               ),
-                          //             ),
-                          //           ),
-                          //         ],
-                          //       );
-                          //     });
                         },
                       )
                     ],
@@ -139,9 +97,9 @@ class CommentBox extends ConsumerWidget {
                   SizedBox(
                     height: 4,
                   ),
-                  RichText(
-                      text: TextSpan(
-                    text: comment.content,
+                  Flexible(
+                      child: Text(
+                    comment.content,
                     style: TextStyle(color: Colors.black),
                   )),
                   SizedBox(

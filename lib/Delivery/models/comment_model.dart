@@ -7,6 +7,7 @@ class Comment {
   String nickname;
   CommentStatus status;
   String content;
+  DateTime createdAt;
 
   Comment({
     required this.id,
@@ -15,6 +16,7 @@ class Comment {
     required this.nickname,
     required this.status,
     required this.content,
+    required this.createdAt,
   });
 
   Comment.fromJson(Map<String, dynamic> json)
@@ -23,7 +25,8 @@ class Comment {
         userId = json['user_id'].toString(),
         nickname = json['nickname'],
         status = CommentStatus.values.byName(json['status']),
-        content = json['content'];
+        content = json['content'],
+        createdAt = DateTime.parse(json['create_at']);
 }
 
 class ParentComment extends Comment {
@@ -36,6 +39,7 @@ class ParentComment extends Comment {
       required nickname,
       required status,
       required content,
+      required createdAt,
       required this.subComments})
       : super(
           id: id,
@@ -44,6 +48,7 @@ class ParentComment extends Comment {
           nickname: nickname,
           status: status,
           content: content,
+          createdAt: createdAt,
         );
 
   ParentComment.fromJson(Map<String, dynamic> json)
