@@ -202,18 +202,13 @@ class MyPostOrderDetailPage extends ConsumerWidget {
                                                           color: Colors.grey,
                                                           fontSize: 12),
                                                     ),
-                                                    RichText(
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      maxLines: 3,
-                                                      text: TextSpan(
-                                                        text: group.options.fold(
+                                                    Flexible(
+                                                      child: Text(
+                                                        group.options.fold(
                                                             '',
                                                             (previousValue,
                                                                     element) =>
-                                                                previousValue! +
-                                                                element.name +
-                                                                '[${element.price}원]  '),
+                                                                '$previousValue, ${element.name} [${element.price}원] '),
                                                         style: TextStyle(
                                                             color: Colors.grey,
                                                             fontSize: 12),
