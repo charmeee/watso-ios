@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:sangsangtalk/Auth/provider/user_provider.dart';
 
 import 'Auth/view/signIn.dart';
@@ -10,24 +11,25 @@ import 'Delivery/view/post_list_page.dart';
 void main() {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-  runApp(ProviderScope(
-    child: GestureDetector(
-      onTap: () {
-        FocusManager.instance.primaryFocus?.unfocus(); // 키보드 닫기 이벤트
-      },
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'dogbird',
-        navigatorKey: navigatorState,
-        theme: ThemeData(
-            // scaffoldBackgroundColor: backgroundColor,
-            // textTheme: TextTheme()
-            //     .apply(bodyColor: Colors.white, displayColor: Colors.white)
-            ),
-        home: const MyApp(),
-      ),
-    ),
-  ));
+  //localization
+  initializeDateFormatting().then((_) => runApp(ProviderScope(
+        child: GestureDetector(
+          onTap: () {
+            FocusManager.instance.primaryFocus?.unfocus(); // 키보드 닫기 이벤트
+          },
+          child: MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'dogbird',
+            navigatorKey: navigatorState,
+            theme: ThemeData(
+                // scaffoldBackgroundColor: backgroundColor,
+                // textTheme: TextTheme()
+                //     .apply(bodyColor: Colors.white, displayColor: Colors.white)
+                ),
+            home: const MyApp(),
+          ),
+        ),
+      )));
 }
 
 class MyApp extends ConsumerStatefulWidget {
@@ -51,6 +53,11 @@ class _MyAppState extends ConsumerState<MyApp> {
     // TODO: implement build
     return initState.when(
         data: (data) {
+          // AuthState authState = ref.watch(authStateProvider);
+          // if (authState == AuthState.unauthenticated) {
+          //   Navigator.popUntil(context, (route) => route.isFirst);
+          //   print("authState : unauthenticated");
+          // }
           return (data == AuthState.authenticated)
               ? DeliveryMainPage()
               : SignInPage();
