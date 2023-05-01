@@ -42,7 +42,7 @@ class _StoreSelectorState extends ConsumerState<StoreSelector> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            "가계 선택",
+            "가게 선택",
             style: TextStyle(fontSize: 15),
           ),
           ElevatedButton(
@@ -59,7 +59,7 @@ class _StoreSelectorState extends ConsumerState<StoreSelector> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(myStore.isEmpty ? "가계를 선택해 주세요" : nowStoreName,
+                Text(myStore.isEmpty ? "가게를 선택해 주세요" : nowStoreName,
                     style: TextStyle(
                         fontSize: 20,
                         color: myStore.isEmpty ? Colors.grey : Colors.black)),
