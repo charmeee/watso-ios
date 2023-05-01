@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:sangsangtalk/Delivery/models/post_model.dart';
 
 import '../models/post_response_model.dart';
 import '../view/post_page.dart';
 
 Widget indexCommonListTile(ResponsePost data, context) {
+  String orderTime = DateFormat("M.d(E) HH:mm", 'ko').format(data.orderTime);
   return ListTile(
     leading: ClipRRect(
         borderRadius: BorderRadius.circular(8.0),
@@ -13,7 +15,15 @@ Widget indexCommonListTile(ResponsePost data, context) {
             width: 60,
             height: 60,
             fit: BoxFit.fitWidth)),
-    title: Text(data.title),
+    title: Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(orderTime, style: TextStyle(fontSize: 15)),
+        Text(data.store.name,
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+      ],
+    ),
     subtitle: Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Column(
@@ -42,7 +52,7 @@ Widget indexCommonListTile(ResponsePost data, context) {
           MaterialPageRoute(
               builder: (context) => PostPage(
                     postId: data.id,
-                    postTitle: data.title,
+                    postTitle: data.store.name,
                   )));
     },
   );
