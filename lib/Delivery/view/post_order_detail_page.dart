@@ -22,7 +22,7 @@ class PostOrderDetailPage extends ConsumerWidget {
           isCenter: true,
         ),
         body: FutureBuilder<List<Order>>(
-          future: ref.watch(orderRepositoryProvider).getPostOrder(postId),
+          future: ref.watch(orderRepositoryProvider(postId)).getPostOrder(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               final List<Order> orderDataList = snapshot.data!;

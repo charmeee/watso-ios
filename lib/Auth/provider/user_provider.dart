@@ -12,6 +12,7 @@ enum AuthState {
   unauthenticated,
 }
 
+//statenotifier로 만들어서 하면되지않을까?
 final startProvider = FutureProvider((ref) async {
   final authState = ref.watch(authStateProvider);
   log(authState.toString());

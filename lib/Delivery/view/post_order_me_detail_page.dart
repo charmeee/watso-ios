@@ -145,7 +145,7 @@ class MyPostOrderDetailPage extends ConsumerWidget {
             ),
             FutureBuilder<Order>(
                 future:
-                    ref.watch(orderRepositoryProvider).getMyPostOrder(postId),
+                    ref.watch(orderRepositoryProvider(postId)).getMyPostOrder(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     final Order myOrderData = snapshot.data!;

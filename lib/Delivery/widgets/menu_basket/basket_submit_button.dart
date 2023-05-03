@@ -22,8 +22,8 @@ class BasketSubmitButton extends ConsumerWidget {
           onPressed: () {
         if (postOrder.checkOrderTime) {
           ref
-              .read(orderRepositoryProvider)
-              .postOrder(postOrder.postId!, postOrder.order)
+              .read(orderRepositoryProvider(postOrder.postId!))
+              .postOrder(postOrder.order)
               .then((value) => {
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       content: Text('배달톡에 참가하였습니다.'),

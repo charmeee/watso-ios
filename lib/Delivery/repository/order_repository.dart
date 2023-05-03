@@ -5,11 +5,12 @@ import '../../Common/dio.dart';
 import '../../Common/failures.dart';
 import '../models/post_model.dart';
 
-final orderRepositoryProvider = Provider<OrderRepository>(
-  (ref) {
+final orderRepositoryProvider =
+    Provider.autoDispose.family<OrderRepository, String>(
+  (ref, postId) {
     final dio = ref.watch(dioProvider);
 
-    const staticUrl = '/delivery/order';
+    final staticUrl = '/delivery/post/$postId/order';
 
     return OrderRepository(dio, staticUrl);
   },
@@ -21,9 +22,9 @@ class OrderRepository {
   final String staticUrl;
   final Dio _dio;
 
-  Future<Order> getMyPostOrder(String postId) async {
+  Future<Order> getMyPostOrder() async {
     try {
-      final response = await _dio.get('$staticUrl/$postId/me');
+      final response = await _dio.get('$staticUrl/me');
       return Order.fromJson(response.data['order']);
     } on DioError catch (e) {
       throw ServerException(e);
@@ -32,9 +33,9 @@ class OrderRepository {
     }
   }
 
-  Future<List<Order>> getPostOrder(String postId) async {
+  Future<List<Order>> getPostOrder() async {
     try {
-      final response = await _dio.get('$staticUrl/$postId');
+      final response = await _dio.get(staticUrl);
       return (response.data['orders'] as List)
           .map((e) => Order.fromJson(e))
           .toList();
@@ -45,9 +46,9 @@ class OrderRepository {
     }
   }
 
-  Future postOrder(String postId, Order order) async {
+  Future postOrder(Order order) async {
     try {
-      await _dio.post('$staticUrl/$postId', data: order.toJson());
+      await _dio.post(staticUrl, data: order.toJson());
     } on DioError catch (e) {
       throw ServerException(e);
     } catch (e, s) {
