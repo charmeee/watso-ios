@@ -81,10 +81,9 @@ class _MenuListPageState extends ConsumerState<MenuListPage> {
                 SliverToBoxAdapter(
                   child: Container(
                     padding: const EdgeInsets.only(left: 16.0, bottom: 8.0),
-                    height: 80,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         Text('예상 배달비 : ${storeMenus!.fee}원',
                             style: const TextStyle(

@@ -6,6 +6,7 @@ import '../models/post_model.dart';
 import '../provider/post_list_provider.dart';
 import '../repository/order_repository.dart';
 import '../repository/post_repository.dart';
+import '../widgets/common/optionDescBox.dart';
 
 class MyPostOrderDetailPage extends ConsumerWidget {
   final String postId;
@@ -191,31 +192,7 @@ class MyPostOrderDetailPage extends ConsumerWidget {
                                           children: [
                                             for (var group
                                                 in orderMenu.menu.optionGroups!)
-                                              if (group.options.isNotEmpty)
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      ' · ${group.name} : ',
-                                                      style: TextStyle(
-                                                          color: Colors.grey,
-                                                          fontSize: 12),
-                                                    ),
-                                                    Flexible(
-                                                      child: Text(
-                                                        group.options.fold(
-                                                            '',
-                                                            (previousValue,
-                                                                    element) =>
-                                                                '$previousValue, ${element.name} [${element.price}원] '),
-                                                        style: TextStyle(
-                                                            color: Colors.grey,
-                                                            fontSize: 12),
-                                                      ),
-                                                    )
-                                                  ],
-                                                ),
+                                              OptionBoxDesc(group: group),
                                           ]),
                                     SizedBox(
                                       height: 10,

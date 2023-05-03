@@ -10,7 +10,7 @@ final orderRepositoryProvider =
   (ref, postId) {
     final dio = ref.watch(dioProvider);
 
-    final staticUrl = '/delivery/post/$postId/order';
+    final staticUrl = '/delivery/post/$postId/orders';
 
     return OrderRepository(dio, staticUrl);
   },
