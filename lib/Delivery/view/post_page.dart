@@ -29,17 +29,20 @@ class PostPage extends ConsumerWidget {
     AsyncValue<ResponsePost> postData = ref.watch(postDetailProvider(postId));
     String userId = ref.watch(userNotifierProvider)!.id;
 
-    return Scaffold(
-      appBar: customAppBar(context, title: postTitle),
-      body: RefreshIndicator(
-        onRefresh: () async {
-          ref.invalidate(postDetailProvider(postId));
-        },
-        child: postData.when(
-            data: (data) {
-              bool isJoined = data.users.any((element) => element == userId);
-              bool isOwner = data.userId == userId;
-              return CustomScrollView(
+    return postData.when(
+        data: (data) {
+          bool isJoined = data.users.any((element) => element == userId);
+          bool isOwner = data.userId == userId;
+          return Scaffold(
+            appBar: customAppBar(context,
+                title: postTitle,
+                action: _postDeleteButton(context, ref,
+                    isOwner: isOwner, status: data.status)),
+            body: RefreshIndicator(
+              onRefresh: () async {
+                ref.invalidate(postDetailProvider(postId));
+              },
+              child: CustomScrollView(
                 shrinkWrap: true,
                 physics: AlwaysScrollableScrollPhysics(
                   parent: BouncingScrollPhysics(),
@@ -107,6 +110,7 @@ class PostPage extends ConsumerWidget {
                                     minWidth: 80.0,
                                   ),
                                   onPressed: (index) async {
+                                    if (!isOwner) return;
                                     if (data.status == PostStatus.ordered ||
                                         data.status == PostStatus.delivered) {
                                       showDialog(
@@ -213,6 +217,11 @@ class PostPage extends ConsumerWidget {
                                 !isOwner &&
                                 data.status == PostStatus.recruiting)
                               _joinButton(data, context, ref),
+                            if (isJoined && !isOwner)
+                              _quitButton(context, ref, status: data.status),
+                            SizedBox(
+                              height: 4,
+                            )
                           ]),
                     ),
                   )),
@@ -227,12 +236,74 @@ class PostPage extends ConsumerWidget {
                         padding: EdgeInsets.symmetric(vertical: 20)),
                   ),
                 ],
-              );
-            },
-            error: (error, track) => Center(child: Text('에러')),
-            loading: () => Center(child: CircularProgressIndicator())),
-      ),
-    );
+              ),
+            ),
+          );
+        },
+        error: (error, track) => Scaffold(body: Center(child: Text('에러'))),
+        loading: () =>
+            Scaffold(body: Center(child: CircularProgressIndicator())));
+  }
+
+  List<Widget>? _postDeleteButton(context, ref,
+      {required bool isOwner, required PostStatus status}) {
+    if (isOwner) {
+      return [
+        IconButton(
+          onPressed: () async {
+            if (status == PostStatus.recruiting ||
+                status == PostStatus.closed) {
+              showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                        title: Text('게시글 삭제'),
+                        content: Text('게시글을 삭제하시겠습니까?'),
+                        actions: [
+                          TextButton(
+                              onPressed: () {
+                                Navigator.pop(context, true);
+                              },
+                              child: Text('삭제')),
+                          TextButton(
+                              onPressed: () {
+                                Navigator.pop(context, false);
+                              },
+                              child: Text('취소')),
+                        ],
+                      )).then((value) async {
+                if (value) {
+                  await ref.read(postRepositoryProvider).deletePost(postId);
+                  ref.invalidate(myPostListProvider);
+                  Navigator.popUntil(context, (route) => route.isFirst);
+                }
+              });
+              return;
+            }
+            final errorText = status == PostStatus.closed
+                ? '모집 마감 상태에서는 주문을 삭제할 수 없습니다. 게시글 대표에게 문의해보세요'
+                : '${status.korName}상테어서는 주문을 삭제할 수 없습니다.';
+            showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                      title: Text('에러'),
+                      content: Text(errorText),
+                      actions: [
+                        TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: Text('확인')),
+                      ],
+                    ));
+          },
+          icon: Icon(
+            Icons.delete,
+            color: Colors.red[300],
+          ),
+        )
+      ];
+    }
+    return null;
   }
 
   Widget _informationTile(
@@ -364,5 +435,61 @@ class PostPage extends ConsumerWidget {
         ),
       ),
     ));
+  }
+
+  Widget _quitButton(context, ref, {required PostStatus status}) {
+    return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: 6.0),
+          child: ElevatedButton(
+            onPressed: () async {
+              if (status == PostStatus.recruiting) {
+                showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                          title: Text('게시글 탈퇴'),
+                          content: Text('해당 주문 내역을 모두 취소하고 게시글을 탈퇴하시겠습니까?'),
+                          actions: [
+                            TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context, true);
+                                },
+                                child: Text('네')),
+                            TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: Text('아니요')),
+                          ],
+                        )).then((value) async {
+                  if (value) {
+                    await ref.read(postRepositoryProvider).leavePost(postId);
+                    ref.invalidate(myPostListProvider);
+                    Navigator.popUntil(context, (route) => route.isFirst);
+                  }
+                });
+                return;
+              }
+              final errorText = status == PostStatus.closed
+                  ? '모집 마감 상태에서는 주문을 삭제할 수 없습니다. 게시글 대표에게 문의해보세요'
+                  : '${status.korName}상테어서는 주문을 삭제할 수 없습니다.';
+              showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                        title: Text('에러'),
+                        content: Text(errorText),
+                        actions: [
+                          TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: Text('확인')),
+                        ],
+                      ));
+            },
+            child: Text('배달 탈퇴하기'),
+          ),
+        ));
   }
 }
