@@ -30,11 +30,13 @@ class _ServerBadResponseException implements Exception {
   @override
   String toString() {
     if (error.response?.statusCode == null) return '서버 에러가 발생하였습니다.';
-    if (error.response?.data['msg'] != null) {
-      return error.response?.data['msg'];
+    if (error.response?.data != null) {
+      if (error.response?.data is Map && error.response?.data['msg'] != null) {
+        return error.response!.data['msg'].toString();
+      }
     }
     if (error.response!.statusCode! >= 400) {
-      if (error.response!.statusCode! >= 401) {
+      if (error.response!.statusCode! == 401) {
         return '인증이 만료되었습니다.';
       }
     }
