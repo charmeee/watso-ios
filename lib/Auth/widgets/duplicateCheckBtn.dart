@@ -36,6 +36,8 @@ class DuplicateCheckButton extends ConsumerWidget {
               await ref
                   .read(userRepositoryProvider)
                   .sendValidEmail(value + rootEmail);
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(SnackBar(content: Text("인증코드를 발송했습니다")));
             }
             setValid(field, true);
           } catch (e) {
@@ -50,7 +52,7 @@ class DuplicateCheckButton extends ConsumerWidget {
         }
       },
       child:
-      field == (DuplicateCheckField.email) ? Text('인증코드 발송') : Text('중복검사'),
+          field == (DuplicateCheckField.email) ? Text('인증코드 발송') : Text('중복검사'),
     );
   }
 }
