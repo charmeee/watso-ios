@@ -261,14 +261,14 @@ class PostPage extends ConsumerWidget {
                         actions: [
                           TextButton(
                               onPressed: () {
-                                Navigator.pop(context, true);
-                              },
-                              child: Text('삭제')),
-                          TextButton(
-                              onPressed: () {
                                 Navigator.pop(context, false);
                               },
                               child: Text('취소')),
+                          TextButton(
+                              onPressed: () {
+                                Navigator.pop(context, true);
+                              },
+                              child: Text('삭제')),
                         ],
                       )).then((value) async {
                 if (value) {
@@ -453,14 +453,14 @@ class PostPage extends ConsumerWidget {
                           actions: [
                             TextButton(
                                 onPressed: () {
-                                  Navigator.pop(context, true);
-                                },
-                                child: Text('네')),
-                            TextButton(
-                                onPressed: () {
                                   Navigator.pop(context);
                                 },
                                 child: Text('아니요')),
+                            TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context, true);
+                                },
+                                child: Text('네')),
                           ],
                         )).then((value) async {
                   if (value) {
