@@ -26,7 +26,9 @@ class DeliveryMainPage extends ConsumerWidget {
         onRefresh: () async {
           ref.invalidate(joinablePostListProvider);
           ref.invalidate(myPostListProvider);
+          return await Future.delayed(Duration(milliseconds: 500));
         },
+        color: Colors.indigo,
         child: CustomScrollView(
           shrinkWrap: true,
           physics: AlwaysScrollableScrollPhysics(
