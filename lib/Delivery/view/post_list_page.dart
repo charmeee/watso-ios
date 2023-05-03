@@ -21,7 +21,7 @@ class DeliveryMainPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: customAppBar(context,
-          title: '배달톡', action: actionButtons(context), titleSize: 30),
+          title: '배달왔소', action: actionButtons(context), titleSize: 30),
       body: RefreshIndicator(
         onRefresh: () async {
           ref.invalidate(joinablePostListProvider);

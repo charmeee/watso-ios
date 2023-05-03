@@ -23,7 +23,7 @@ class OrderSetPage extends ConsumerWidget {
     return Scaffold(
       appBar: customAppBar(
         context,
-        title: '배달톡 생성',
+        title: '배달왔소 생성',
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20),

@@ -18,7 +18,7 @@ class BasketSubmitButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     if (postOrder.postId != null) {
-      return customFloatingBottomButton(context, child: Text("배달톡 참가"),
+      return customFloatingBottomButton(context, child: Text("배달왔소 참가"),
           onPressed: () {
         if (postOrder.checkOrderTime) {
           ref
@@ -26,7 +26,7 @@ class BasketSubmitButton extends ConsumerWidget {
               .postOrder(postOrder.order)
               .then((value) => {
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: Text('배달톡에 참가하였습니다.'),
+                      content: Text('배달왔소에 참가하였습니다.'),
                     )),
                     ref.invalidate(myPostListProvider),
                     ref
@@ -68,7 +68,7 @@ class BasketSubmitButton extends ConsumerWidget {
         }
       });
     }
-    return (customFloatingBottomButton(context, child: Text("배달톡 등록"),
+    return (customFloatingBottomButton(context, child: Text("배달왔소 등록"),
         onPressed: () {
       if (postOrder.disableToPost) {
         log(postOrder.newPostToJson().toString());
@@ -78,7 +78,7 @@ class BasketSubmitButton extends ConsumerWidget {
       } else {
         ref.read(postRepositoryProvider).postDelivery(postOrder).then((value) {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text('배달톡이 등록되었습니다.'),
+            content: Text('배달왔소가 등록되었습니다.'),
           ));
           ref.invalidate(myPostListProvider);
           ref.read(myDeliveryNotifierProvider.notifier).deleteMyDeliver();

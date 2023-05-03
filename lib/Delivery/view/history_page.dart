@@ -15,7 +15,7 @@ class DeliverHistoryPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      appBar: customAppBar(context, title: '배달톡 참가 내역'),
+      appBar: customAppBar(context, title: '배달왔소 참가 내역'),
       body: FutureBuilder<List<ResponsePost>>(
         future:
             ref.read(postRepositoryProvider).getDeliveryList(PostFilter.all),
