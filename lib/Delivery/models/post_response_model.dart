@@ -3,7 +3,6 @@ import 'package:sangsangtalk/Delivery/models/post_model.dart';
 //get /post
 class ResponsePost extends PostOption {
   String id;
-  String title;
   String userId;
   String nickname;
   Store store;
@@ -12,7 +11,6 @@ class ResponsePost extends PostOption {
 
   ResponsePost(
       {required this.id,
-      required this.title,
       required this.userId,
       required this.nickname,
       required place,
@@ -31,7 +29,6 @@ class ResponsePost extends PostOption {
 
   ResponsePost.fromJson(Map<String, dynamic> json)
       : id = json['_id'].toString(),
-        title = json['title'],
         userId = json['user_id'].toString(),
         nickname = json['nickname'],
         store = Store.fromJson(json['store']),
@@ -48,8 +45,16 @@ class StoreMenus extends Store {
       required String name,
       required int minOrder,
       required int fee,
+      required String phoneNumber,
+      required List<String> note,
       required this.menuSection})
-      : super(id: id, name: name, minOrder: minOrder, fee: fee);
+      : super(
+            id: id,
+            name: name,
+            minOrder: minOrder,
+            fee: fee,
+            phoneNumber: phoneNumber,
+            note: note);
 
   StoreMenus.fromJson(Map<String, dynamic> json)
       : menuSection = List<MenuSection>.from(
