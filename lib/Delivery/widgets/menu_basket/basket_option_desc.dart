@@ -11,9 +11,10 @@ class OptionDesc extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(mainAxisSize: MainAxisSize.min, children: [
       for (var group in optionGroups)
-        OptionBoxDesc(
-          group: group,
-        ),
+        if (group.options.isNotEmpty)
+          OptionBoxDesc(
+            group: group,
+          ),
     ]);
   }
 }

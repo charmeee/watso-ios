@@ -192,7 +192,8 @@ class MyPostOrderDetailPage extends ConsumerWidget {
                                           children: [
                                             for (var group
                                                 in orderMenu.menu.optionGroups!)
-                                              OptionBoxDesc(group: group),
+                                              if (group.options.isNotEmpty)
+                                                OptionBoxDesc(group: group),
                                           ]),
                                     SizedBox(
                                       height: 10,
