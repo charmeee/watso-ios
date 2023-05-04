@@ -19,10 +19,8 @@ class PostPage extends ConsumerWidget {
   const PostPage({
     Key? key,
     required this.postId,
-    required this.postTitle,
   }) : super(key: key);
   final String postId;
-  final String postTitle;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -35,7 +33,7 @@ class PostPage extends ConsumerWidget {
           bool isOwner = data.userId == userId;
           return Scaffold(
             appBar: customAppBar(context,
-                title: postTitle,
+                title: data.store.name,
                 action: _postDeleteButton(context, ref,
                     isOwner: isOwner, status: data.status)),
             body: RefreshIndicator(
@@ -169,7 +167,6 @@ class PostPage extends ConsumerWidget {
                                                         store: data.store,
                                                         orderNum:
                                                             data.users.length,
-                                                        isOwner: isOwner,
                                                         status: data.status,
                                                       )));
                                         },
@@ -353,7 +350,8 @@ class PostPage extends ConsumerWidget {
 
   Widget _statusButton(ResponsePost data, WidgetRef ref, context) {
     if (data.status == PostStatus.delivered ||
-        data.status == PostStatus.recruiting) {
+        data.status == PostStatus.recruiting ||
+        data.status == PostStatus.canceled) {
       return const SizedBox(
         height: 0,
       );
