@@ -52,7 +52,6 @@ Widget indexCommonListTile(ResponsePost data, context) {
           MaterialPageRoute(
               builder: (context) => PostPage(
                     postId: data.id,
-                    postTitle: data.store.name,
                   )));
     },
   );
