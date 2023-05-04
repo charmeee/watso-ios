@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:sangsangtalk/Delivery/view/post_page.dart';
 
 import '../../Common/widget/appbar.dart';
 import '../models/post_model.dart';
 import '../models/post_response_model.dart';
 import '../repository/post_repository.dart';
+import 'post_order_me_detail_page.dart';
 
 class DeliverHistoryPage extends ConsumerWidget {
   const DeliverHistoryPage({
@@ -45,7 +47,20 @@ class DeliverHistoryPage extends ConsumerWidget {
                             Text(nowData.status.korName),
                             Spacer(),
                             OutlinedButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                //MyPostOrderDetailPage
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          MyPostOrderDetailPage(
+                                            postId: nowData.id,
+                                            store: nowData.store,
+                                            orderNum: nowData.users.length,
+                                            status: nowData.status,
+                                          )),
+                                );
+                              },
                               child: Text(
                                 '내 배달 보기',
                                 style:
@@ -85,7 +100,15 @@ class DeliverHistoryPage extends ConsumerWidget {
                           ),
                         ),
                         ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => PostPage(
+                                        postId: nowData.id,
+                                      )),
+                            );
+                          },
                           child: Text('게시글 보러가기'),
                           style: ElevatedButton.styleFrom(
                               minimumSize: const Size.fromHeight(40),
