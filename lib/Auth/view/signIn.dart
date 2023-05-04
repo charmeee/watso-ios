@@ -27,7 +27,7 @@ class SignInPage extends ConsumerWidget {
                 child: Column(
                   children: [
                     Text(
-                      '생자대 생활 정보톡',
+                      '여기 왔소',
                       style: TextStyle(
                         fontSize: 30,
                         fontWeight: FontWeight.bold,

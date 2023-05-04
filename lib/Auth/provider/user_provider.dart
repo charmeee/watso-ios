@@ -45,7 +45,7 @@ class UserNotifier extends StateNotifier<UserInfo?> {
 
   Future signIn(username, password) async {
     await ref.read(authRepositoryProvider).login(username, password);
-    getUserProfile();
+    await getUserProfile();
   }
 
   Future getUserProfile() async {
