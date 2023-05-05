@@ -48,7 +48,7 @@ class PostOrder extends PostOption {
         'order': order.toJson(),
         'store_id': store.id,
         'place': place,
-        'order_time': DateFormat('YY-mm-ddTHH:MM:SS').format(orderTime),
+        'order_time': DateFormat('yyyy-MM-ddTHH:mm:ss').format(orderTime),
         'min_member': minMember,
         'max_member': maxMember,
         if (postId != null) 'post_id': postId
