@@ -487,6 +487,12 @@ class PostPage extends ConsumerWidget {
                       ));
             },
             child: Text('배달 탈퇴하기'),
+            style: ElevatedButton.styleFrom(
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                ),
+                minimumSize: const Size.fromHeight(40),
+                backgroundColor: Colors.indigo),
           ),
         ));
   }
