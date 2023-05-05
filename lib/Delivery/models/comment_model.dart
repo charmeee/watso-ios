@@ -8,6 +8,7 @@ class Comment {
   CommentStatus status;
   String content;
   DateTime createdAt;
+  String? superCommentId;
 
   Comment({
     required this.id,
@@ -26,33 +27,6 @@ class Comment {
         nickname = json['nickname'],
         status = CommentStatus.values.byName(json['status']),
         content = json['content'],
-        createdAt = DateTime.parse(json['create_at']);
-}
-
-class ParentComment extends Comment {
-  List<Comment> subComments;
-
-  ParentComment(
-      {required id,
-      required postId,
-      required userId,
-      required nickname,
-      required status,
-      required content,
-      required createdAt,
-      required this.subComments})
-      : super(
-          id: id,
-          postId: postId,
-          userId: userId,
-          nickname: nickname,
-          status: status,
-          content: content,
-          createdAt: createdAt,
-        );
-
-  ParentComment.fromJson(Map<String, dynamic> json)
-      : subComments = List<Comment>.from(
-            json['sub_comments'].map((x) => Comment.fromJson(x))),
-        super.fromJson(json);
+        createdAt = DateTime.parse(json['create_at']),
+        superCommentId = json['super_comment_id']?.toString();
 }

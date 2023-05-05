@@ -24,6 +24,6 @@ final postDetailProvider = FutureProvider.autoDispose
 });
 
 final postCommentListProvider = FutureProvider.autoDispose
-    .family<List<ParentComment>, String>((ref, postId) async {
+    .family<List<Comment>, String>((ref, postId) async {
   return await ref.read(postRepositoryProvider).getCommentList(postId);
 });

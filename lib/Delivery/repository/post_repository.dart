@@ -9,7 +9,7 @@ import '../models/post_request_model.dart';
 import '../models/post_response_model.dart';
 
 final postRepositoryProvider = Provider<PostRepository>(
-      (ref) {
+  (ref) {
     final dio = ref.watch(dioProvider);
 
     const staticUrl = '/delivery/post';
@@ -42,7 +42,7 @@ class PostRepository {
   Future postDelivery(PostOrder postOrder) async {
     try {
       final response =
-      await _dio.post(staticUrl, data: postOrder.newPostToJson());
+          await _dio.post(staticUrl, data: postOrder.newPostToJson());
       return response.data;
     } on DioError catch (e) {
       throw ServerException(e);
@@ -100,11 +100,11 @@ class PostRepository {
   }
 
   //게시글 댓글 가져오기
-  Future<List<ParentComment>> getCommentList(String postId) async {
+  Future<List<Comment>> getCommentList(String postId) async {
     try {
       final response = await _dio.get('$staticUrl/$postId/comments');
       return (response.data['comments'] as List)
-          .map((e) => ParentComment.fromJson(e))
+          .map((e) => Comment.fromJson(e))
           .toList();
     } on DioError catch (e) {
       throw ServerException(e);
@@ -128,8 +128,8 @@ class PostRepository {
   }
 
   //게시글 대댓글 작성
-  Future postChildComment(String postId, String parentId,
-      String comment) async {
+  Future postChildComment(
+      String postId, String parentId, String comment) async {
     try {
       await _dio.post('$staticUrl/$postId/comments/$parentId', data: {
         'content': comment,

@@ -40,7 +40,7 @@ class _CommentBoxState extends ConsumerState<CommentList> {
 
   @override
   Widget build(BuildContext context) {
-    AsyncValue<List<ParentComment>> commentsList =
+    AsyncValue<List<Comment>> commentsList =
         ref.watch(postCommentListProvider(widget.postId));
 
     return SliverToBoxAdapter(
@@ -77,34 +77,13 @@ class _CommentBoxState extends ConsumerState<CommentList> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             for (int i = 0; i < data.length; i++)
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  CommentBox(
-                                    isJoined: widget.isJoined,
-                                    isOwner: widget.isOwner,
-                                    comment: data[i],
-                                    isParent: true,
-                                    selectedCommentId: selectedCommentId,
-                                    selectComment: selectComment,
-                                  ),
-                                  for (int j = 0;
-                                      j < data[i].subComments.length;
-                                      j++)
-                                    Padding(
-                                      padding:
-                                          const EdgeInsets.only(left: 24.0),
-                                      child: CommentBox(
-                                        isJoined: widget.isJoined,
-                                        isOwner: widget.isOwner,
-                                        comment: data[i].subComments[j],
-                                        selectedCommentId: selectedCommentId,
-                                        isParent: false,
-                                        selectComment: selectComment,
-                                      ),
-                                    ),
-                                ],
+                              CommentBox(
+                                isJoined: widget.isJoined,
+                                isOwner: widget.isOwner,
+                                comment: data[i],
+                                isParent: data[i].superCommentId == null,
+                                selectedCommentId: selectedCommentId,
+                                selectComment: selectComment,
                               ),
                           ],
                         );
