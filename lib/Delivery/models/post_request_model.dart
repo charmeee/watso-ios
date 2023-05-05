@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:sangsangtalk/Delivery/models/post_model.dart';
 
 import '../../Auth/models/user_model.dart';
@@ -47,7 +48,7 @@ class PostOrder extends PostOption {
         'order': order.toJson(),
         'store_id': store.id,
         'place': place,
-        'order_time': orderTime.toIso8601String(),
+        'order_time': DateFormat('YY-mm-ddTHH:MM:SS').format(orderTime),
         'min_member': minMember,
         'max_member': maxMember,
         if (postId != null) 'post_id': postId
