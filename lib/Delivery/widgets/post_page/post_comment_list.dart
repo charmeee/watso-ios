@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -72,6 +74,7 @@ class _CommentBoxState extends ConsumerState<CommentList> {
                   ),
                   commentsList.when(
                       data: (data) {
+                        log('data: ${data.map((e) => e.toJson())}');
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           mainAxisSize: MainAxisSize.min,
@@ -81,7 +84,8 @@ class _CommentBoxState extends ConsumerState<CommentList> {
                                 isJoined: widget.isJoined,
                                 isOwner: widget.isOwner,
                                 comment: data[i],
-                                isParent: data[i].superCommentId == null,
+                                isParent: data[i].parentId == null ||
+                                    data[i].parentId == 'null',
                                 selectedCommentId: selectedCommentId,
                                 selectComment: selectComment,
                               ),

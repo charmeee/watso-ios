@@ -8,7 +8,7 @@ class Comment {
   CommentStatus status;
   String content;
   DateTime createdAt;
-  String? superCommentId;
+  String? parentId;
 
   Comment({
     required this.id,
@@ -28,5 +28,15 @@ class Comment {
         status = CommentStatus.values.byName(json['status']),
         content = json['content'],
         createdAt = DateTime.parse(json['create_at']),
-        superCommentId = json['super_comment_id']?.toString();
+        parentId = json['parent_id']?.toString();
+
+  Map<String, dynamic> toJson() => {
+        'post_id': postId,
+        'user_id': userId,
+        'nickname': nickname,
+        'status': status.name,
+        'content': content,
+        'create_at': createdAt.toIso8601String(),
+        if (parentId != null) 'parent_id': parentId,
+      };
 }
