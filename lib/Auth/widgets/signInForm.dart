@@ -82,11 +82,14 @@ class _EmailSignInState extends ConsumerState<SignInForm> {
                     });
                   }
                 },
+                //6564DB    1B9999    FFD384
                 style: TextButton.styleFrom(
-                  backgroundColor: Colors.indigo,
+                  backgroundColor: Color(0xFFFF7700),
                   padding: EdgeInsets.all(20),
                 ),
-                child: Text("로그인하기", style: TextStyle(color: Colors.white))),
+                child: Text("로그인하기",
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.bold))),
             SizedBox(height: 10),
             TextButton(
                 onPressed: () {
