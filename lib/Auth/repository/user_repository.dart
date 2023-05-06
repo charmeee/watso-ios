@@ -103,4 +103,24 @@ class UserRepository {
       throw DataParsingException(e, s);
     }
   }
+
+  //닉네임 계좌 비밀번호 변경
+  Future<void> updateUserInfo(String field, String value) async {
+    if (field == 'nickname' ||
+        field == 'accountNumber' ||
+        field == 'password') {
+      if (field == 'accountNumber') {
+        field = 'account_number';
+      }
+      try {
+        await _dio.patch('$staticUrl/profile/$field', data: {
+          field: value,
+        });
+      } on DioError catch (e) {
+        throw ServerException(e);
+      } catch (e, s) {
+        throw DataParsingException(e, s);
+      }
+    }
+  }
 }
