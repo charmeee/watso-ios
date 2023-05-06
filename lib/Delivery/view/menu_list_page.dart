@@ -91,7 +91,7 @@ class _MenuListPageState extends ConsumerState<MenuListPage> {
                         Text('최소 배달 금액 : ${storeMenus!.minOrder}원',
                             style: const TextStyle(
                                 fontSize: 16, color: Colors.black54)),
-                        Text('전화번호 : ${storeMenus!.phoneNumber}원',
+                        Text('전화번호 : ${storeMenus!.phoneNumber}',
                             style: const TextStyle(
                                 fontSize: 16, color: Colors.black54)),
                         Text(storeMenus!.note.join('\n'),
