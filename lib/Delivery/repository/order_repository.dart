@@ -55,4 +55,16 @@ class OrderRepository {
       throw DataParsingException(e, s);
     }
   }
+
+  //게시글 탈퇴
+  Future leavePost() async {
+    try {
+      await _dio.delete('$staticUrl/me');
+      return;
+    } on DioError catch (e) {
+      throw ServerException(e);
+    } catch (e, s) {
+      throw DataParsingException(e, s);
+    }
+  }
 }

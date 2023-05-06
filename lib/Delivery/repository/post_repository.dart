@@ -87,18 +87,6 @@ class PostRepository {
     }
   }
 
-  //게시글 탈퇴
-  Future leavePost(String postId) async {
-    try {
-      await _dio.delete('$staticUrl/$postId/me');
-      return;
-    } on DioError catch (e) {
-      throw ServerException(e);
-    } catch (e, s) {
-      throw DataParsingException(e, s);
-    }
-  }
-
   //게시글 댓글 가져오기
   Future<List<Comment>> getCommentList(String postId) async {
     try {
