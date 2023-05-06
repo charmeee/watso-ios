@@ -25,12 +25,18 @@ class DuplicateCheckButton extends ConsumerWidget {
       onPressed: () async {
         if (value.isNotEmpty) {
           try {
-            await ref.read(userRepositoryProvider).checkDuplicated(
-                field: field,
-                value: field == DuplicateCheckField.email
-                    ? value + rootEmail
-                    : value);
-
+            bool duplicated = await ref
+                .read(userRepositoryProvider)
+                .checkDuplicated(
+                    field: field,
+                    value: field == DuplicateCheckField.email
+                        ? value + rootEmail
+                        : value);
+            if (duplicated) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('${field.korName}가(이) 중복됩니다')));
+              return;
+            }
             if (field == DuplicateCheckField.email) {
               //인증 코드 발송
               await ref
