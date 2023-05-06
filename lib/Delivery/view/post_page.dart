@@ -9,6 +9,7 @@ import '../../Auth/provider/user_provider.dart';
 import '../models/post_response_model.dart';
 import '../provider/my_deliver_provider.dart';
 import '../provider/post_list_provider.dart';
+import '../repository/order_repository.dart';
 import '../repository/post_repository.dart';
 import '../widgets/post_page/post_comment_list.dart';
 import 'menu_list_page.dart';
@@ -33,7 +34,7 @@ class PostPage extends ConsumerWidget {
           bool isOwner = data.userId == userId;
           return Scaffold(
             appBar: customAppBar(context,
-                title: data.store.name,
+                title: "배달왔소",
                 action: _postDeleteButton(context, ref,
                     isOwner: isOwner, status: data.status)),
             body: RefreshIndicator(
@@ -54,14 +55,25 @@ class PostPage extends ConsumerWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(top: 16.0, left: 16.0),
-                              child: Text(
-                                "모집정보",
-                                style: TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.bold),
-                              ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 16.0, left: 16.0),
+                                  child: Text(
+                                    "모집정보",
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 16.0, right: 16.0),
+                                  child: Text('수정'),
+                                )
+                              ],
                             ),
                             _informationTile(
                                 icon: Icons.store,
@@ -156,7 +168,7 @@ class PostPage extends ConsumerWidget {
                                 child: Row(
                                   children: [
                                     Expanded(
-                                      child: ElevatedButton(
+                                      child: OutlinedButton(
                                         onPressed: () {
                                           Navigator.push(
                                               context,
@@ -170,22 +182,25 @@ class PostPage extends ConsumerWidget {
                                                         status: data.status,
                                                       )));
                                         },
-                                        child: Text("내 배달 상세"),
-                                        style: ElevatedButton.styleFrom(
-                                            shape: const RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(10.0)),
-                                            ),
-                                            fixedSize:
-                                                const Size.fromHeight(40),
-                                            backgroundColor: Colors.grey),
+                                        child: Text(
+                                          "내 배달 상세",
+                                          style:
+                                              TextStyle(color: Colors.indigo),
+                                        ),
+                                        style: OutlinedButton.styleFrom(
+                                          shape: const RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(10.0)),
+                                          ),
+                                          fixedSize: const Size.fromHeight(40),
+                                        ),
                                       ),
                                     ),
                                     SizedBox(
                                       width: 12,
                                     ),
                                     Expanded(
-                                      child: ElevatedButton(
+                                      child: OutlinedButton(
                                         onPressed: () {
                                           Navigator.push(
                                               context,
@@ -194,15 +209,18 @@ class PostPage extends ConsumerWidget {
                                                       PostOrderDetailPage(
                                                           postId: postId)));
                                         },
-                                        child: Text("전체 배달"),
-                                        style: ElevatedButton.styleFrom(
-                                            shape: const RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(10.0)),
-                                            ),
-                                            fixedSize:
-                                                const Size.fromHeight(40),
-                                            backgroundColor: Colors.grey),
+                                        child: Text(
+                                          "전체 배달",
+                                          style:
+                                              TextStyle(color: Colors.indigo),
+                                        ),
+                                        style: OutlinedButton.styleFrom(
+                                          shape: const RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(10.0)),
+                                          ),
+                                          fixedSize: const Size.fromHeight(40),
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -462,7 +480,7 @@ class PostPage extends ConsumerWidget {
                           ],
                         )).then((value) async {
                   if (value) {
-                    await ref.read(postRepositoryProvider).leavePost(postId);
+                    await ref.read(orderRepositoryProvider(postId)).leavePost();
                     ref.invalidate(myPostListProvider);
                     Navigator.popUntil(context, (route) => route.isFirst);
                   }

@@ -99,7 +99,7 @@ class DeliverHistoryPage extends ConsumerWidget {
                             padding: EdgeInsets.zero,
                           ),
                         ),
-                        ElevatedButton(
+                        OutlinedButton(
                           onPressed: () {
                             Navigator.push(
                               context,
@@ -109,13 +109,17 @@ class DeliverHistoryPage extends ConsumerWidget {
                                       )),
                             );
                           },
-                          child: Text('게시글 보러가기'),
-                          style: ElevatedButton.styleFrom(
-                              minimumSize: const Size.fromHeight(40),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                              backgroundColor: Colors.indigo[200]),
+                          child: Text(
+                            '게시글 보러가기',
+                            style: TextStyle(color: Colors.indigo),
+                          ),
+                          style: OutlinedButton.styleFrom(
+                            minimumSize: const Size.fromHeight(40),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            // backgroundColor: Colors.indigo
+                          ),
                         )
                         // icon: Icon(Icons.arrow_forward_ios),
                         // label: Text('주문 내역 보기'))
