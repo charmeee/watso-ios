@@ -4,6 +4,7 @@ import 'package:sangsangtalk/Auth/models/user_model.dart';
 import 'package:sangsangtalk/Common/widget/appbar.dart';
 
 import '../provider/user_provider.dart';
+import 'edit_page.dart';
 
 class SettingPage extends ConsumerWidget {
   const SettingPage({
@@ -67,21 +68,49 @@ class SettingPage extends ConsumerWidget {
                       title: Text('닉네임'),
                       subtitle: Text(userInfo.nickname),
                       trailing: Icon(Icons.arrow_forward_ios),
-                      onTap: () {},
+                      onTap: () {
+                        //UserEditPage
+                        Navigator.push(context, MaterialPageRoute(
+                          builder: (context) {
+                            return UserEditPage(
+                              title: '닉네임 수정',
+                              field: 'nickname',
+                            );
+                          },
+                        ));
+                      },
                     ),
                     Divider(height: 1),
                     ListTile(
                       title: Text('계좌 번호'),
                       subtitle: Text(userInfo.accountNumber),
                       trailing: Icon(Icons.arrow_forward_ios),
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(context, MaterialPageRoute(
+                          builder: (context) {
+                            return UserEditPage(
+                              title: '계좌번호 수정',
+                              field: 'accountNumber',
+                            );
+                          },
+                        ));
+                      },
                     ),
                     Divider(height: 1),
                     ListTile(
                       title: Text('비밀번호'),
                       subtitle: Text('********'),
                       trailing: Icon(Icons.arrow_forward_ios),
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(context, MaterialPageRoute(
+                          builder: (context) {
+                            return UserEditPage(
+                              title: '비밀번호 수정',
+                              field: 'password',
+                            );
+                          },
+                        ));
+                      },
                     ),
                   ],
                 ),
