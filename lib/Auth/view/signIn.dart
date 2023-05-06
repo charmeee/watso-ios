@@ -24,26 +24,12 @@ class SignInPage extends ConsumerWidget {
               Center(
                   child: SizedBox(
                 height: 100,
-                child: Column(
-                  children: [
-                    Text(
-                      '여기 왔소',
-                      style: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      '로그인',
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
+                child: Text(
+                  '여기 왔소',
+                  style: TextStyle(
+                      fontSize: 30,
+                      fontWeight: FontWeight.w900,
+                      fontFamily: 'ddangs'),
                 ),
               )),
               Padding(padding: EdgeInsets.only(top: 10)),
