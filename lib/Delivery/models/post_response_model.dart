@@ -46,6 +46,7 @@ class StoreMenus extends Store {
       required int minOrder,
       required int fee,
       required String phoneNumber,
+      required String logoImgUrl,
       required List<String> note,
       required this.menuSection})
       : super(
@@ -54,6 +55,7 @@ class StoreMenus extends Store {
             minOrder: minOrder,
             fee: fee,
             phoneNumber: phoneNumber,
+            logoImgUrl: logoImgUrl,
             note: note);
 
   StoreMenus.fromJson(Map<String, dynamic> json)
