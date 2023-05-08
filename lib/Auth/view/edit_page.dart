@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sangsangtalk/Common/widget/appbar.dart';
 
+import '../widgets/accountNumberEditBox.dart';
 import '../widgets/nickname_edit_box.dart';
 
 class UserEditPage extends StatelessWidget {
@@ -22,6 +23,7 @@ class UserEditPage extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             if (field == 'nickname') NickNameEditBox(),
+            if (field == 'accountNumber') AccountEditBox(),
           ],
         ),
       ),
