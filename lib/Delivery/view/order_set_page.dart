@@ -20,6 +20,7 @@ class OrderSetPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final myPostState = ref.watch(myDeliveryNotifierProvider);
     return Scaffold(
       appBar: customAppBar(
         context,
@@ -51,6 +52,25 @@ class OrderSetPage extends ConsumerWidget {
                 RecuitNumSelector(
                   recruitFormKey: _recruitFormKey,
                 ),
+                SizedBox(
+                  height: 15,
+                ),
+                if (myPostState.store.id.isNotEmpty &&
+                    myPostState.store.note.isNotEmpty) ...{
+                  Text('특이사항',
+                      style: const TextStyle(
+                        color: Colors.black,
+                      )),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Text(
+                        myPostState.store.note.map((x) => '﹒' + x).join('\n'),
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Colors.black,
+                        )),
+                  ),
+                },
               ],
             ),
             Padding(
@@ -58,22 +78,21 @@ class OrderSetPage extends ConsumerWidget {
               child: ElevatedButton(
                 onPressed: () {
                   _recruitFormKey.currentState!.save();
-                  final postState = ref.read(myDeliveryNotifierProvider);
-                  log(postState.minMember.toString());
-                  log(postState.maxMember.toString());
-                  log(postState.store.fee.toString());
-                  log(postState.store.id.toString());
-                  log(postState.place.toString());
+                  log(myPostState.minMember.toString());
+                  log(myPostState.maxMember.toString());
+                  log(myPostState.store.fee.toString());
+                  log(myPostState.store.id.toString());
+                  log(myPostState.place.toString());
 
-                  if (!postState.isStoreSelected ||
-                      !postState.isMemberLogical ||
-                      !postState.isOrderTimeLogical) {
+                  if (!myPostState.isStoreSelected ||
+                      !myPostState.isMemberLogical ||
+                      !myPostState.isOrderTimeLogical) {
                     String? storeError =
-                        !postState.isStoreSelected ? '가게를 선택하세요' : null;
-                    String? memberError = !postState.isMemberLogical
+                        !myPostState.isStoreSelected ? '가게를 선택하세요' : null;
+                    String? memberError = !myPostState.isMemberLogical
                         ? '최소인원이 최대인원보다 클 수 없습니다.'
                         : null;
-                    String? timeError = !postState.isOrderTimeLogical
+                    String? timeError = !myPostState.isOrderTimeLogical
                         ? '주문시간은 최소 10분 뒤 부터 가능합니다.'
                         : null;
                     showDialog<void>(
@@ -103,7 +122,7 @@ class OrderSetPage extends ConsumerWidget {
                     context,
                     MaterialPageRoute(
                         builder: (context) =>
-                            MenuListPage(storeId: postState.store.id)),
+                            MenuListPage(storeId: myPostState.store.id)),
                   );
                 },
                 child: Text("주문하기"),
