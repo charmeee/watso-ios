@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
-Widget outlineTextFromField(context,
+Widget outlineTextFromField(
     {ValueChanged<String>? onChanged,
-      String? label,
-      String? hintText,
-      FormFieldValidator? validator}) {
+    EdgeInsetsGeometry? contentPadding,
+    String? label,
+    String? hintText,
+    FormFieldValidator? validator,
+    List<TextInputFormatter>? inputFormatters,
+    TextInputType? keyboardType}) {
   return TextFormField(
     autovalidateMode: AutovalidateMode.onUserInteraction,
     decoration: InputDecoration(
-      hintText: '닉네임',
+      contentPadding:
+          contentPadding ?? EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      hintText: hintText,
       enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(
             color: Colors.grey,
@@ -35,5 +41,7 @@ Widget outlineTextFromField(context,
     ),
     validator: validator,
     onChanged: onChanged,
+    inputFormatters: inputFormatters,
+    keyboardType: keyboardType,
   );
 }
