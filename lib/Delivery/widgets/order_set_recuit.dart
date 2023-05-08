@@ -24,61 +24,70 @@ class _RecuitNumSelectorState extends ConsumerState<RecuitNumSelector> {
   Widget build(BuildContext context) {
     return Form(
       key: widget.recruitFormKey,
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Checkbox(
-              value: minChecked,
-              onChanged: (value) {
-                setState(() {
-                  minChecked = value!;
-                });
-              }),
-          Expanded(
-              child: TextFormField(
-            decoration: InputDecoration(
-              label: Text('최소 인원'),
-            ),
-            initialValue: '2',
-            keyboardType: TextInputType.number,
-            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            onSaved: (value) {
-              if (minChecked && value!.isNotEmpty) {
-                ref
-                    .read(myDeliveryNotifierProvider.notifier)
-                    .setMyDeliverOption(minMember: int.parse(value));
-              } else if (!minChecked) {
-                ref
-                    .read(myDeliveryNotifierProvider.notifier)
-                    .setMyDeliverOption(minMember: 1);
-              }
-            },
-          )),
-          Checkbox(
-              value: maxChecked,
-              onChanged: (value) {
-                setState(() {
-                  maxChecked = value!;
-                });
-              }),
-          Expanded(
-              child: TextFormField(
-                  initialValue: '4',
-                  decoration: InputDecoration(
-                    label: Text('최대 인원'),
-                  ),
-                  keyboardType: TextInputType.number,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  onSaved: (value) {
-                    if (maxChecked && value!.isNotEmpty) {
-                      ref
-                          .read(myDeliveryNotifierProvider.notifier)
-                          .setMyDeliverOption(maxMember: int.parse(value));
-                    } else if (!maxChecked) {
-                      ref
-                          .read(myDeliveryNotifierProvider.notifier)
-                          .setMyDeliverOption(maxMember: 999);
-                    }
-                  })),
+          Text(
+            '모집 인원',
+          ),
+          Row(
+            children: [
+              Checkbox(
+                  value: minChecked,
+                  onChanged: (value) {
+                    setState(() {
+                      minChecked = value!;
+                    });
+                  }),
+              Expanded(
+                  child: TextFormField(
+                decoration: InputDecoration(
+                  label: Text('최소 인원'),
+                ),
+                initialValue: '2',
+                keyboardType: TextInputType.number,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                onSaved: (value) {
+                  if (minChecked && value!.isNotEmpty) {
+                    ref
+                        .read(myDeliveryNotifierProvider.notifier)
+                        .setMyDeliverOption(minMember: int.parse(value));
+                  } else if (!minChecked) {
+                    ref
+                        .read(myDeliveryNotifierProvider.notifier)
+                        .setMyDeliverOption(minMember: 1);
+                  }
+                },
+              )),
+              Checkbox(
+                  value: maxChecked,
+                  onChanged: (value) {
+                    setState(() {
+                      maxChecked = value!;
+                    });
+                  }),
+              Expanded(
+                  child: TextFormField(
+                      initialValue: '4',
+                      decoration: InputDecoration(
+                        label: Text('최대 인원'),
+                      ),
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      onSaved: (value) {
+                        if (maxChecked && value!.isNotEmpty) {
+                          ref
+                              .read(myDeliveryNotifierProvider.notifier)
+                              .setMyDeliverOption(maxMember: int.parse(value));
+                        } else if (!maxChecked) {
+                          ref
+                              .read(myDeliveryNotifierProvider.notifier)
+                              .setMyDeliverOption(maxMember: 999);
+                        }
+                      })),
+            ],
+          ),
         ],
       ),
     );
