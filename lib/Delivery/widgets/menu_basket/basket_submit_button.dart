@@ -29,6 +29,7 @@ class BasketSubmitButton extends ConsumerWidget {
                       content: Text('배달왔소에 참가하였습니다.'),
                     )),
                     ref.invalidate(myPostListProvider),
+                    ref.invalidate(joinablePostListProvider),
                     ref
                         .read(myDeliveryNotifierProvider.notifier)
                         .deleteMyDeliver(),
@@ -81,6 +82,7 @@ class BasketSubmitButton extends ConsumerWidget {
             content: Text('배달왔소가 등록되었습니다.'),
           ));
           ref.invalidate(myPostListProvider);
+          ref.invalidate(joinablePostListProvider);
           ref.read(myDeliveryNotifierProvider.notifier).deleteMyDeliver();
           Navigator.of(context).popUntil((route) => route.isFirst);
         }).onError((error, stackTrace) {
