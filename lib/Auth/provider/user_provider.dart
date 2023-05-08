@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../Common/dio.dart';
 import '../models/user_model.dart';
 import '../repository/auth_repository.dart';
 import '../repository/user_repository.dart';
@@ -15,12 +16,24 @@ enum AuthState {
 //statenotifier로 만들어서 하면되지않을까?
 final startProvider = FutureProvider((ref) async {
   final authState = ref.watch(authStateProvider);
+  final storage = ref.watch(secureStorageProvider);
+  final refreshToken = await storage.read(key: 'refreshToken');
+
+
   log(authState.toString());
   if (authState == AuthState.initial) {
     try {
-      await ref.read(userNotifierProvider.notifier).getUserProfile();
+      if (refreshToken != null) {
+        await ref.read(userNotifierProvider.notifier).getUserProfile();
+      } else {
+        ref
+            .read(authStateProvider.notifier)
+            .state = AuthState.unauthenticated;
+      }
     } catch (e) {
-      ref.read(authStateProvider.notifier).state = AuthState.unauthenticated;
+      ref
+          .read(authStateProvider.notifier)
+          .state = AuthState.unauthenticated;
     }
   }
 
@@ -30,7 +43,7 @@ final startProvider = FutureProvider((ref) async {
 final authStateProvider = StateProvider<AuthState>((ref) => AuthState.initial);
 
 final userNotifierProvider =
-    StateNotifierProvider<UserNotifier, UserInfo?>((ref) {
+StateNotifierProvider<UserNotifier, UserInfo?>((ref) {
   return UserNotifier(ref);
 });
 
@@ -51,7 +64,9 @@ class UserNotifier extends StateNotifier<UserInfo?> {
   Future getUserProfile() async {
     final userInfo = await ref.read(userRepositoryProvider).getUserProfile();
     state = userInfo;
-    ref.read(authStateProvider.notifier).state = AuthState.authenticated;
+    ref
+        .read(authStateProvider.notifier)
+        .state = AuthState.authenticated;
   }
 
   Future<void> logout() async {
@@ -65,11 +80,24 @@ class UserNotifier extends StateNotifier<UserInfo?> {
 
   Future deleteUserProfile() async {
     log("회원탈퇴");
+    await ref.read(userRepositoryProvider).deleteAccount();
     init();
   }
 
   init() {
-    ref.read(authStateProvider.notifier).state = AuthState.unauthenticated;
+    ref
+        .read(authStateProvider.notifier)
+        .state = AuthState.unauthenticated;
     state = null;
+  }
+
+  setUserInfo(field, value) {
+    UserInfo userInfo = UserInfo.clone(state!);
+    if (field == 'nickname') {
+      userInfo.nickname = value;
+    } else if (field == 'accountNumber') {
+      userInfo.accountNumber = value;
+    }
+    state = userInfo;
   }
 }
