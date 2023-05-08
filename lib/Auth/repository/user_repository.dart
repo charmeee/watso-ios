@@ -6,6 +6,7 @@ import 'package:sangsangtalk/Auth/models/user_model.dart';
 import '../../Common/dio.dart';
 import '../../Common/failures.dart';
 import '../models/user_request_model.dart';
+import 'auth_repository.dart';
 
 final userRepositoryProvider = Provider<UserRepository>(
   (ref) {
@@ -13,16 +14,17 @@ final userRepositoryProvider = Provider<UserRepository>(
     final storage = ref.watch(secureStorageProvider);
     const staticUrl = '/user';
 
-    return UserRepository(dio, storage, staticUrl);
+    return UserRepository(dio, storage, staticUrl, ref);
   },
 );
 
 class UserRepository {
-  UserRepository(this._dio, this.storage, this.staticUrl);
+  UserRepository(this._dio, this.storage, this.staticUrl, this.ref);
 
   final String staticUrl;
   final FlutterSecureStorage storage;
   final Dio _dio;
+  final Ref ref;
 
   Future<void> signUp(String username, String nickname, String name,
       String password, String email, String account, String token) async {
@@ -104,18 +106,35 @@ class UserRepository {
     }
   }
 
+  Future deleteAccount() async {
+    try {
+      await _dio.delete('$staticUrl/profile');
+      await ref.read(authRepositoryProvider).initUser();
+    } on DioError catch (e) {
+      throw ServerException(e);
+    } catch (e, s) {
+      throw DataParsingException(e, s);
+    }
+  }
+
   //닉네임 계좌 비밀번호 변경
   Future<void> updateUserInfo(String field, String value) async {
     if (field == 'nickname' ||
         field == 'accountNumber' ||
         field == 'password') {
+      Map data = {};
       if (field == 'accountNumber') {
-        field = 'account_number';
+        data = {
+          'account_number': value,
+        };
+        field = 'account-number';
+      } else {
+        data = {
+          field: value,
+        };
       }
       try {
-        await _dio.patch('$staticUrl/profile/$field', data: {
-          field: value,
-        });
+        await _dio.patch('$staticUrl/profile/$field', data: data);
       } on DioError catch (e) {
         throw ServerException(e);
       } catch (e, s) {
