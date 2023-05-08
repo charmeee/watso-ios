@@ -161,12 +161,12 @@ class PostPage extends ConsumerWidget {
                                     }
                                   },
                                 )),
-                            if (isJoined)
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 8.0, vertical: 2),
-                                child: Row(
-                                  children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8.0, vertical: 2),
+                              child: Row(
+                                children: [
+                                  if (isJoined) ...{
                                     Expanded(
                                       child: OutlinedButton(
                                         onPressed: () {
@@ -199,33 +199,33 @@ class PostPage extends ConsumerWidget {
                                     SizedBox(
                                       width: 12,
                                     ),
-                                    Expanded(
-                                      child: OutlinedButton(
-                                        onPressed: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      PostOrderDetailPage(
-                                                          postId: postId)));
-                                        },
-                                        child: Text(
-                                          "전체 배달",
-                                          style:
-                                              TextStyle(color: Colors.indigo),
+                                  },
+                                  Expanded(
+                                    child: OutlinedButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    PostOrderDetailPage(
+                                                        postId: postId)));
+                                      },
+                                      child: Text(
+                                        "전체 배달",
+                                        style: TextStyle(color: Colors.indigo),
+                                      ),
+                                      style: OutlinedButton.styleFrom(
+                                        shape: const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10.0)),
                                         ),
-                                        style: OutlinedButton.styleFrom(
-                                          shape: const RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(10.0)),
-                                          ),
-                                          fixedSize: const Size.fromHeight(40),
-                                        ),
+                                        fixedSize: const Size.fromHeight(40),
                                       ),
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
+                            ),
                             if (isJoined && isOwner)
                               _statusButton(data, ref, context),
                             if (!isJoined &&
