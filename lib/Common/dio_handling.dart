@@ -25,9 +25,10 @@ class CustomInterceptor extends Interceptor {
   // 실제 토큰을 가져와서 (storage에서) authorization: bearer $token으로
   // 헤더를 변경한다.
   @override
-  void onRequest(
-      RequestOptions options, RequestInterceptorHandler handler) async {
-    log('[REQ] [${options.method}] ${options.uri} ${options.data} ${options.headers}');
+  void onRequest(RequestOptions options,
+      RequestInterceptorHandler handler) async {
+    log('[REQ] [${options.method}] ${options.uri} ${options.data} ${options
+        .headers}');
     final token = await storage.read(key: 'accessToken');
     // log('token: $token');
     //실제 토큰으로 대체
@@ -37,37 +38,14 @@ class CustomInterceptor extends Interceptor {
       });
     }
 
-    // if (options.headers['accessToken'] == 'true') {
-    //   // 헤더 삭제
-    //   options.headers.remove('accessToken');
-    //
-    //   final token = await storage.read(key: 'ACCESS_TOKEN');
-    //
-    //   // 실제 토큰으로 대체
-    //   options.headers.addAll({
-    //     'authorization': 'Bearer $token',
-    //   });
-    // }
-
-    // if (options.headers['refreshToken'] == 'true') {
-    //   // 헤더 삭제
-    //   options.headers.remove('refreshToken');
-    //
-    //   final token = await storage.read(key: 'REFRESH_TOKEN');
-    //
-    //   // 실제 토큰으로 대체
-    //   options.headers.addAll({
-    //     'authorization': 'Bearer $token',
-    //   });
-    // }
-
     return super.onRequest(options, handler);
   }
 
   // 2) 응답을 받을때
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
-    log('[RES] [${response.requestOptions.method}] ${response.requestOptions.uri} ${response.data?.toString()}  ');
+    log('[RES] [${response.requestOptions.method}] ${response.requestOptions
+        .uri} ${response.data?.toString()}  ');
 
     return super.onResponse(response, handler);
   }
@@ -78,7 +56,9 @@ class CustomInterceptor extends Interceptor {
     // 401에러가 났을때 (status code)
     // 토큰을 재발급 받는 시도를하고 토큰이 재발급되면
     // 다시 새로운 토큰으로 요청을한다.
-    log('[ERR] [${err.requestOptions.method}] ${err.requestOptions.uri} ${err.response?.statusCode} ${err.requestOptions.data} ${err.response?.data}');
+    log('[ERR] [${err.requestOptions.method}] ${err.requestOptions.uri} ${err
+        .response?.statusCode} ${err.requestOptions.data} ${err.response
+        ?.data}');
 
     final refreshToken = await storage.read(key: 'refreshToken');
 
@@ -129,7 +109,9 @@ class CustomInterceptor extends Interceptor {
           //무한 루프 방지
           return handler.reject(e);
         }
-        if (ref.read(authStateProvider.notifier).state ==
+        if (ref
+            .read(authStateProvider.notifier)
+            .state ==
             AuthState.authenticated) {
           showErrorDialog('다시 로그인 해 주세요');
           await ref.read(userNotifierProvider.notifier).init();
