@@ -11,33 +11,15 @@ class FilterBox extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          DropdownButton(
-            value: filterTime.first,
-            icon: const Icon(Icons.arrow_downward),
-            elevation: 16,
-            style: const TextStyle(color: Colors.black87),
-            underline: SizedBox(),
-            onChanged: (String? value) {
-              // This is called when the user selects an item.
-              // setState(() {
-              //   dropdownValue = value!;
-              // });
-            },
-            items: filterTime.map<DropdownMenuItem<String>>((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value),
-              );
-            }).toList(),
-          ),
-          SizedBox(width: 16),
+          _postHeader(),
           DropdownButton(
             value: filterPlace.first,
             icon: Padding(
               padding: const EdgeInsets.only(left: 8.0),
               child: const Icon(
-                Icons.arrow_downward,
+                Icons.arrow_drop_down,
               ),
             ),
             elevation: 16,
@@ -58,6 +40,13 @@ class FilterBox extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _postHeader() {
+    return Text(
+      '참여 가능한 배달',
+      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
     );
   }
 }
