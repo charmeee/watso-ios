@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../Common/widget/outline_textfield.dart';
 import '../models/user_request_model.dart';
+import '../provider/user_provider.dart';
 import '../repository/user_repository.dart';
 import 'duplicateCheckBtn.dart';
 
@@ -57,14 +58,10 @@ class _NickNameEditBoxState extends ConsumerState<NickNameEditBox> {
               ),
             ),
             SizedBox(width: 15),
-            SizedBox(
-              width: 100,
-              height: 50,
-              child: DuplicateCheckButton(
-                field: DuplicateCheckField.nickname,
-                setValid: setDuplicationFlag,
-                value: nickname,
-              ),
+            DuplicateCheckButton(
+              field: DuplicateCheckField.nickname,
+              setValid: setDuplicationFlag,
+              value: nickname,
             ),
           ],
         ),
@@ -75,6 +72,9 @@ class _NickNameEditBoxState extends ConsumerState<NickNameEditBox> {
                   .read(userRepositoryProvider)
                   .updateUserInfo('nickname', nickname)
                   .then((value) {
+                ref
+                    .read(userNotifierProvider.notifier)
+                    .setUserInfo('nickname', nickname);
                 ScaffoldMessenger.of(context)
                     .showSnackBar(SnackBar(content: Text('닉네임이 변경되었습니다.')));
                 Navigator.pop(context);
