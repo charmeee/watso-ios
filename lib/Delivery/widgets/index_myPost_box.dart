@@ -42,7 +42,7 @@ class MyPostBox extends ConsumerWidget {
 
   Widget _myPostHeader() {
     return Padding(
-      padding: const EdgeInsets.only(top: 16.0, left: 16.0, bottom: 8.0),
+      padding: const EdgeInsets.only(top: 12.0, left: 16.0, bottom: 8.0),
       child: Text(
         '참여한 배달',
         style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
@@ -51,13 +51,39 @@ class MyPostBox extends ConsumerWidget {
   }
 
   Widget _myPostList(List<ResponsePost> data) {
+    DateTime beforeTime = DateTime(2000, 1, 1);
     return ListView.separated(
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
       itemCount: data.length,
       padding: EdgeInsets.all(0),
       itemBuilder: (context, index) {
-        return indexCommonListTile(data[index], context);
+        final nowDataDate = data[index].orderTime;
+        final bool diffDate =
+            nowDataDate.difference(beforeTime).inDays != 0; //이전 데이터와 날짜가 다른지
+        beforeTime = nowDataDate;
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (diffDate) ...{
+              Divider(height: 1),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
+                child: Text(
+                  '${nowDataDate.year}년 ${nowDataDate.month}월 ${nowDataDate.day}일',
+                  style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black54),
+                ),
+              ),
+              Divider(height: 1),
+            },
+            indexCommonListTile(data[index], context),
+          ],
+        );
       },
       separatorBuilder: (BuildContext context, int index) {
         return Divider();

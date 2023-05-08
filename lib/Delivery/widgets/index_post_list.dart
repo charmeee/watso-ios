@@ -12,19 +12,46 @@ class PostList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    AsyncValue<List<ResponsePost>> joinablePostList = ref.watch(
-        joinablePostListProvider);
+    AsyncValue<List<ResponsePost>> joinablePostList =
+        ref.watch(joinablePostListProvider);
+    DateTime beforeTime = DateTime(2000, 1, 1);
     return SizedBox(
       child: joinablePostList.when(data: (data) {
         return ListView.separated(
             itemBuilder: (BuildContext context, int index) {
               final nowData = data[index];
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4),
-                child: indexCommonListTile(nowData, context),
+              final nowDataDate = data[index].orderTime;
+              final bool diffDate = nowDataDate.difference(beforeTime).inDays !=
+                  0; //이전 데이터와 날짜가 다른지
+              beforeTime = nowDataDate;
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (diffDate) ...{
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 4, horizontal: 16),
+                      child: Text(
+                        '${nowDataDate.year}년 ${nowDataDate.month}월 ${nowDataDate.day}일',
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black54),
+                      ),
+                    ),
+                    Divider(height: 1),
+                  },
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: indexCommonListTile(nowData, context),
+                  ),
+                ],
               );
             },
-            separatorBuilder: (BuildContext context, int index) => Divider(),
+            separatorBuilder: (BuildContext context, int index) {
+              return Divider();
+            },
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
             padding: EdgeInsets.zero,
@@ -33,9 +60,9 @@ class PostList extends ConsumerWidget {
         return SizedBox(
             child: Center(
                 child: Text(
-                  '에러',
-                  style: TextStyle(fontSize: 20),
-                )),
+              '에러',
+              style: TextStyle(fontSize: 20),
+            )),
             height: 300);
       }, loading: () {
         return Center(child: CircularProgressIndicator());
