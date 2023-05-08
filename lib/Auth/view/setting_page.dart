@@ -162,6 +162,29 @@ class SettingPage extends ConsumerWidget {
                 ),
               ),
             ),
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ListTile(
+                  title: Text('탈퇴하기'),
+                  leading: Icon(Icons.block_outlined),
+                  onTap: () async {
+                    try {
+                      await ref
+                          .read(userNotifierProvider.notifier)
+                          .deleteUserProfile();
+                    } catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('탈퇴에 실패했습니다.'),
+                        ),
+                      );
+                    }
+                    Navigator.popUntil(context, (route) => route.isFirst);
+                  },
+                ),
+              ),
+            ),
             SizedBox(height: 20),
           ],
         ),
