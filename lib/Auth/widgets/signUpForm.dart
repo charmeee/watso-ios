@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../Common/widget/outline_textfield.dart';
 import '../models/user_request_model.dart';
 import 'duplicateCheckBtn.dart';
 import 'signUpSubmitBtn.dart';
@@ -65,26 +66,46 @@ class _SignUpFormState extends State<SignUpForm> {
           Text("회원가입",
               style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
           SizedBox(height: 10),
+          outlineTextFromField(
+            onChanged: (value) {
+              setState(() {
+                name = value;
+              });
+            },
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return '이름을 입력해주세요';
+              }
+              return null;
+            },
+            hintText: '이름',
+            keyboardType: TextInputType.text,
+            inputFormatters: [
+              //number and korean and space
+              FilteringTextInputFormatter.allow(RegExp(r'[ㄱ-ㅎㅏ-ㅣ가-힣 ]')),
+            ],
+          ),
+          SizedBox(height: 20),
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                child: TextFormField(
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  decoration: InputDecoration(labelText: '아이디'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return '아이디 입력해주세요';
-                    }
-                    if (!checkUsernameDuplicate) {
-                      return '아이디 중복검사를 해주세요';
-                    }
-                    return null;
-                  },
+                child: outlineTextFromField(
                   onChanged: (value) {
                     setState(() {
                       username = value;
                       checkUsernameDuplicate = false;
                     });
+                  },
+                  hintText: '아이디',
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return '아이디를 입력해주세요';
+                    }
+                    if (!checkUsernameDuplicate) {
+                      return '아이디 중복검사를 해주세요';
+                    }
+                    return null;
                   },
                   inputFormatters: [
                     FilteringTextInputFormatter.allow(
@@ -100,29 +121,29 @@ class _SignUpFormState extends State<SignUpForm> {
               ),
             ],
           ),
+          SizedBox(height: 20),
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                child: TextFormField(
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  decoration: InputDecoration(labelText: '닉네임'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return '닉네임을 입력해주세요';
-                    }
-                    if (!checkNicknameDuplicate) {
-                      return '닉네임 중복검사를 해주세요';
-                    }
-                    return null;
-                  },
-                  onChanged: (value) {
-                    setState(() {
-                      nickname = value;
-                      checkNicknameDuplicate = false;
-                    });
-                  },
-                ),
-              ),
+                  child: outlineTextFromField(
+                hintText: '닉네임',
+                onChanged: (value) {
+                  setState(() {
+                    nickname = value;
+                    checkNicknameDuplicate = false;
+                  });
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return '닉네임을 입력해주세요';
+                  }
+                  if (!checkNicknameDuplicate) {
+                    return '닉네임 중복검사를 해주세요';
+                  }
+                  return null;
+                },
+              )),
               SizedBox(width: 15),
               DuplicateCheckButton(
                 field: DuplicateCheckField.nickname,
@@ -131,41 +152,39 @@ class _SignUpFormState extends State<SignUpForm> {
               ),
             ],
           ),
+          SizedBox(height: 20),
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Expanded(
-                child: TextFormField(
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  decoration: InputDecoration(
-                    labelText: '이메일',
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return '이메일을 입력해주세요';
-                    }
-                    if (!checkEmailDuplicate) {
-                      return '인증코드를 발송 해주세요';
-                    }
-                    return null;
-                  },
-                  inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9]')),
-                  ],
-                  onChanged: (value) {
-                    setState(() {
-                      email = value;
-                      checkEmailDuplicate = false;
-                      checkEmailValid = false;
-                      emailValidationCode = '';
-                      token = '';
-                    });
-                  },
-                  keyboardType: TextInputType.text,
-                ),
-              ),
+                  child: outlineTextFromField(
+                hintText: '이메일',
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return '이메일을 입력해주세요';
+                  }
+                  if (!checkEmailDuplicate) {
+                    return '인증코드를 발송 해주세요';
+                  }
+                  return null;
+                },
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9]')),
+                ],
+                onChanged: (value) {
+                  setState(() {
+                    email = value;
+                    checkEmailDuplicate = false;
+                    checkEmailValid = false;
+                    emailValidationCode = '';
+                    token = '';
+                  });
+                },
+                keyboardType: TextInputType.text,
+              )),
+              SizedBox(width: 10),
               Text(rootEmail),
-              SizedBox(width: 25),
+              SizedBox(width: 15),
               DuplicateCheckButton(
                 field: DuplicateCheckField.email,
                 setValid: setDuplicationFlag,
@@ -178,11 +197,8 @@ class _SignUpFormState extends State<SignUpForm> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Expanded(
-                  child: TextFormField(
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    decoration: InputDecoration(
-                      labelText: '인증코드',
-                    ),
+                  child: outlineTextFromField(
+                    hintText: '인증코드',
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return '인증코드를 입력해주세요';
@@ -212,9 +228,9 @@ class _SignUpFormState extends State<SignUpForm> {
                 ),
               ],
             ),
-          TextFormField(
-            autovalidateMode: AutovalidateMode.onUserInteraction,
-            decoration: InputDecoration(labelText: '비밀번호'),
+          SizedBox(height: 20),
+          outlineTextFromField(
+            hintText: '비밀번호',
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return '숫자,영대소문자,특수문자를 사용할 수 있습니다';
@@ -234,13 +250,10 @@ class _SignUpFormState extends State<SignUpForm> {
               FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9!@~?]')),
             ],
           ),
-          TextFormField(
+          SizedBox(height: 20),
+          outlineTextFromField(
             //account
-            autovalidateMode: AutovalidateMode.onUserInteraction,
-            decoration: InputDecoration(
-              labelText: '계좌번호',
-              hintText: '농협 12341111111',
-            ),
+            hintText: '계좌번호(ex 농협 12341111111)',
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return '계좌번호를 입력해주세요';
@@ -256,30 +269,6 @@ class _SignUpFormState extends State<SignUpForm> {
             inputFormatters: [
               //number and korean and space
               FilteringTextInputFormatter.allow(RegExp(r'[0-9ㄱ-ㅎㅏ-ㅣ가-힣 ]')),
-            ],
-          ),
-          TextFormField(
-            //account
-            autovalidateMode: AutovalidateMode.onUserInteraction,
-            decoration: InputDecoration(
-              labelText: '성함',
-              hintText: '홍길동',
-            ),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return '실명을 입력해주세요';
-              }
-              return null;
-            },
-            onChanged: (value) {
-              setState(() {
-                name = value;
-              });
-            },
-            keyboardType: TextInputType.text,
-            inputFormatters: [
-              //number and korean and space
-              FilteringTextInputFormatter.allow(RegExp(r'[ㄱ-ㅎㅏ-ㅣ가-힣 ]')),
             ],
           ),
           SizedBox(height: 20),
