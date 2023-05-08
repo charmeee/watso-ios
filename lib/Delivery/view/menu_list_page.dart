@@ -78,29 +78,6 @@ class _MenuListPageState extends ConsumerState<MenuListPage> {
               shrinkWrap: true,
               physics: const BouncingScrollPhysics(),
               slivers: [
-                SliverToBoxAdapter(
-                  child: Container(
-                    padding: const EdgeInsets.only(left: 16.0, bottom: 8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text('예상 배달비 : ${storeMenus!.fee}원',
-                            style: const TextStyle(
-                                fontSize: 16, color: Colors.black54)),
-                        Text('최소 배달 금액 : ${storeMenus!.minOrder}원',
-                            style: const TextStyle(
-                                fontSize: 16, color: Colors.black54)),
-                        Text('전화번호 : ${storeMenus!.phoneNumber}',
-                            style: const TextStyle(
-                                fontSize: 16, color: Colors.black54)),
-                        Text(storeMenus!.note.join('\n'),
-                            style: const TextStyle(
-                                fontSize: 16, color: Colors.black54)),
-                      ],
-                    ),
-                  ),
-                ),
                 SliverList(
                   delegate: SliverChildBuilderDelegate(
                     (context, indexOfSection) {
