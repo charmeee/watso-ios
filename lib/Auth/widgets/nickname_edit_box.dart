@@ -43,7 +43,6 @@ class _NickNameEditBoxState extends ConsumerState<NickNameEditBox> {
           children: [
             Expanded(
               child: outlineTextFromField(
-                context,
                 onChanged: onChanged,
                 validator: (value) {
                   if (value == null || value.isEmpty) {

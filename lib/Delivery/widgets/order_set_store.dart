@@ -16,7 +16,6 @@ class StoreSelector extends ConsumerStatefulWidget {
 
 class _StoreSelectorState extends ConsumerState<StoreSelector> {
   List<Store> _storeList = [];
-  String nowStoreName = "";
 
   @override
   void initState() {
@@ -36,7 +35,7 @@ class _StoreSelectorState extends ConsumerState<StoreSelector> {
 
   @override
   Widget build(BuildContext context) {
-    String myStore = ref.watch(myDeliveryNotifierProvider).store.id;
+    Store myStore = ref.watch(myDeliveryNotifierProvider).store;
     return Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -59,10 +58,11 @@ class _StoreSelectorState extends ConsumerState<StoreSelector> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(myStore.isEmpty ? "가게를 선택해 주세요" : nowStoreName,
+                Text(myStore.id.isEmpty ? "가게를 선택해 주세요" : myStore.name,
                     style: TextStyle(
                         fontSize: 20,
-                        color: myStore.isEmpty ? Colors.grey : Colors.black)),
+                        color:
+                            myStore.id.isEmpty ? Colors.grey : Colors.black)),
                 Icon(Icons.arrow_drop_down),
               ],
             ),
@@ -92,9 +92,6 @@ class _StoreSelectorState extends ConsumerState<StoreSelector> {
                     ref
                         .read(myDeliveryNotifierProvider.notifier)
                         .setMyDeliverStore(_storeList[index]);
-                    setState(() {
-                      nowStoreName = _storeList[index].name;
-                    });
                     Navigator.pop(context);
                   },
                 );
