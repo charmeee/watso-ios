@@ -19,6 +19,13 @@ class UserInfo extends User {
         accountNumber = json['account_number'],
         email = json['email'],
         super.fromJson(json);
+
+  UserInfo.clone(UserInfo userInfo)
+      : name = userInfo.name,
+        username = userInfo.username,
+        accountNumber = userInfo.accountNumber,
+        email = userInfo.email,
+        super.clone(userInfo);
 }
 
 class User {
