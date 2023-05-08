@@ -1,4 +1,4 @@
-import 'package:sangsangtalk/Delivery/models/post_model.dart';
+import 'package:watso/Delivery/models/post_model.dart';
 
 //get /post
 class ResponsePost extends PostOption {
@@ -9,23 +9,22 @@ class ResponsePost extends PostOption {
   PostStatus status;
   List<String> users;
 
-  ResponsePost(
-      {required this.id,
-      required this.userId,
-      required this.nickname,
-      required place,
-      required minMember,
-      required maxMember,
-      required orderTime,
-      required this.store,
-      required this.status,
-      required this.users})
+  ResponsePost({required this.id,
+    required this.userId,
+    required this.nickname,
+    required place,
+    required minMember,
+    required maxMember,
+    required orderTime,
+    required this.store,
+    required this.status,
+    required this.users})
       : super(
-          place: place,
-          minMember: minMember,
-          maxMember: maxMember,
-          orderTime: orderTime,
-        );
+    place: place,
+    minMember: minMember,
+    maxMember: maxMember,
+    orderTime: orderTime,
+  );
 
   ResponsePost.fromJson(Map<String, dynamic> json)
       : id = json['_id'].toString(),
@@ -40,26 +39,25 @@ class ResponsePost extends PostOption {
 class StoreMenus extends Store {
   List<MenuSection> menuSection;
 
-  StoreMenus(
-      {required String id,
-      required String name,
-      required int minOrder,
-      required int fee,
-      required String phoneNumber,
-      required String logoImgUrl,
-      required List<String> note,
-      required this.menuSection})
+  StoreMenus({required String id,
+    required String name,
+    required int minOrder,
+    required int fee,
+    required String phoneNumber,
+    required String logoImgUrl,
+    required List<String> note,
+    required this.menuSection})
       : super(
-            id: id,
-            name: name,
-            minOrder: minOrder,
-            fee: fee,
-            phoneNumber: phoneNumber,
-            logoImgUrl: logoImgUrl,
-            note: note);
+      id: id,
+      name: name,
+      minOrder: minOrder,
+      fee: fee,
+      phoneNumber: phoneNumber,
+      logoImgUrl: logoImgUrl,
+      note: note);
 
   StoreMenus.fromJson(Map<String, dynamic> json)
       : menuSection = List<MenuSection>.from(
-            json['sections'].map((x) => MenuSection.fromJson(x))),
+      json['sections'].map((x) => MenuSection.fromJson(x))),
         super.fromJson(json);
 }

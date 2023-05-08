@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:sangsangtalk/Auth/provider/user_provider.dart';
+import 'package:watso/Auth/provider/user_provider.dart';
 
 import 'Auth/view/signIn.dart';
 import 'Common/global.dart';

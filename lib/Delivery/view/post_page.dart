@@ -2,8 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:sangsangtalk/Common/widget/appbar.dart';
-import 'package:sangsangtalk/Delivery/models/post_model.dart';
+import 'package:watso/Common/widget/appbar.dart';
+import 'package:watso/Delivery/models/post_model.dart';
 
 import '../../Auth/provider/user_provider.dart';
 import '../models/post_response_model.dart';
@@ -49,197 +49,206 @@ class PostPage extends ConsumerWidget {
                 slivers: [
                   SliverToBoxAdapter(
                       child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Card(
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Card(
+                          child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
                               children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment
+                                      .spaceBetween,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 16.0, left: 16.0),
+                                      child: Text(
+                                        "모집정보",
+                                        style: TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 16.0, right: 16.0),
+                                      child: Text('수정'),
+                                    )
+                                  ],
+                                ),
+                                _informationTile(
+                                    icon: Icons.store,
+                                    title: "주문가게",
+                                    content: data.store.name),
+                                _informationTile(
+                                    icon: Icons.access_time_rounded,
+                                    title: "주문시간",
+                                    content: DateFormat(
+                                        "M월 d일(E) HH시 mm분", 'ko')
+                                        .format(data.orderTime)),
+                                //"3월 19일(일) 10시 30분"
+                                _informationTile(
+                                    icon: Icons.people,
+                                    title: "현재 모인 인원",
+                                    content:
+                                    "${data.users.length} 명 (최소 ${data
+                                        .minMember}명 필요)"),
+                                _informationTile(
+                                    icon: Icons.attach_money,
+                                    title: "예상 배달비",
+                                    content:
+                                    "${data.store.fee ~/ data.users.length}원"),
+                                _informationTile(
+                                    icon: data.status == PostStatus.recruiting
+                                        ? Icons.person
+                                        : Icons.person_off,
+                                    title: "모집 여부",
+                                    widget: ToggleButtons(
+                                      children: [
+                                        Text("모집중"),
+                                        Text("모집완료"),
+                                      ],
+                                      isSelected: [
+                                        data.status == PostStatus.recruiting,
+                                        data.status != PostStatus.recruiting
+                                      ],
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(8)),
+                                      selectedBorderColor: Colors.green[700],
+                                      selectedColor: Colors.white,
+                                      fillColor: Colors.green[200],
+                                      color: Colors.green[400],
+                                      constraints: const BoxConstraints(
+                                        minHeight: 30.0,
+                                        minWidth: 80.0,
+                                      ),
+                                      onPressed: (index) async {
+                                        if (!isOwner) return;
+                                        if (data.status == PostStatus.ordered ||
+                                            data.status ==
+                                                PostStatus.delivered) {
+                                          showDialog(
+                                              context: context,
+                                              builder: (context) {
+                                                return AlertDialog(
+                                                  title: Text(
+                                                      "주문/배달 완료된 글은 모집 상태를 변경할 수 없습니다."),
+                                                  actions: [
+                                                    TextButton(
+                                                        onPressed: () {
+                                                          Navigator.pop(
+                                                              context);
+                                                        },
+                                                        child: Text("확인"))
+                                                  ],
+                                                );
+                                              });
+                                          return;
+                                        }
+                                        try {
+                                          if (index == 0) {
+                                            await ref
+                                                .read(postRepositoryProvider)
+                                                .updatePostStatus(
+                                                postId, PostStatus.recruiting);
+                                          } else {
+                                            await ref
+                                                .read(postRepositoryProvider)
+                                                .updatePostStatus(
+                                                postId, PostStatus.closed);
+                                          }
+                                          ref.invalidate(
+                                              postDetailProvider(postId));
+                                        } catch (e) {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(SnackBar(
+                                              content: Text("모집 상태 변경 실패")));
+                                        }
+                                      },
+                                    )),
                                 Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 16.0, left: 16.0),
-                                  child: Text(
-                                    "모집정보",
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8.0, vertical: 2),
+                                  child: Row(
+                                    children: [
+                                      if (isJoined) ...{
+                                        Expanded(
+                                          child: OutlinedButton(
+                                            onPressed: () {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          MyPostOrderDetailPage(
+                                                            postId: postId,
+                                                            store: data.store,
+                                                            orderNum:
+                                                            data.users.length,
+                                                            status: data.status,
+                                                          )));
+                                            },
+                                            child: Text(
+                                              "내 배달 상세",
+                                              style:
+                                              TextStyle(color: Colors.indigo),
+                                            ),
+                                            style: OutlinedButton.styleFrom(
+                                              shape: const RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(10.0)),
+                                              ),
+                                              fixedSize: const Size.fromHeight(
+                                                  40),
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 12,
+                                        ),
+                                      },
+                                      Expanded(
+                                        child: OutlinedButton(
+                                          onPressed: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        PostOrderDetailPage(
+                                                            postId: postId)));
+                                          },
+                                          child: Text(
+                                            "전체 배달",
+                                            style: TextStyle(
+                                                color: Colors.indigo),
+                                          ),
+                                          style: OutlinedButton.styleFrom(
+                                            shape: const RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(10.0)),
+                                            ),
+                                            fixedSize: const Size.fromHeight(
+                                                40),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 16.0, right: 16.0),
-                                  child: Text('수정'),
+                                if (isJoined && isOwner)
+                                  _statusButton(data, ref, context),
+                                if (!isJoined &&
+                                    !isOwner &&
+                                    data.status == PostStatus.recruiting)
+                                  _joinButton(data, context, ref),
+                                if (isJoined && !isOwner)
+                                  _quitButton(
+                                      context, ref, status: data.status),
+                                SizedBox(
+                                  height: 4,
                                 )
-                              ],
-                            ),
-                            _informationTile(
-                                icon: Icons.store,
-                                title: "주문가게",
-                                content: data.store.name),
-                            _informationTile(
-                                icon: Icons.access_time_rounded,
-                                title: "주문시간",
-                                content: DateFormat("M월 d일(E) HH시 mm분", 'ko')
-                                    .format(data.orderTime)),
-                            //"3월 19일(일) 10시 30분"
-                            _informationTile(
-                                icon: Icons.people,
-                                title: "현재 모인 인원",
-                                content:
-                                    "${data.users.length} 명 (최소 ${data.minMember}명 필요)"),
-                            _informationTile(
-                                icon: Icons.attach_money,
-                                title: "예상 배달비",
-                                content:
-                                    "${data.store.fee ~/ data.users.length}원"),
-                            _informationTile(
-                                icon: data.status == PostStatus.recruiting
-                                    ? Icons.person
-                                    : Icons.person_off,
-                                title: "모집 여부",
-                                widget: ToggleButtons(
-                                  children: [
-                                    Text("모집중"),
-                                    Text("모집완료"),
-                                  ],
-                                  isSelected: [
-                                    data.status == PostStatus.recruiting,
-                                    data.status != PostStatus.recruiting
-                                  ],
-                                  borderRadius: const BorderRadius.all(
-                                      Radius.circular(8)),
-                                  selectedBorderColor: Colors.green[700],
-                                  selectedColor: Colors.white,
-                                  fillColor: Colors.green[200],
-                                  color: Colors.green[400],
-                                  constraints: const BoxConstraints(
-                                    minHeight: 30.0,
-                                    minWidth: 80.0,
-                                  ),
-                                  onPressed: (index) async {
-                                    if (!isOwner) return;
-                                    if (data.status == PostStatus.ordered ||
-                                        data.status == PostStatus.delivered) {
-                                      showDialog(
-                                          context: context,
-                                          builder: (context) {
-                                            return AlertDialog(
-                                              title: Text(
-                                                  "주문/배달 완료된 글은 모집 상태를 변경할 수 없습니다."),
-                                              actions: [
-                                                TextButton(
-                                                    onPressed: () {
-                                                      Navigator.pop(context);
-                                                    },
-                                                    child: Text("확인"))
-                                              ],
-                                            );
-                                          });
-                                      return;
-                                    }
-                                    try {
-                                      if (index == 0) {
-                                        await ref
-                                            .read(postRepositoryProvider)
-                                            .updatePostStatus(
-                                                postId, PostStatus.recruiting);
-                                      } else {
-                                        await ref
-                                            .read(postRepositoryProvider)
-                                            .updatePostStatus(
-                                                postId, PostStatus.closed);
-                                      }
-                                      ref.invalidate(
-                                          postDetailProvider(postId));
-                                    } catch (e) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(SnackBar(
-                                              content: Text("모집 상태 변경 실패")));
-                                    }
-                                  },
-                                )),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 8.0, vertical: 2),
-                              child: Row(
-                                children: [
-                                  if (isJoined) ...{
-                                    Expanded(
-                                      child: OutlinedButton(
-                                        onPressed: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      MyPostOrderDetailPage(
-                                                        postId: postId,
-                                                        store: data.store,
-                                                        orderNum:
-                                                            data.users.length,
-                                                        status: data.status,
-                                                      )));
-                                        },
-                                        child: Text(
-                                          "내 배달 상세",
-                                          style:
-                                              TextStyle(color: Colors.indigo),
-                                        ),
-                                        style: OutlinedButton.styleFrom(
-                                          shape: const RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(10.0)),
-                                          ),
-                                          fixedSize: const Size.fromHeight(40),
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 12,
-                                    ),
-                                  },
-                                  Expanded(
-                                    child: OutlinedButton(
-                                      onPressed: () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    PostOrderDetailPage(
-                                                        postId: postId)));
-                                      },
-                                      child: Text(
-                                        "전체 배달",
-                                        style: TextStyle(color: Colors.indigo),
-                                      ),
-                                      style: OutlinedButton.styleFrom(
-                                        shape: const RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(10.0)),
-                                        ),
-                                        fixedSize: const Size.fromHeight(40),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            if (isJoined && isOwner)
-                              _statusButton(data, ref, context),
-                            if (!isJoined &&
-                                !isOwner &&
-                                data.status == PostStatus.recruiting)
-                              _joinButton(data, context, ref),
-                            if (isJoined && !isOwner)
-                              _quitButton(context, ref, status: data.status),
-                            SizedBox(
-                              height: 4,
-                            )
-                          ]),
-                    ),
-                  )),
+                              ]),
+                        ),
+                      )),
                   CommentList(
                     postId: postId,
                     isOwner: isOwner,
@@ -270,7 +279,8 @@ class PostPage extends ConsumerWidget {
                 status == PostStatus.closed) {
               showDialog(
                   context: context,
-                  builder: (context) => AlertDialog(
+                  builder: (context) =>
+                      AlertDialog(
                         title: Text('게시글 삭제'),
                         content: Text('게시글을 삭제하시겠습니까?'),
                         actions: [
@@ -299,7 +309,8 @@ class PostPage extends ConsumerWidget {
                 : '${status.korName}상테어서는 주문을 삭제할 수 없습니다.';
             showDialog(
                 context: context,
-                builder: (context) => AlertDialog(
+                builder: (context) =>
+                    AlertDialog(
                       title: Text('에러'),
                       content: Text(errorText),
                       actions: [
@@ -321,11 +332,10 @@ class PostPage extends ConsumerWidget {
     return null;
   }
 
-  Widget _informationTile(
-      {required IconData icon,
-      required String title,
-      String? content,
-      Widget? widget}) {
+  Widget _informationTile({required IconData icon,
+    required String title,
+    String? content,
+    Widget? widget}) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
       child: Row(
@@ -417,19 +427,20 @@ class PostPage extends ConsumerWidget {
   Widget _joinButton(ResponsePost data, context, WidgetRef ref) {
     onButtonClick() {
       ref.read(myDeliveryNotifierProvider.notifier).setMyDeliverOption(
-            place: data.place,
-            orderTime: data.orderTime,
-            minMember: data.minMember,
-            maxMember: data.maxMember,
-            postId: data.id,
-          );
+        place: data.place,
+        orderTime: data.orderTime,
+        minMember: data.minMember,
+        maxMember: data.maxMember,
+        postId: data.id,
+      );
       ref
           .read(myDeliveryNotifierProvider.notifier)
           .setMyDeliverStore(data.store);
       Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => MenuListPage(
+            builder: (context) =>
+                MenuListPage(
                   storeId: data.store.id,
                 )),
       );
@@ -463,7 +474,8 @@ class PostPage extends ConsumerWidget {
               if (status == PostStatus.recruiting) {
                 showDialog(
                     context: context,
-                    builder: (context) => AlertDialog(
+                    builder: (context) =>
+                        AlertDialog(
                           title: Text('게시글 탈퇴'),
                           content: Text('해당 주문 내역을 모두 취소하고 게시글을 탈퇴하시겠습니까?'),
                           actions: [
@@ -492,7 +504,8 @@ class PostPage extends ConsumerWidget {
                   : '${status.korName}상테어서는 주문을 삭제할 수 없습니다.';
               showDialog(
                   context: context,
-                  builder: (context) => AlertDialog(
+                  builder: (context) =>
+                      AlertDialog(
                         title: Text('에러'),
                         content: Text(errorText),
                         actions: [

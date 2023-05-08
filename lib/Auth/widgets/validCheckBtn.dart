@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sangsangtalk/Auth/models/user_request_model.dart';
+import 'package:watso/Auth/models/user_request_model.dart';
 
 import '../repository/user_repository.dart';
 

@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sangsangtalk/Delivery/models/comment_model.dart';
-import 'package:sangsangtalk/Delivery/repository/post_repository.dart';
+import 'package:watso/Delivery/models/comment_model.dart';
+import 'package:watso/Delivery/repository/post_repository.dart';
 
 import '../models/post_model.dart';
 import '../models/post_response_model.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sangsangtalk/Auth/models/user_model.dart';
-import 'package:sangsangtalk/Common/widget/appbar.dart';
+import 'package:watso/Auth/models/user_model.dart';
+import 'package:watso/Common/widget/appbar.dart';
 
 import '../provider/user_provider.dart';
 import 'edit_page.dart';

@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sangsangtalk/Common/widget/appbar.dart';
+import 'package:watso/Common/widget/appbar.dart';
 
 import '../../Common/commonType.dart';
 import '../models/post_model.dart';

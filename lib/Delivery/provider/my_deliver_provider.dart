@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sangsangtalk/Auth/models/user_model.dart';
+import 'package:watso/Auth/models/user_model.dart';
 
 import '../../Auth/provider/user_provider.dart';
 import '../models/post_model.dart';

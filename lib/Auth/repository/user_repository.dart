@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:sangsangtalk/Auth/models/user_model.dart';
+import 'package:watso/Auth/models/user_model.dart';
 
 import '../../Common/dio.dart';
 import '../../Common/failures.dart';

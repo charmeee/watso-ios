@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sangsangtalk/Common/widget/appbar.dart';
+import 'package:watso/Common/widget/appbar.dart';
 
 import '../widgets/accountNumberEditBox.dart';
 import '../widgets/nickname_edit_box.dart';

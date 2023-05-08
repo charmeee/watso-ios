@@ -2,7 +2,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sangsangtalk/Auth/view/setting_page.dart';
+import 'package:watso/Auth/view/setting_page.dart';
 
 import '../../Common/widget/appbar.dart';
 import '../provider/post_list_provider.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:sangsangtalk/Delivery/models/post_model.dart';
+import 'package:watso/Delivery/models/post_model.dart';
 
 import '../models/post_response_model.dart';
 import '../view/post_page.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:sangsangtalk/Delivery/view/post_page.dart';
+import 'package:watso/Delivery/view/post_page.dart';
 
 import '../../Common/widget/appbar.dart';
 import '../models/post_model.dart';
@@ -20,7 +20,7 @@ class DeliverHistoryPage extends ConsumerWidget {
       appBar: customAppBar(context, title: '배달왔소 참가 내역'),
       body: FutureBuilder<List<ResponsePost>>(
         future:
-            ref.read(postRepositoryProvider).getDeliveryList(PostFilter.all),
+        ref.read(postRepositoryProvider).getDeliveryList(PostFilter.all),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             final List<ResponsePost> data = snapshot.data!;
@@ -30,7 +30,7 @@ class DeliverHistoryPage extends ConsumerWidget {
               itemBuilder: (context, index) {
                 ResponsePost nowData = data[index];
                 String orderDate =
-                    DateFormat("M.d(E)", 'ko').format(nowData.orderTime);
+                DateFormat("M.d(E)", 'ko').format(nowData.orderTime);
                 return Card(
                   margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: Padding(
@@ -64,7 +64,7 @@ class DeliverHistoryPage extends ConsumerWidget {
                               child: Text(
                                 '내 배달 보기',
                                 style:
-                                    TextStyle(height: 1, color: Colors.black),
+                                TextStyle(height: 1, color: Colors.black),
                               ),
                               style: OutlinedButton.styleFrom(
                                 padding: EdgeInsets.symmetric(
@@ -104,7 +104,8 @@ class DeliverHistoryPage extends ConsumerWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => PostPage(
+                                  builder: (context) =>
+                                      PostPage(
                                         postId: nowData.id,
                                       )),
                             );
