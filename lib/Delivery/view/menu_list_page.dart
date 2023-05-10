@@ -1,10 +1,9 @@
-import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:watso/Common/commonType.dart';
 import 'package:watso/Common/widget/appbar.dart';
+import 'package:watso/Common/widget/primary_button.dart';
 
-import '../../Common/widget/floating_bottom_button.dart';
 import '../models/post_model.dart';
 import '../models/post_request_model.dart';
 import '../models/post_response_model.dart';
@@ -80,7 +79,7 @@ class _MenuListPageState extends ConsumerState<MenuListPage> {
               slivers: [
                 SliverList(
                   delegate: SliverChildBuilderDelegate(
-                        (context, indexOfSection) {
+                    (context, indexOfSection) {
                       List<MenuSection> menuSection = storeMenus!.menuSection;
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -117,12 +116,11 @@ class _MenuListPageState extends ConsumerState<MenuListPage> {
                                   //navigate to menu option page
                                   Navigator.of(context).push(
                                     MaterialPageRoute(
-                                      builder: (context) =>
-                                          MenuOptionPage(
-                                            storeId: widget.storeId,
-                                            menuId: menu.id,
-                                            menuName: menu.name,
-                                          ),
+                                      builder: (context) => MenuOptionPage(
+                                        storeId: widget.storeId,
+                                        menuId: menu.id,
+                                        menuName: menu.name,
+                                      ),
                                     ),
                                   );
                                 },
@@ -142,17 +140,21 @@ class _MenuListPageState extends ConsumerState<MenuListPage> {
             ),
           ),
           orderMenus.isNotEmpty
-              ? Padding(
-            padding: const EdgeInsets.only(bottom: 32.0),
-            child: customFloatingBottomButton(
-              context,
-              child: floatingButtonLabel((orderMenus.fold(
-                  0,
-                      (previousValue, element) =>
-                  previousValue + element.quantity)).toString()),
-              onPressed: navigateToBasket,
-            ),
-          )
+              ? Container(
+                  color: Colors.transparent,
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 48.0),
+                    child: primaryButton(
+                      padding: EdgeInsets.all(16),
+                      child: floatingButtonLabel((orderMenus.fold(
+                          0,
+                          (previousValue, element) =>
+                              previousValue + element.quantity)).toString()),
+                      onPressed: navigateToBasket,
+                    ),
+                  ),
+                )
               : const SizedBox(height: 32),
         ],
       ),
@@ -170,8 +172,7 @@ class _MenuListPageState extends ConsumerState<MenuListPage> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Badge(
-            badgeContent: Text(badgeContent),
-            child: const Icon(Icons.shopping_cart)),
+            label: Text(badgeContent), child: const Icon(Icons.shopping_cart)),
         const SizedBox(width: 16),
         Text(
           '장바구니',

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:watso/Common/widget/primary_button.dart';
 
-import '../../Common/widget/floating_bottom_button.dart';
 import '../models/post_model.dart';
 import '../provider/menu_option_provider.dart';
 
@@ -14,13 +14,19 @@ class MenuOptionAddBtn extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 32.0),
-      child: customFloatingBottomButton(context,
-          child: Text('${orderMenu.totalPrice}원 담기'), onPressed: () {
-        ref.read(menuOptionNotifierProvider.notifier).addInMyOrder();
-        Navigator.pop(context);
-      }),
+    return Container(
+      color: Colors.transparent,
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 48.0),
+        child: primaryButton(
+            text: '${orderMenu.totalPrice}원 담기',
+            padding: const EdgeInsets.symmetric(vertical: 16.0),
+            onPressed: () {
+              ref.read(menuOptionNotifierProvider.notifier).addInMyOrder();
+              Navigator.pop(context);
+            }),
+      ),
     );
   }
 }
