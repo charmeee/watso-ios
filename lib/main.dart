@@ -22,10 +22,12 @@ void main() {
             title: 'dogbird',
             navigatorKey: navigatorState,
             theme: ThemeData(
-                // scaffoldBackgroundColor: backgroundColor,
-                // textTheme: TextTheme()
-                //     .apply(bodyColor: Colors.white, displayColor: Colors.white)
-                ),
+              primaryColor: Color(0xffFF7700),
+              fontFamily: 'suite',
+              // scaffoldBackgroundColor: backgroundColor,
+              // textTheme: TextTheme()
+              //     .apply(bodyColor: Colors.white, displayColor: Colors.white)
+            ),
             home: const MyApp(),
           ),
         ),
