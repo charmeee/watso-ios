@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:watso/Common/theme/text.dart';
 
 import '../models/post_model.dart';
 import '../provider/menu_option_provider.dart';
@@ -39,10 +40,19 @@ class MenuOptionSelectBox extends ConsumerWidget {
                         .any((element) => element.id == menuOption.id)
                     ? selectIcon
                     : unSelectIcon)),
-            Text(menuOption.name),
+            Text(
+              menuOption.name,
+              style: WatsoText.bold,
+            ),
           ],
         ),
-        Text('${menuOption.price}원'),
+        Padding(
+          padding: const EdgeInsets.only(right: 16.0),
+          child: Text(
+            '${menuOption.price}원',
+            style: WatsoText.bold,
+          ),
+        ),
       ],
     );
   }

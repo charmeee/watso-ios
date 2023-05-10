@@ -85,26 +85,27 @@ class _MenuOptionPageState extends ConsumerState<MenuOptionPage> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: CustomScrollView(
-                shrinkWrap: true,
-                physics: const BouncingScrollPhysics(),
-                slivers: [
-                  SliverToBoxAdapter(
-                    child: Container(
-                      padding: const EdgeInsets.only(left: 16.0, bottom: 8.0),
-                      child: Text(
-                        '기본 가격 : ${menu.price}원',
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
+            child: CustomScrollView(
+              shrinkWrap: true,
+              physics: const BouncingScrollPhysics(),
+              slivers: [
+                SliverToBoxAdapter(
+                  child: Container(
+                    padding: const EdgeInsets.only(left: 16.0, bottom: 8.0),
+                    child: Text(
+                      '기본 가격 : ${menu.price}원',
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
-                  if (menu.optionGroups != null)
-                    SliverList(
+                ),
+                SliverToBoxAdapter(child: Divider()),
+                if (menu.optionGroups != null)
+                  SliverPadding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    sliver: SliverList(
                       delegate: SliverChildBuilderDelegate(
                         (context, index) {
                           return Column(
@@ -126,11 +127,15 @@ class _MenuOptionPageState extends ConsumerState<MenuOptionPage> {
                         childCount: menu.optionGroups!.length,
                       ),
                     ),
-                  MenuCountBtn(
-                    orderMenu: orderMenu,
                   ),
-                ],
-              ),
+                MenuCountBtn(
+                  orderMenu: orderMenu,
+                ),
+                SliverToBoxAdapter(
+                    child: SizedBox(
+                  height: 30,
+                ))
+              ],
             ),
           ),
           MenuOptionAddBtn(

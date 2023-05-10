@@ -4,7 +4,6 @@ import 'package:watso/Common/widget/appbar.dart';
 
 import '../models/post_request_model.dart';
 import '../provider/my_deliver_provider.dart';
-
 //주요 위젯
 import '../widgets/menu_basket/basket_addMore_btn.dart';
 import '../widgets/menu_basket/basket_calculate_box.dart';
@@ -45,8 +44,11 @@ class MenuBasketPage extends ConsumerWidget {
           ),
         ],
       ),
-      floatingActionButton: BasketSubmitButton(
-        postOrder: postOrder,
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: BasketSubmitButton(
+          postOrder: postOrder,
+        ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );

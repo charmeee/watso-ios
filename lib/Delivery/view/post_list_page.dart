@@ -1,5 +1,4 @@
 //Main delivery page
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:watso/Auth/view/setting_page.dart';
@@ -21,7 +20,7 @@ class DeliveryMainPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: customAppBar(context,
-          title: '배달왔소', action: actionButtons(context), titleSize: 30),
+          title: '배달왔소', action: actionButtons(context), isLogo: true),
       body: RefreshIndicator(
         onRefresh: () async {
           ref.invalidate(joinablePostListProvider);

@@ -15,12 +15,16 @@ class MenuCountBtn extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return SliverToBoxAdapter(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('개수', style: const TextStyle(fontSize: 20)),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Text('개수', style: const TextStyle(fontSize: 20)),
+            ),
             Row(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 IconButton(
                   onPressed: () {
