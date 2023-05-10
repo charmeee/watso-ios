@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:watso/Delivery/view/post_page.dart';
 
 import '../../Common/widget/appbar.dart';
+import '../../Common/widget/secondary_button.dart';
 import '../models/post_model.dart';
 import '../models/post_response_model.dart';
 import '../repository/post_repository.dart';
@@ -20,7 +21,7 @@ class DeliverHistoryPage extends ConsumerWidget {
       appBar: customAppBar(context, title: '배달왔소 참가 내역'),
       body: FutureBuilder<List<ResponsePost>>(
         future:
-        ref.read(postRepositoryProvider).getDeliveryList(PostFilter.all),
+            ref.read(postRepositoryProvider).getDeliveryList(PostFilter.all),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             final List<ResponsePost> data = snapshot.data!;
@@ -30,22 +31,57 @@ class DeliverHistoryPage extends ConsumerWidget {
               itemBuilder: (context, index) {
                 ResponsePost nowData = data[index];
                 String orderDate =
-                DateFormat("M.d(E)", 'ko').format(nowData.orderTime);
+                    DateFormat("M.d(E)", 'ko').format(nowData.orderTime);
                 return Card(
                   margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
-                        vertical: 8.0, horizontal: 16),
+                        vertical: 16.0, horizontal: 16),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(orderDate),
-                            Text('﹒'),
-                            Text(nowData.status.korName),
-                            Spacer(),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(orderDate),
+                                    Text('﹒'),
+                                    Text(nowData.status.korName),
+                                  ],
+                                ),
+                                TextButton(
+                                  onPressed: () {},
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                        nowData.store.name,
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      Icon(
+                                        Icons.arrow_forward_ios_rounded,
+                                        size: 18,
+                                      ),
+                                    ],
+                                  ),
+                                  style: TextButton.styleFrom(
+                                    foregroundColor: Colors.black,
+                                    padding: EdgeInsets.zero,
+                                  ),
+                                )
+                              ],
+                            ),
                             OutlinedButton(
                               onPressed: () {
                                 //MyPostOrderDetailPage
@@ -64,7 +100,7 @@ class DeliverHistoryPage extends ConsumerWidget {
                               child: Text(
                                 '내 배달 보기',
                                 style:
-                                TextStyle(height: 1, color: Colors.black),
+                                    TextStyle(height: 1, color: Colors.black),
                               ),
                               style: OutlinedButton.styleFrom(
                                 padding: EdgeInsets.symmetric(
@@ -78,48 +114,20 @@ class DeliverHistoryPage extends ConsumerWidget {
                             )
                           ],
                         ),
-                        TextButton(
-                          onPressed: () {},
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                nowData.store.name,
-                                style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.bold),
-                              ),
-                              Icon(
-                                Icons.arrow_forward_ios_rounded,
-                                size: 18,
-                              ),
-                            ],
-                          ),
-                          style: TextButton.styleFrom(
-                            foregroundColor: Colors.black,
-                            padding: EdgeInsets.zero,
-                          ),
-                        ),
-                        OutlinedButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      PostPage(
-                                        postId: nowData.id,
-                                      )),
-                            );
-                          },
-                          child: Text(
-                            '게시글 보러가기',
-                            style: TextStyle(color: Colors.indigo),
-                          ),
-                          style: OutlinedButton.styleFrom(
-                            minimumSize: const Size.fromHeight(40),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                            // backgroundColor: Colors.indigo
+
+                        SizedBox(
+                          height: 40,
+                          child: secondaryButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => PostPage(
+                                          postId: nowData.id,
+                                        )),
+                              );
+                            },
+                            text: '게시글 보러가기',
                           ),
                         )
                         // icon: Icon(Icons.arrow_forward_ios),
