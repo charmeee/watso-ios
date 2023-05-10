@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../Common/widget/outline_textfield.dart';
+import '../../Common/widget/outline_textformfield.dart';
 import '../models/user_request_model.dart';
 import 'duplicateCheckBtn.dart';
 import 'signUpSubmitBtn.dart';
@@ -192,7 +192,8 @@ class _SignUpFormState extends State<SignUpForm> {
               ),
             ],
           ),
-          if (checkEmailDuplicate)
+          if (checkEmailDuplicate) ...{
+            SizedBox(height: 20),
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -228,6 +229,7 @@ class _SignUpFormState extends State<SignUpForm> {
                 ),
               ],
             ),
+          },
           SizedBox(height: 20),
           outlineTextFromField(
             hintText: '비밀번호',
