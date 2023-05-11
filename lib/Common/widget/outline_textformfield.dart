@@ -8,7 +8,9 @@ Widget outlineTextFromField(
     String? hintText,
     FormFieldValidator? validator,
     List<TextInputFormatter>? inputFormatters,
-    TextInputType? keyboardType}) {
+    TextInputType? keyboardType,
+    TextEditingController? controller,
+    Widget? suffixIcon}) {
   return TextFormField(
     autovalidateMode: AutovalidateMode.onUserInteraction,
     decoration: InputDecoration(
@@ -38,10 +40,13 @@ Widget outlineTextFromField(
         ),
         borderRadius: BorderRadius.circular(10),
       ),
+      suffixIcon: suffixIcon,
     ),
     validator: validator,
     onChanged: onChanged,
     inputFormatters: inputFormatters,
     keyboardType: keyboardType,
+    cursorColor: Colors.grey,
+    controller: controller,
   );
 }
