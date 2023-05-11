@@ -8,7 +8,7 @@ import '../models/post_model.dart';
 import '../models/post_request_model.dart';
 
 final myDeliveryNotifierProvider =
-    StateNotifierProvider<MyDeliveryNotifier, PostOrder>((ref) {
+    StateNotifierProvider.autoDispose<MyDeliveryNotifier, PostOrder>((ref) {
   UserInfo? user = ref.watch(userNotifierProvider);
   if (user == null) {
     throw Exception('user is null');
