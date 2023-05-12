@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:watso/Common/widget/appbar.dart';
 import 'package:watso/Delivery/models/post_model.dart';
+import 'package:watso/Delivery/models/post_request_model.dart';
 
 import '../../Auth/provider/user_provider.dart';
 import '../../Common/theme/color.dart';
@@ -18,6 +19,7 @@ import '../widgets/common/information_tile.dart';
 import '../widgets/common/store_detail_box.dart';
 import '../widgets/post_page/post_comment_list.dart';
 import 'menu_list_page.dart';
+import 'option_edit_page.dart';
 import 'post_order_detail_page.dart';
 import 'post_order_me_detail_page.dart';
 
@@ -79,11 +81,24 @@ class PostPage extends ConsumerWidget {
                                     style: WatsoText.title,
                                   ),
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 16.0, right: 16.0),
-                                  child: Icon(Icons.edit),
-                                )
+                                if (isOwner)
+                                  InkWell(
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  OptionEditPage(
+                                                    postData: PostOrder
+                                                        .fromResponsePost(data),
+                                                  )));
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 16.0, vertical: 16.0),
+                                      child: Text('수정'),
+                                    ),
+                                  )
                               ],
                             ),
 
