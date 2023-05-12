@@ -18,7 +18,9 @@ final _recruitFormKey = GlobalKey<FormState>();
 class OrderSetPage extends ConsumerWidget {
   const OrderSetPage({
     Key? key,
+    this.isNew = true,
   }) : super(key: key);
+  final bool isNew;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
