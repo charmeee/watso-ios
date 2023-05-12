@@ -6,6 +6,7 @@ import 'package:watso/Delivery/models/post_model.dart';
 
 import '../../Auth/provider/user_provider.dart';
 import '../../Common/theme/color.dart';
+import '../../Common/theme/text.dart';
 import '../../Common/widget/primary_button.dart';
 import '../../Common/widget/secondary_button.dart';
 import '../models/post_response_model.dart';
@@ -13,6 +14,8 @@ import '../provider/my_deliver_provider.dart';
 import '../provider/post_list_provider.dart';
 import '../repository/order_repository.dart';
 import '../repository/post_repository.dart';
+import '../widgets/common/information_tile.dart';
+import '../widgets/common/store_detail_box.dart';
 import '../widgets/post_page/post_comment_list.dart';
 import 'menu_list_page.dart';
 import 'post_order_detail_page.dart';
@@ -52,6 +55,14 @@ class PostPage extends ConsumerWidget {
                   SliverToBoxAdapter(
                       child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: StoreDetailBox(
+                      store: data.store,
+                      peopleNum: data.users.length,
+                    ),
+                  )),
+                  SliverToBoxAdapter(
+                      child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: Card(
                       child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -65,39 +76,33 @@ class PostPage extends ConsumerWidget {
                                       top: 16.0, left: 16.0),
                                   child: Text(
                                     "모집정보",
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold),
+                                    style: WatsoText.title,
                                   ),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.only(
                                       top: 16.0, right: 16.0),
-                                  child: Text('수정'),
+                                  child: Icon(Icons.edit),
                                 )
                               ],
                             ),
-                            _informationTile(
-                                icon: Icons.store,
-                                title: "주문가게",
-                                content: data.store.name),
-                            _informationTile(
+
+                            InformationTile(
                                 icon: Icons.access_time_rounded,
                                 title: "주문시간",
                                 content: DateFormat("M월 d일(E) HH시 mm분", 'ko')
                                     .format(data.orderTime)),
                             //"3월 19일(일) 10시 30분"
-                            _informationTile(
+                            InformationTile(
                                 icon: Icons.people,
                                 title: "현재 모인 인원",
                                 content:
                                     "${data.users.length} 명 (최소 ${data.minMember}명 필요)"),
-                            _informationTile(
-                                icon: Icons.attach_money,
-                                title: "예상 배달비",
-                                content:
-                                    "${data.store.fee ~/ data.users.length}원"),
-                            _informationTile(
+                            InformationTile(
+                                icon: Icons.waves,
+                                title: "게시글 상태",
+                                content: "${data.status.korName}"),
+                            InformationTile(
                                 icon: data.status == PostStatus.recruiting
                                     ? Icons.person
                                     : Icons.person_off,
@@ -303,51 +308,6 @@ class PostPage extends ConsumerWidget {
       ];
     }
     return null;
-  }
-
-  Widget _informationTile(
-      {required IconData icon,
-      required String title,
-      String? content,
-      Widget? widget}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15.0),
-            child: Icon(
-              icon,
-              // Icons.store,
-              color: Colors.grey,
-            ),
-          ),
-          SizedBox(
-            width: 10,
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(title,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey,
-                  )),
-              if (widget != null) widget,
-              if (content != null)
-                Text(
-                  content,
-                  style: TextStyle(
-                    fontSize: 16,
-                  ),
-                ),
-            ],
-          ),
-        ],
-      ),
-    );
   }
 
   Widget _statusButton(ResponsePost data, WidgetRef ref, context) {
