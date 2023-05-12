@@ -1,5 +1,6 @@
 import 'package:intl/intl.dart';
 import 'package:watso/Delivery/models/post_model.dart';
+import 'package:watso/Delivery/models/post_response_model.dart';
 
 import '../../Auth/models/user_model.dart';
 
@@ -52,6 +53,25 @@ class PostOrder extends PostOption {
         'min_member': minMember,
         'max_member': maxMember,
         if (postId != null) 'post_id': postId
+      };
+
+  factory PostOrder.fromResponsePost(ResponsePost responsePost) {
+    return PostOrder(
+        order: Order.init(
+            User(id: responsePost.userId, nickname: responsePost.nickname)),
+        store: Store.clone(responsePost.store),
+        place: responsePost.place,
+        orderTime: responsePost.orderTime,
+        minMember: responsePost.minMember,
+        maxMember: responsePost.maxMember,
+        postId: responsePost.id);
+  }
+
+  get editableInfo =>
+      {
+        'place': place,
+        'min_member': minMember,
+        'max_member': maxMember,
       };
 
   bool get isStoreSelected => store.id.isNotEmpty;
