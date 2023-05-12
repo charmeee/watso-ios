@@ -364,20 +364,43 @@ class PostPage extends ConsumerWidget {
       if (index == PostStatus.values.length - 1) {
         return;
       }
-      ref
-          .read(postRepositoryProvider)
-          .updatePostStatus(data.id, PostStatus.values[index + 1])
-          .then((value) {
-        if (index + 1 == PostStatus.values.length - 1) {
-          ref.invalidate(myPostListProvider);
-          Navigator.pop(context);
-          return;
-        } //배달완료 누른거
-        ref.invalidate(postDetailProvider(postId));
-      }).onError((error, stackTrace) {
-        //snackbar
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('에러')));
+      showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+                title: Text('게시글 상태 변경'),
+                content:
+                    Text('${PostStatus.values[index + 1].korName}로 처리하시겠습니까?'),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.pop(context, false);
+                      },
+                      child: Text('취소')),
+                  TextButton(
+                      onPressed: () {
+                        Navigator.pop(context, true);
+                      },
+                      child: Text('확인')),
+                ],
+              )).then((value) {
+        if (value == null || !value) return;
+        ref
+            .read(postRepositoryProvider)
+            .updatePostStatus(data.id, PostStatus.values[index + 1])
+            .then((value) {
+          if (index + 1 == PostStatus.values.length - 1) {
+            ref.invalidate(myPostListProvider);
+            Navigator.pop(context);
+            return;
+          } //배달완료 누른거
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text('게시글 상태 업데이트 완료')));
+          ref.invalidate(postDetailProvider(postId));
+        }).onError((error, stackTrace) {
+          //snackbar
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text('에러')));
+        });
       });
     }
 
