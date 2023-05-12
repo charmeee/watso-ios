@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:watso/Common/theme/color.dart';
 
+import '../../../Common/theme/text.dart';
 import '../../../Common/widget/outline_textformfield.dart';
 import '../../models/comment_model.dart';
 import '../../provider/post_list_provider.dart';
@@ -62,8 +63,7 @@ class _CommentBoxState extends ConsumerState<CommentList> {
                     children: [
                       Text(
                         "댓글",
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
+                        style: WatsoText.title,
                       ),
                       SizedBox(
                         width: 10,
