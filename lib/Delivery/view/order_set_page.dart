@@ -6,6 +6,7 @@ import 'package:watso/Common/widget/appbar.dart';
 import 'package:watso/Common/widget/primary_button.dart';
 
 import '../provider/my_deliver_provider.dart';
+import '../widgets/common/store_detail_box.dart';
 import '../widgets/order_set_place.dart';
 import '../widgets/order_set_recuit.dart';
 import '../widgets/order_set_store.dart';
@@ -31,48 +32,41 @@ class OrderSetPage extends ConsumerWidget {
           padding: EdgeInsets.symmetric(horizontal: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TimeSelector(),
-                  SizedBox(
-                    height: 15,
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TimeSelector(),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      StoreSelector(),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      PlaceSelector(),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      RecuitNumSelector(
+                        recruitFormKey: _recruitFormKey,
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      if (myPostState.store.id.isNotEmpty) ...{
+                        StoreDetailBox(
+                          store: myPostState.store,
+                          peopleNum: 1,
+                        ),
+                      },
+                    ],
                   ),
-                  StoreSelector(),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  PlaceSelector(),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  RecuitNumSelector(
-                    recruitFormKey: _recruitFormKey,
-                  ),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  if (myPostState.store.id.isNotEmpty &&
-                      myPostState.store.note.isNotEmpty) ...{
-                    Text('특이사항',
-                        style: const TextStyle(
-                          color: Colors.black,
-                        )),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8.0),
-                      child: Text(
-                          myPostState.store.note.map((x) => '﹒' + x).join('\n'),
-                          style: const TextStyle(
-                            fontSize: 14,
-                            color: Colors.black,
-                          )),
-                    ),
-                  },
-                ],
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 40.0),
