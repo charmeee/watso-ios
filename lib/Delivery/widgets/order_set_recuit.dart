@@ -23,15 +23,24 @@ class RecuitNumSelector extends ConsumerStatefulWidget {
 }
 
 class _RecuitNumSelectorState extends ConsumerState<RecuitNumSelector> {
-  bool minChecked = false;
-  bool maxChecked = false;
+  late bool minChecked;
+  late bool maxChecked;
+  late bool editMode;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    editMode = widget.minMember != null &&
+        widget.maxMember != null &&
+        widget.setMinMaxMember != null;
+    minChecked = editMode;
+    maxChecked = editMode;
+  }
+
 
   @override
   Widget build(BuildContext context) {
-    bool editMode = widget.minMember != null &&
-        widget.maxMember != null &&
-        widget.setMinMaxMember != null;
-
     return Form(
       key: widget.recruitFormKey,
       child: Column(
@@ -52,32 +61,32 @@ class _RecuitNumSelectorState extends ConsumerState<RecuitNumSelector> {
                   }),
               Expanded(
                   child: TextFormField(
-                decoration: InputDecoration(
-                  label: Text('최소 인원'),
-                ),
-                initialValue: widget.minMember?.toString() ?? '2',
-                keyboardType: TextInputType.number,
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                onSaved: (value) {
-                  if (minChecked && value!.isNotEmpty) {
-                    if (editMode) {
-                      widget.setMinMaxMember!(min: int.parse(value));
-                      return;
-                    }
-                    ref
-                        .read(myDeliveryNotifierProvider.notifier)
-                        .setMyDeliverOption(minMember: int.parse(value));
-                  } else if (!minChecked) {
-                    if (editMode) {
-                      widget.setMinMaxMember!(min: 1);
-                      return;
-                    }
-                    ref
-                        .read(myDeliveryNotifierProvider.notifier)
-                        .setMyDeliverOption(minMember: 1);
-                  }
-                },
-              )),
+                    decoration: InputDecoration(
+                      label: Text('최소 인원'),
+                    ),
+                    initialValue: widget.minMember?.toString() ?? '2',
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    onSaved: (value) {
+                      if (minChecked && value!.isNotEmpty) {
+                        if (editMode) {
+                          widget.setMinMaxMember!(min: int.parse(value));
+                          return;
+                        }
+                        ref
+                            .read(myDeliveryNotifierProvider.notifier)
+                            .setMyDeliverOption(minMember: int.parse(value));
+                      } else if (!minChecked) {
+                        if (editMode) {
+                          widget.setMinMaxMember!(min: 1);
+                          return;
+                        }
+                        ref
+                            .read(myDeliveryNotifierProvider.notifier)
+                            .setMyDeliverOption(minMember: 1);
+                      }
+                    },
+                  )),
               Checkbox(
                   value: maxChecked,
                   onChanged: (value) {
