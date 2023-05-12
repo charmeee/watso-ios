@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:watso/Common/widget/appbar.dart';
 import 'package:watso/Common/widget/primary_button.dart';
 
+import '../models/post_request_model.dart';
 import '../provider/my_deliver_provider.dart';
 import '../widgets/common/store_detail_box.dart';
 import '../widgets/order_set_place.dart';
@@ -18,13 +19,11 @@ final _recruitFormKey = GlobalKey<FormState>();
 class OrderSetPage extends ConsumerWidget {
   const OrderSetPage({
     Key? key,
-    this.isNew = true,
   }) : super(key: key);
-  final bool isNew;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final myPostState = ref.watch(myDeliveryNotifierProvider);
+    final PostOrder myPostState = ref.watch(myDeliveryNotifierProvider);
     return Scaffold(
         appBar: customAppBar(
           context,
@@ -81,7 +80,6 @@ class OrderSetPage extends ConsumerWidget {
                     log(myPostState.store.fee.toString());
                     log(myPostState.store.id.toString());
                     log(myPostState.place.toString());
-
                     if (!myPostState.isStoreSelected ||
                         !myPostState.isMemberLogical ||
                         !myPostState.isOrderTimeLogical) {
