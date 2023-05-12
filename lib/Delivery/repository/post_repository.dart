@@ -62,6 +62,18 @@ class PostRepository {
     }
   }
 
+  //게시글 수정
+  Future updatePost(String postId, Map editableData) async {
+    try {
+      await _dio.patch('$staticUrl/$postId', data: editableData);
+      return true;
+    } on DioError catch (e) {
+      throw ServerException(e);
+    } catch (e, s) {
+      throw DataParsingException(e, s);
+    }
+  }
+
   Future updatePostStatus(String postId, PostStatus status) async {
     try {
       await _dio.patch('$staticUrl/$postId/status', data: {
