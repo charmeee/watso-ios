@@ -16,6 +16,13 @@ class WatsoText {
     color: WatsoColor.text,
   );
 
+  static const lightBold = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.w500,
+    fontFamily: 'suite',
+    color: WatsoColor.text,
+  );
+
   static const bold = TextStyle(
     fontSize: 14,
     fontWeight: FontWeight.w700,
