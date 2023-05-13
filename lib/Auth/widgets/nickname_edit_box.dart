@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:watso/Common/widget/primary_button.dart';
 
+import '../../Common/theme/text.dart';
 import '../../Common/widget/outline_textformfield.dart';
 import '../models/user_request_model.dart';
 import '../provider/user_provider.dart';
@@ -38,7 +40,13 @@ class _NickNameEditBoxState extends ConsumerState<NickNameEditBox> {
   Widget build(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        Text(
+          '새 닉네임을 입력해주세요',
+          style: WatsoText.lightBold,
+        ),
+        const SizedBox(height: 20),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -65,8 +73,9 @@ class _NickNameEditBoxState extends ConsumerState<NickNameEditBox> {
             ),
           ],
         ),
+        const SizedBox(height: 20),
         if (checkNicknameDuplicate)
-          ElevatedButton(
+          primaryButton(
             onPressed: () {
               ref
                   .read(userRepositoryProvider)

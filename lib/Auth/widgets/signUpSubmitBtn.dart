@@ -29,12 +29,8 @@ class SignUpSubmitButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        foregroundColor: Colors.white,
-        backgroundColor: Colors.indigo,
-        padding: EdgeInsets.symmetric(vertical: 15),
-      ),
+    return primaryButton(
+      padding: const EdgeInsets.symmetric(vertical: 15),
       onPressed: () {
         if (signUpFormKey.currentState!.validate()) {
           log(

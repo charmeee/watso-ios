@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:watso/Auth/view/setting_page.dart';
+import 'package:watso/Common/theme/color.dart';
 
 import '../../Common/widget/appbar.dart';
 import '../provider/post_list_provider.dart';
@@ -69,7 +70,7 @@ class DeliveryMainPage extends ConsumerWidget {
           );
         },
         child: Icon(Icons.add),
-        backgroundColor: Colors.indigo,
+        backgroundColor: WatsoColor.primary,
       ),
     );
   }
