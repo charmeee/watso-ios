@@ -79,7 +79,7 @@ class _NickNameEditBoxState extends ConsumerState<NickNameEditBox> {
             onPressed: () {
               ref
                   .read(userRepositoryProvider)
-                  .updateUserInfo('nickname', nickname)
+                  .updateNickname(nickname)
                   .then((value) {
                 ref
                     .read(userNotifierProvider.notifier)

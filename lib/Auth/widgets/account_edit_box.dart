@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../Common/theme/text.dart';
 import '../../Common/widget/outline_textformfield.dart';
 import '../provider/user_provider.dart';
 import '../repository/user_repository.dart';
@@ -53,7 +54,7 @@ class _AccountEditBoxState extends ConsumerState<AccountEditBox> {
           onPressed: () {
             ref
                 .read(userRepositoryProvider)
-                .updateUserInfo('accountNumber', accountNumber)
+                .updateAccountNumber(accountNumber)
                 .then((value) {
               ref
                   .read(userNotifierProvider.notifier)
