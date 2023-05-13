@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:watso/Common/theme/text.dart';
 
 import '../../Common/widget/outline_textformfield.dart';
 import '../models/user_request_model.dart';
@@ -66,6 +67,11 @@ class _SignUpFormState extends State<SignUpForm> {
           Text("회원가입",
               style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
           SizedBox(height: 10),
+          Text(
+            "이름",
+            style: WatsoText.lightBold,
+          ),
+          SizedBox(height: 5),
           outlineTextFromField(
             onChanged: (value) {
               setState(() {
@@ -85,7 +91,12 @@ class _SignUpFormState extends State<SignUpForm> {
               FilteringTextInputFormatter.allow(RegExp(r'[ㄱ-ㅎㅏ-ㅣ가-힣 ]')),
             ],
           ),
-          SizedBox(height: 20),
+          SizedBox(height: 16),
+          Text(
+            "아이디",
+            style: WatsoText.lightBold,
+          ),
+          SizedBox(height: 5),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -121,7 +132,12 @@ class _SignUpFormState extends State<SignUpForm> {
               ),
             ],
           ),
-          SizedBox(height: 20),
+          SizedBox(height: 16),
+          Text(
+            "닉네임",
+            style: WatsoText.lightBold,
+          ),
+          SizedBox(height: 5),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -152,7 +168,12 @@ class _SignUpFormState extends State<SignUpForm> {
               ),
             ],
           ),
-          SizedBox(height: 20),
+          SizedBox(height: 16),
+          Text(
+            "이메일",
+            style: WatsoText.lightBold,
+          ),
+          SizedBox(height: 5),
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -193,7 +214,12 @@ class _SignUpFormState extends State<SignUpForm> {
             ],
           ),
           if (checkEmailDuplicate) ...{
-            SizedBox(height: 20),
+            SizedBox(height: 16),
+            Text(
+              "인증번호",
+              style: WatsoText.lightBold,
+            ),
+            SizedBox(height: 5),
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -230,7 +256,12 @@ class _SignUpFormState extends State<SignUpForm> {
               ],
             ),
           },
-          SizedBox(height: 20),
+          SizedBox(height: 16),
+          Text(
+            "비밀번호",
+            style: WatsoText.lightBold,
+          ),
+          SizedBox(height: 5),
           outlineTextFromField(
             hintText: '비밀번호',
             validator: (value) {
@@ -252,7 +283,12 @@ class _SignUpFormState extends State<SignUpForm> {
               FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9!@~?]')),
             ],
           ),
-          SizedBox(height: 20),
+          SizedBox(height: 16),
+          Text(
+            "계좌번호",
+            style: WatsoText.lightBold,
+          ),
+          SizedBox(height: 5),
           outlineTextFromField(
             //account
             hintText: '계좌번호(ex 농협 12341111111)',
@@ -273,7 +309,7 @@ class _SignUpFormState extends State<SignUpForm> {
               FilteringTextInputFormatter.allow(RegExp(r'[0-9ㄱ-ㅎㅏ-ㅣ가-힣 ]')),
             ],
           ),
-          SizedBox(height: 20),
+          SizedBox(height: 16),
           SignUpSubmitButton(
             signUpFormKey: _signUpFormKey,
             username: username,

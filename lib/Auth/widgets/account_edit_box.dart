@@ -23,6 +23,11 @@ class _AccountEditBoxState extends ConsumerState<AccountEditBox> {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
+        Text(
+          '새 계좌번호를 입력해주세요',
+          style: WatsoText.lightBold,
+        ),
+        const SizedBox(height: 20),
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: outlineTextFromField(
