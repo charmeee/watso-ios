@@ -25,7 +25,7 @@ class SignInPage extends ConsumerWidget {
                   child: SizedBox(
                 height: 100,
                 child: Text(
-                  '여기 왔소',
+                  '여기 "왔소"',
                   style: TextStyle(
                       fontSize: 30,
                       fontWeight: FontWeight.w900,
