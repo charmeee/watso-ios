@@ -118,28 +118,66 @@ class UserRepository {
   }
 
   //닉네임 계좌 비밀번호 변경
-  Future<void> updateUserInfo(String field, String value) async {
-    if (field == 'nickname' ||
-        field == 'accountNumber' ||
-        field == 'password') {
-      Map data = {};
-      if (field == 'accountNumber') {
-        data = {
-          'account_number': value,
-        };
-        field = 'account-number';
-      } else {
-        data = {
-          field: value,
-        };
-      }
-      try {
-        await _dio.patch('$staticUrl/profile/$field', data: data);
-      } on DioError catch (e) {
-        throw ServerException(e);
-      } catch (e, s) {
-        throw DataParsingException(e, s);
-      }
+
+  Future<void> updateNickname(value) async {
+    try {
+      await _dio.patch('$staticUrl/profile/nickname', data: {
+        'nickname': value,
+      });
+    } on DioError catch (e) {
+      throw ServerException(e);
+    } catch (e, s) {
+      throw DataParsingException(e, s);
+    }
+  }
+
+  Future<void> updateAccountNumber(value) async {
+    try {
+      await _dio.patch('$staticUrl/profile/account-number', data: {
+        'account_number': value,
+      });
+    } on DioError catch (e) {
+      throw ServerException(e);
+    } catch (e, s) {
+      throw DataParsingException(e, s);
+    }
+  }
+
+  Future<void> updatePassword(currentPassword, newPassword) async {
+    try {
+      await _dio.patch('$staticUrl/profile/password', data: {
+        'current_password': currentPassword,
+        'new_password': newPassword,
+      });
+    } on DioError catch (e) {
+      throw ServerException(e);
+    } catch (e, s) {
+      throw DataParsingException(e, s);
+    }
+  }
+
+  Future<void> findUsername(String email) async {
+    try {
+      await _dio.get('$staticUrl/forgot/username', queryParameters: {
+        'email': email,
+      });
+    } on DioError catch (e) {
+      throw ServerException(e);
+    } catch (e) {
+      throw Exception("알 수 없는 에러");
+    }
+  }
+
+  Future<void> findPassword(String email, String username) async {
+    try {
+      await _dio.get('$staticUrl/forgot/username', queryParameters: {
+        'email': email,
+        'username': username,
+      });
+    } on DioError catch (e) {
+      throw ServerException(e);
+    } catch (e) {
+      throw Exception("알 수 없는 에러");
     }
   }
 }
