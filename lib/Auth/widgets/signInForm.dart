@@ -6,6 +6,7 @@ import '../../Common/widget/primary_button.dart';
 import '../../Common/widget/secondary_button.dart';
 import '../../Common/widget/underline_textformfield.dart';
 import '../provider/user_provider.dart';
+import '../view/find_account_page.dart';
 import '../view/signUp.dart';
 
 class SignInForm extends ConsumerStatefulWidget {
@@ -95,9 +96,11 @@ class _EmailSignInState extends ConsumerState<SignInForm> {
           ),
           TextButton(
               onPressed: () async {
-                // await ref
-                //     .read(userNotifierProvider.notifier)
-                //     .signIn(''
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => FindAccountPage(),
+                  ),
+                );
               },
               child: Text("아이디 / 비밀번호 찾기",
                   style: TextStyle(
