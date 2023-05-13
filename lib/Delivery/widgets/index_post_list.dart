@@ -50,7 +50,7 @@ class PostList extends ConsumerWidget {
               );
             },
             separatorBuilder: (BuildContext context, int index) {
-              return Divider();
+              return Divider(height: 1);
             },
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),

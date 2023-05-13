@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:watso/Common/theme/text.dart';
 
 import '../models/post_response_model.dart';
 import '../provider/post_list_provider.dart';
@@ -45,7 +46,7 @@ class MyPostBox extends ConsumerWidget {
       padding: const EdgeInsets.only(top: 12.0, left: 16.0, bottom: 8.0),
       child: Text(
         '참여한 배달',
-        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        style: WatsoText.title,
       ),
     );
   }
@@ -86,7 +87,9 @@ class MyPostBox extends ConsumerWidget {
         );
       },
       separatorBuilder: (BuildContext context, int index) {
-        return Divider();
+        return Divider(
+          height: 1,
+        );
       },
     );
   }
