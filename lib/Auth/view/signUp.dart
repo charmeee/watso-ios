@@ -9,7 +9,7 @@ class SignUpPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppBar(context),
+      appBar: customAppBar(context, title: '회원가입'),
       body: SingleChildScrollView(
           child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20),

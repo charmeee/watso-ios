@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../Common/theme/text.dart';
+
 const List<String> filterTime = <String>['최근 등록', '가까운 시간'];
 const List<String> filterPlace = <String>['모두', '생자대', '기숙사'];
 
@@ -46,7 +48,7 @@ class FilterBox extends StatelessWidget {
   Widget _postHeader() {
     return Text(
       '참여 가능한 배달',
-      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+      style: WatsoText.title,
     );
   }
 }

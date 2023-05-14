@@ -31,7 +31,7 @@ class WatsoText {
   );
 
   static const title = TextStyle(
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: FontWeight.w700,
     fontFamily: 'suite',
     color: WatsoColor.text,

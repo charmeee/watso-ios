@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:watso/Auth/models/user_request_model.dart';
 
+import '../../Common/widget/primary_button.dart';
 import '../repository/user_repository.dart';
 
 class SignUpSubmitButton extends ConsumerWidget {
@@ -33,20 +34,13 @@ class SignUpSubmitButton extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(vertical: 15),
       onPressed: () {
         if (signUpFormKey.currentState!.validate()) {
-          log(
-              'username: $username, nickname: $nickname,name: $name, email: $email, password: $password, account: $account, token: $token');
+          log('username: $username, nickname: $nickname,name: $name, email: $email, password: $password, account: $account, token: $token');
           //api 호출
 
           ref
               .read(userRepositoryProvider)
-              .signUp(
-              username,
-              nickname,
-              name,
-              password,
-              email + rootEmail,
-              account,
-              token)
+              .signUp(username, nickname, name, password, email + rootEmail,
+                  account, token)
               .then((value) {
             showDialog(
                 context: context,
