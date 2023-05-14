@@ -64,8 +64,6 @@ class _SignUpFormState extends State<SignUpForm> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text("회원가입",
-              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
           SizedBox(height: 10),
           Text(
             "이름",
