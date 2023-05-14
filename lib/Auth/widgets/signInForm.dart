@@ -79,7 +79,7 @@ class _EmailSignInState extends ConsumerState<SignInForm> {
                 }
               },
               padding: EdgeInsets.all(20),
-              text: "로그인하기"),
+              text: "로그인"),
           SizedBox(height: 10),
           secondaryButton(
             onPressed: () {
@@ -92,7 +92,7 @@ class _EmailSignInState extends ConsumerState<SignInForm> {
             },
             padding: EdgeInsets.all(20),
             borderWidth: 2,
-            text: "회원가입하기",
+            text: "회원가입",
           ),
           TextButton(
               onPressed: () async {
