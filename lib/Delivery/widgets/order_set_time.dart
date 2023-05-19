@@ -41,7 +41,7 @@ class _TimeSelectorState extends ConsumerState<TimeSelector> {
                   initialDateTime: _dateTime,
                   minuteInterval: 10,
                   minimumDate: nowDate,
-                  maximumDate: nowDate.add(Duration(days: 1)),
+                  maximumDate: nowDate.add(Duration(days: 7)),
                   use24hFormat: false,
                   onDateTimeChanged: (DateTime newDateTime) {
                     setState(() => _dateTime = newDateTime);
