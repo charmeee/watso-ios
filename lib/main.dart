@@ -1,9 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/date_symbol_data_local.dart';
 import 'package:watso/Auth/provider/user_provider.dart';
 
 import 'Auth/view/signIn.dart';
@@ -47,27 +47,38 @@ void main() async {
       print('Message also contained a notification: ${message.notification}');
     }
   });
-  //localization
-  initializeDateFormatting().then((_) => runApp(ProviderScope(
-        child: GestureDetector(
-          onTap: () {
-            FocusManager.instance.primaryFocus?.unfocus(); // 키보드 닫기 이벤트
-          },
-          child: MaterialApp(
-            debugShowCheckedModeBanner: false,
-            title: 'dogbird',
-            navigatorKey: navigatorState,
-            theme: ThemeData(
-              primaryColor: Color(0xffFF7700),
-              fontFamily: 'suite',
-              // scaffoldBackgroundColor: backgroundColor,
-              // textTheme: TextTheme()
-              //     .apply(bodyColor: Colors.white, displayColor: Colors.white)
-            ),
-            home: const MyApp(),
-          ),
+  runApp(ProviderScope(
+    child: GestureDetector(
+      onTap: () {
+        FocusManager.instance.primaryFocus?.unfocus(); // 키보드 닫기 이벤트
+      },
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        locale: const Locale('ko', 'KR'),
+        localizationsDelegates: [
+          // ... app-specific localization delegate[s] here
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate, // iOS
+        ],
+        supportedLocales: [
+          const Locale('en'), // English
+          const Locale('ko'), // korean
+          // ... other locales the app supports
+        ],
+        title: 'dogbird',
+        navigatorKey: navigatorState,
+        theme: ThemeData(
+          primaryColor: Color(0xffFF7700),
+          fontFamily: 'suite',
+          // scaffoldBackgroundColor: backgroundColor,
+          // textTheme: TextTheme()
+          //     .apply(bodyColor: Colors.white, displayColor: Colors.white)
         ),
-      )));
+        home: const MyApp(),
+      ),
+    ),
+  ));
 }
 
 class MyApp extends ConsumerStatefulWidget {
