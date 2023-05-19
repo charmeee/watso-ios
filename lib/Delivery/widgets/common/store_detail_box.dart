@@ -1,14 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:watso/Common/theme/color.dart';
 import 'package:watso/Common/theme/text.dart';
 
 import '../../models/post_model.dart';
+import '../post_page/modify_fee_dialog.dart';
 import 'information_tile.dart';
 
 class StoreDetailBox extends StatelessWidget {
-  const StoreDetailBox({Key? key, required this.store, required this.peopleNum})
+  const StoreDetailBox(
+      {Key? key,
+      required this.store,
+      required this.peopleNum,
+      this.fee,
+      this.postId,
+      this.isOwner = false})
       : super(key: key);
   final Store store;
   final int peopleNum;
+  final int? fee;
+  final bool isOwner;
+  final String? postId;
 
   @override
   Widget build(BuildContext context) {
@@ -32,27 +43,44 @@ class StoreDetailBox extends StatelessWidget {
             content: store.phoneNumber,
           ),
           InformationTile(
+              icon: Icons.attach_money,
+              title: "배달비",
+              widget: Row(
+                children: [
+                  Text("${fee ?? store.fee}원"),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  if (isOwner && postId != null)
+                    InkWell(
+                      child: Padding(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                        child: Text(
+                          '수정',
+                          style: TextStyle(
+                            color: WatsoColor.primary,
+                          ),
+                        ),
+                      ),
+                      onTap: () {
+                        showDialog(
+                            context: context,
+                            builder: (context) => ModifyFeeDialog(
+                                  postId: postId!,
+                                  storeFee: fee ?? store.fee,
+                                ));
+                      },
+                    )
+                ],
+              )),
+          InformationTile(
             icon: Icons.info,
             title: "배달비 상세 정보",
             content: store.note.isNotEmpty
                 ? store.note.map((x) => '﹒$x').join('\n')
                 : '없음',
           ),
-          // InformationTile(
-          //   icon: Icons.attach_money,
-          //   title: "예상 배달비",
-          //   widget: Row(
-          //     crossAxisAlignment: CrossAxisAlignment.start,
-          //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //     children: [
-          //       Text("${store.fee ~/ peopleNum}원"),
-          //       SizedBox(
-          //         width: 10,
-          //       ),
-          //       Text('수정')
-          //     ],
-          //   ),
-          // ),
           SizedBox(
             height: 10,
           ),
