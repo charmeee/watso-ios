@@ -17,6 +17,7 @@ import '../repository/order_repository.dart';
 import '../repository/post_repository.dart';
 import '../widgets/common/information_tile.dart';
 import '../widgets/common/store_detail_box.dart';
+import '../widgets/post_page/modify_fee_dialog.dart';
 import '../widgets/post_page/post_comment_list.dart';
 import 'menu_list_page.dart';
 import 'option_edit_page.dart';
@@ -41,7 +42,7 @@ class PostPage extends ConsumerWidget {
           bool isOwner = data.userId == userId;
           return Scaffold(
             appBar: customAppBar(context,
-                title: "배달왔소",
+                title: data.store.name,
                 action: _postDeleteButton(context, ref,
                     isOwner: isOwner, status: data.status)),
             body: RefreshIndicator(
@@ -96,7 +97,12 @@ class PostPage extends ConsumerWidget {
                                     child: Padding(
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 16.0, vertical: 16.0),
-                                      child: Text('수정'),
+                                      child: Text(
+                                        '수정',
+                                        style: TextStyle(
+                                          color: WatsoColor.primary,
+                                        ),
+                                      ),
                                     ),
                                   )
                               ],
@@ -113,6 +119,13 @@ class PostPage extends ConsumerWidget {
                                 title: "현재 모인 인원",
                                 content:
                                     "${data.users.length} 명 (최소 ${data.minMember}명 필요)"),
+                            InformationTile(
+                              icon: Icons.emoji_people_sharp,
+                              title: "현재 1인당 배달비",
+                              content: data.fee == 0
+                                  ? '무료'
+                                  : ' ${data.fee ~/ data.users.length}원 ',
+                            ),
                             InformationTile(
                                 icon: Icons.waves,
                                 title: "게시글 상태",
@@ -336,7 +349,7 @@ class PostPage extends ConsumerWidget {
 
     final int index = data.status.index;
     onButtonClick() {
-      if (index == PostStatus.values.length - 1) {
+      if (index >= PostStatus.values.length - 2) {
         return;
       }
       showDialog(
@@ -363,10 +376,14 @@ class PostPage extends ConsumerWidget {
             .read(postRepositoryProvider)
             .updatePostStatus(data.id, PostStatus.values[index + 1])
             .then((value) {
-          if (index + 1 == PostStatus.values.length - 1) {
-            ref.invalidate(myPostListProvider);
-            Navigator.pop(context);
-            return;
+          if (data.status == PostStatus.ordered) {
+            showDialog(
+                context: context,
+                builder: (context) => ModifyFeeDialog(
+                      postId: postId,
+                      storeFee: data.fee,
+                      isConfirm: true,
+                    ));
           } //배달완료 누른거
           ScaffoldMessenger.of(context)
               .showSnackBar(SnackBar(content: Text('게시글 상태 업데이트 완료')));
