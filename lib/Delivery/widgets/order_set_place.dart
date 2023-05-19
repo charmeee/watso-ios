@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:watso/Common/theme/color.dart';
 
 import '../provider/my_deliver_provider.dart';
 
@@ -39,6 +40,12 @@ class PlaceSelector extends ConsumerWidget {
                       .read(myDeliveryNotifierProvider.notifier)
                       .setMyDeliverOption(place: value.toString());
                 },
+                fillColor: MaterialStateProperty.resolveWith((states) {
+                  if (states.contains(MaterialState.selected)) {
+                    return WatsoColor.primary;
+                  }
+                  return Colors.grey;
+                }),
               ),
               Expanded(child: Text("생자대")),
               Radio(
@@ -53,6 +60,12 @@ class PlaceSelector extends ConsumerWidget {
                       .read(myDeliveryNotifierProvider.notifier)
                       .setMyDeliverOption(place: value.toString());
                 },
+                fillColor: MaterialStateProperty.resolveWith((states) {
+                  if (states.contains(MaterialState.selected)) {
+                    return WatsoColor.primary;
+                  }
+                  return Colors.grey;
+                }),
               ),
               Expanded(child: Text("기숙사")),
             ],

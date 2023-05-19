@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../Common/theme/color.dart';
 import '../provider/my_deliver_provider.dart';
 
 class RecuitNumSelector extends ConsumerStatefulWidget {
@@ -38,7 +39,6 @@ class _RecuitNumSelectorState extends ConsumerState<RecuitNumSelector> {
     maxChecked = editMode;
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -53,47 +53,61 @@ class _RecuitNumSelectorState extends ConsumerState<RecuitNumSelector> {
           Row(
             children: [
               Checkbox(
-                  value: minChecked,
-                  onChanged: (value) {
-                    setState(() {
-                      minChecked = value!;
-                    });
-                  }),
+                value: minChecked,
+                onChanged: (value) {
+                  setState(() {
+                    minChecked = value!;
+                  });
+                },
+                fillColor: MaterialStateProperty.resolveWith((states) {
+                  if (states.contains(MaterialState.selected)) {
+                    return WatsoColor.primary;
+                  }
+                  return Colors.grey;
+                }),
+              ),
               Expanded(
                   child: TextFormField(
-                    decoration: InputDecoration(
-                      label: Text('최소 인원'),
-                    ),
-                    initialValue: widget.minMember?.toString() ?? '2',
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    onSaved: (value) {
-                      if (minChecked && value!.isNotEmpty) {
-                        if (editMode) {
-                          widget.setMinMaxMember!(min: int.parse(value));
-                          return;
-                        }
-                        ref
-                            .read(myDeliveryNotifierProvider.notifier)
-                            .setMyDeliverOption(minMember: int.parse(value));
-                      } else if (!minChecked) {
-                        if (editMode) {
-                          widget.setMinMaxMember!(min: 1);
-                          return;
-                        }
-                        ref
-                            .read(myDeliveryNotifierProvider.notifier)
-                            .setMyDeliverOption(minMember: 1);
-                      }
-                    },
-                  )),
+                decoration: InputDecoration(
+                  label: Text('최소 인원'),
+                ),
+                initialValue: widget.minMember?.toString() ?? '2',
+                keyboardType: TextInputType.number,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                onSaved: (value) {
+                  if (minChecked && value!.isNotEmpty) {
+                    if (editMode) {
+                      widget.setMinMaxMember!(min: int.parse(value));
+                      return;
+                    }
+                    ref
+                        .read(myDeliveryNotifierProvider.notifier)
+                        .setMyDeliverOption(minMember: int.parse(value));
+                  } else if (!minChecked) {
+                    if (editMode) {
+                      widget.setMinMaxMember!(min: 1);
+                      return;
+                    }
+                    ref
+                        .read(myDeliveryNotifierProvider.notifier)
+                        .setMyDeliverOption(minMember: 1);
+                  }
+                },
+              )),
               Checkbox(
-                  value: maxChecked,
-                  onChanged: (value) {
-                    setState(() {
-                      maxChecked = value!;
-                    });
-                  }),
+                value: maxChecked,
+                onChanged: (value) {
+                  setState(() {
+                    maxChecked = value!;
+                  });
+                },
+                fillColor: MaterialStateProperty.resolveWith((states) {
+                  if (states.contains(MaterialState.selected)) {
+                    return WatsoColor.primary;
+                  }
+                  return Colors.grey;
+                }),
+              ),
               Expanded(
                   child: TextFormField(
                       initialValue: widget.maxMember?.toString() ?? '4',
