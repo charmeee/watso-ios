@@ -167,4 +167,16 @@ class PostRepository {
       throw DataParsingException(e, s);
     }
   }
+
+  //게시글 배달비 수정
+  Future updateDeliveryFee(String postId, int deliveryFee) async {
+    try {
+      await _dio.patch('$staticUrl/$postId/fee', data: {
+        'fee': deliveryFee,
+      });
+      return;
+    } on DioError catch (e) {
+      throw ServerException(e);
+    }
+  }
 }
