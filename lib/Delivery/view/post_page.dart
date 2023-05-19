@@ -61,6 +61,9 @@ class PostPage extends ConsumerWidget {
                     child: StoreDetailBox(
                       store: data.store,
                       peopleNum: data.users.length,
+                      isOwner: isOwner,
+                      postId: data.id,
+                      fee: data.fee,
                     ),
                   )),
                   SliverToBoxAdapter(
