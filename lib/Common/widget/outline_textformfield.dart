@@ -10,9 +10,12 @@ Widget outlineTextFromField(
     List<TextInputFormatter>? inputFormatters,
     TextInputType? keyboardType,
     TextEditingController? controller,
+    String? initialValue,
+    Widget? suffix,
     Widget? suffixIcon}) {
   return TextFormField(
     autovalidateMode: AutovalidateMode.onUserInteraction,
+    initialValue: initialValue,
     decoration: InputDecoration(
       contentPadding:
           contentPadding ?? EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -41,6 +44,7 @@ Widget outlineTextFromField(
         borderRadius: BorderRadius.circular(10),
       ),
       suffixIcon: suffixIcon,
+      suffix: suffix,
     ),
     validator: validator,
     onChanged: onChanged,
