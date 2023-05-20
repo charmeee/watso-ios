@@ -6,9 +6,10 @@ import 'package:watso/Auth/models/user_model.dart';
 import '../../Auth/provider/user_provider.dart';
 import '../models/post_model.dart';
 import '../models/post_request_model.dart';
+import '../models/post_response_model.dart';
 
 final myDeliveryNotifierProvider =
-    StateNotifierProvider.autoDispose<MyDeliveryNotifier, PostOrder>((ref) {
+    StateNotifierProvider<MyDeliveryNotifier, PostOrder>((ref) {
   UserInfo? user = ref.watch(userNotifierProvider);
   if (user == null) {
     throw Exception('user is null');
@@ -48,6 +49,17 @@ class MyDeliveryNotifier extends StateNotifier<PostOrder> {
   setMyDeliverStore(Store store) {
     PostOrder tmp = PostOrder.clone(state);
     tmp.store = store;
+    state = tmp;
+  }
+
+  setMyDeliverByPost(ResponsePost data) {
+    PostOrder tmp = PostOrder.clone(state);
+    tmp.place = data.place;
+    tmp.orderTime = data.orderTime;
+    tmp.minMember = data.minMember;
+    tmp.maxMember = data.maxMember;
+    tmp.postId = data.id;
+    tmp.store = data.store;
     state = tmp;
   }
 
