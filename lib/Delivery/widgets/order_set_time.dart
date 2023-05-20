@@ -23,6 +23,11 @@ class _TimeSelectorState extends ConsumerState<TimeSelector> {
     super.initState();
     _dateTime = DateTime(nowDate.year, nowDate.month, nowDate.day, nowDate.hour,
         nowDate.minute - nowDate.minute % 10 + 10);
+    if (ref.read(myDeliveryNotifierProvider).orderTime.isBefore(_dateTime)) {
+      ref
+          .read(myDeliveryNotifierProvider.notifier)
+          .setMyDeliverOption(orderTime: _dateTime.add(Duration(minutes: 10)));
+    }
   }
 
   void _showTimePicker() {
