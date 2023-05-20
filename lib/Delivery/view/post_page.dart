@@ -412,16 +412,7 @@ class PostPage extends ConsumerWidget {
 
   Widget _joinButton(ResponsePost data, context, WidgetRef ref) {
     onButtonClick() {
-      ref.read(myDeliveryNotifierProvider.notifier).setMyDeliverOption(
-            place: data.place,
-            orderTime: data.orderTime,
-            minMember: data.minMember,
-            maxMember: data.maxMember,
-            postId: data.id,
-          );
-      ref
-          .read(myDeliveryNotifierProvider.notifier)
-          .setMyDeliverStore(data.store);
+      ref.read(myDeliveryNotifierProvider.notifier).setMyDeliverByPost(data);
       Navigator.push(
         context,
         MaterialPageRoute(
