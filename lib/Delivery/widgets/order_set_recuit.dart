@@ -5,6 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../Common/theme/color.dart';
 import '../provider/my_deliver_provider.dart';
 
+const int MAX_RECUIT_MEMBER = 99;
+const int MIN_RECUIT_MEMBER = 1;
+
 class RecuitNumSelector extends ConsumerStatefulWidget {
   final GlobalKey<FormState> recruitFormKey;
   final int? minMember;
@@ -27,6 +30,7 @@ class _RecuitNumSelectorState extends ConsumerState<RecuitNumSelector> {
   late bool minChecked;
   late bool maxChecked;
   late bool editMode;
+
 
   @override
   void initState() {
@@ -68,32 +72,34 @@ class _RecuitNumSelectorState extends ConsumerState<RecuitNumSelector> {
               ),
               Expanded(
                   child: TextFormField(
-                decoration: InputDecoration(
-                  label: Text('최소 인원'),
-                ),
-                initialValue: widget.minMember?.toString() ?? '2',
-                keyboardType: TextInputType.number,
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                onSaved: (value) {
-                  if (minChecked && value!.isNotEmpty) {
-                    if (editMode) {
-                      widget.setMinMaxMember!(min: int.parse(value));
-                      return;
-                    }
-                    ref
-                        .read(myDeliveryNotifierProvider.notifier)
-                        .setMyDeliverOption(minMember: int.parse(value));
-                  } else if (!minChecked) {
-                    if (editMode) {
-                      widget.setMinMaxMember!(min: 1);
-                      return;
-                    }
-                    ref
-                        .read(myDeliveryNotifierProvider.notifier)
-                        .setMyDeliverOption(minMember: 1);
-                  }
-                },
-              )),
+                    decoration: InputDecoration(
+                      label: Text('최소 인원'),
+                    ),
+                    initialValue: widget.minMember?.toString() ?? '2',
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    onSaved: (value) {
+                      if (minChecked && value!.isNotEmpty) {
+                        int curVal = int.parse(value); //현재 value
+                        if (curVal < 1) curVal = MIN_RECUIT_MEMBER;
+                        if (editMode) {
+                          widget.setMinMaxMember!(min: curVal);
+                          return;
+                        }
+                        ref
+                            .read(myDeliveryNotifierProvider.notifier)
+                            .setMyDeliverOption(minMember: curVal);
+                      } else if (!minChecked) {
+                        if (editMode) {
+                          widget.setMinMaxMember!(min: MIN_RECUIT_MEMBER);
+                          return;
+                        }
+                        ref
+                            .read(myDeliveryNotifierProvider.notifier)
+                            .setMyDeliverOption(minMember: MIN_RECUIT_MEMBER);
+                      }
+                    },
+                  )),
               Checkbox(
                 value: maxChecked,
                 onChanged: (value) {
@@ -118,21 +124,23 @@ class _RecuitNumSelectorState extends ConsumerState<RecuitNumSelector> {
                       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       onSaved: (value) {
                         if (maxChecked && value!.isNotEmpty) {
+                          int curVal = int.parse(value); //현재 value
+                          if (curVal < 1) curVal = MAX_RECUIT_MEMBER;
                           if (editMode) {
-                            widget.setMinMaxMember!(max: int.parse(value));
+                            widget.setMinMaxMember!(max: curVal);
                             return;
                           }
                           ref
                               .read(myDeliveryNotifierProvider.notifier)
-                              .setMyDeliverOption(maxMember: int.parse(value));
+                              .setMyDeliverOption(maxMember: curVal);
                         } else if (!maxChecked) {
                           if (editMode) {
-                            widget.setMinMaxMember!(max: 999);
+                            widget.setMinMaxMember!(max: MAX_RECUIT_MEMBER);
                             return;
                           }
                           ref
                               .read(myDeliveryNotifierProvider.notifier)
-                              .setMyDeliverOption(maxMember: 999);
+                              .setMyDeliverOption(maxMember: MAX_RECUIT_MEMBER);
                         }
                       })),
             ],
