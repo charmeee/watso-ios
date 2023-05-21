@@ -10,18 +10,19 @@ class PostOrder extends PostOption {
   Store store;
   String? postId;
 
-  PostOrder({required this.order,
-    required this.store,
-    required String place,
-    required DateTime orderTime,
-    required int minMember,
-    required int maxMember,
-    this.postId})
+  PostOrder(
+      {required this.order,
+      required this.store,
+      required String place,
+      required DateTime orderTime,
+      required int minMember,
+      required int maxMember,
+      this.postId})
       : super(
-      place: place,
-      orderTime: orderTime,
-      minMember: minMember,
-      maxMember: maxMember);
+            place: place,
+            orderTime: orderTime,
+            minMember: minMember,
+            maxMember: maxMember);
 
   PostOrder.fromJson(Map<String, dynamic> json)
       : order = Order.fromJson(json['order']),
@@ -29,13 +30,17 @@ class PostOrder extends PostOption {
         super.fromJson(json);
 
   factory PostOrder.init(User user) {
+    DateTime nowDate = DateTime.now();
+    DateTime dateTime = DateTime(nowDate.year, nowDate.month, nowDate.day,
+        nowDate.hour, nowDate.minute - nowDate.minute % 10 + 30);
+
     return PostOrder(
         order: Order.init(user),
         store: Store.init(),
         place: '생자대',
-        orderTime: DateTime.now(),
-        minMember: 1,
-        maxMember: 999);
+        orderTime: dateTime,
+        minMember: 2,
+        maxMember: 4);
   }
 
   PostOrder.clone(PostOrder postOrder)
@@ -44,8 +49,7 @@ class PostOrder extends PostOption {
         postId = postOrder.postId,
         super.clone(postOrder);
 
-  Map newPostToJson() =>
-      {
+  Map newPostToJson() => {
         'order': order.toJson(),
         'store_id': store.id,
         'place': place,
@@ -67,8 +71,8 @@ class PostOrder extends PostOption {
         postId: responsePost.id);
   }
 
-  get editableInfo =>
-      {
+  get editableInfo => {
+        'order_time': DateFormat('yyyy-MM-ddTHH:mm:ss').format(orderTime),
         'place': place,
         'min_member': minMember,
         'max_member': maxMember,
@@ -83,10 +87,10 @@ class PostOrder extends PostOption {
 
   bool get disableToPost =>
       order.orderLines.isEmpty ||
-          store.id.isEmpty ||
-          place.isEmpty ||
-          orderTime.isBefore(DateTime.now()) ||
-          minMember > maxMember;
+      store.id.isEmpty ||
+      place.isEmpty ||
+      orderTime.isBefore(DateTime.now()) ||
+      minMember > maxMember;
 
   bool get checkOrderTime => orderTime.isAfter(DateTime.now());
 }
