@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../Common/theme/color.dart';
 import '../provider/my_deliver_provider.dart';
 
 const int MAX_RECUIT_MEMBER = 99;
@@ -27,8 +26,8 @@ class RecuitNumSelector extends ConsumerStatefulWidget {
 }
 
 class _RecuitNumSelectorState extends ConsumerState<RecuitNumSelector> {
-  late bool minChecked;
-  late bool maxChecked;
+  // late bool minChecked;
+  // late bool maxChecked;
   late bool editMode;
 
   @override
@@ -36,8 +35,8 @@ class _RecuitNumSelectorState extends ConsumerState<RecuitNumSelector> {
     // TODO: implement initState
     super.initState();
     editMode = widget.setMinMaxMember != null;
-    minChecked = editMode;
-    maxChecked = editMode;
+    // minChecked = editMode;
+    // maxChecked = editMode;
   }
 
   @override
@@ -51,96 +50,130 @@ class _RecuitNumSelectorState extends ConsumerState<RecuitNumSelector> {
           Text(
             '모집 인원',
           ),
-          Row(
-            children: [
-              Checkbox(
-                value: minChecked,
-                onChanged: (value) {
-                  setState(() {
-                    minChecked = value!;
-                  });
-                },
-                fillColor: MaterialStateProperty.resolveWith((states) {
-                  if (states.contains(MaterialState.selected)) {
-                    return WatsoColor.primary;
-                  }
-                  return Colors.grey;
-                }),
-              ),
-              Expanded(
-                  child: TextFormField(
-                decoration: InputDecoration(
-                  label: Text('최소 인원'),
-                ),
-                initialValue: widget.minMember.toString(),
-                keyboardType: TextInputType.number,
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                onSaved: (value) {
-                  if (minChecked && value!.isNotEmpty) {
-                    int curVal = int.parse(value); //현재 value
-                    if (curVal < 1) curVal = MIN_RECUIT_MEMBER;
-                    if (editMode) {
-                      widget.setMinMaxMember!(min: curVal);
-                      return;
-                    }
-                    ref
-                        .read(myDeliveryNotifierProvider.notifier)
-                        .setMyDeliverOption(minMember: curVal);
-                  } else if (!minChecked) {
-                    if (editMode) {
-                      widget.setMinMaxMember!(min: MIN_RECUIT_MEMBER);
-                      return;
-                    }
-                    ref
-                        .read(myDeliveryNotifierProvider.notifier)
-                        .setMyDeliverOption(minMember: MIN_RECUIT_MEMBER);
-                  }
-                },
-              )),
-              Checkbox(
-                value: maxChecked,
-                onChanged: (value) {
-                  setState(() {
-                    maxChecked = value!;
-                  });
-                },
-                fillColor: MaterialStateProperty.resolveWith((states) {
-                  if (states.contains(MaterialState.selected)) {
-                    return WatsoColor.primary;
-                  }
-                  return Colors.grey;
-                }),
-              ),
-              Expanded(
-                  child: TextFormField(
-                      initialValue: widget.maxMember.toString(),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Row(
+              children: [
+                // Checkbox(
+                //   value: minChecked,
+                //   onChanged: (value) {
+                //     setState(() {
+                //       minChecked = value!;
+                //     });
+                //   },
+                //   fillColor: MaterialStateProperty.resolveWith((states) {
+                //     if (states.contains(MaterialState.selected)) {
+                //       return WatsoColor.primary;
+                //     }
+                //     return Colors.grey;
+                //   }),
+                // ),
+                Expanded(
+                    flex: 3,
+                    child: TextFormField(
                       decoration: InputDecoration(
-                        label: Text('최대 인원'),
+                        label: Text('최소 인원'),
                       ),
+                      initialValue: widget.minMember.toString(),
                       keyboardType: TextInputType.number,
                       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       onSaved: (value) {
-                        if (maxChecked && value!.isNotEmpty) {
+                        // if (minChecked && value!.isNotEmpty) {
+                        //   int curVal = int.parse(value); //현재 value
+                        //   if (curVal < 1) curVal = MIN_RECUIT_MEMBER;
+                        //   if (editMode) {
+                        //     widget.setMinMaxMember!(min: curVal);
+                        //     return;
+                        //   }
+                        //   ref
+                        //       .read(myDeliveryNotifierProvider.notifier)
+                        //       .setMyDeliverOption(minMember: curVal);
+                        // } else if (!minChecked) {
+                        //   if (editMode) {
+                        //     widget.setMinMaxMember!(min: MIN_RECUIT_MEMBER);
+                        //     return;
+                        //   }
+                        //   ref
+                        //       .read(myDeliveryNotifierProvider.notifier)
+                        //       .setMyDeliverOption(minMember: MIN_RECUIT_MEMBER);
+                        // }
+                        if (value!.isNotEmpty) {
                           int curVal = int.parse(value); //현재 value
-                          if (curVal < 1) curVal = MAX_RECUIT_MEMBER;
+                          if (curVal < 1) curVal = MIN_RECUIT_MEMBER;
                           if (editMode) {
-                            widget.setMinMaxMember!(max: curVal);
+                            widget.setMinMaxMember!(min: curVal);
                             return;
                           }
                           ref
                               .read(myDeliveryNotifierProvider.notifier)
-                              .setMyDeliverOption(maxMember: curVal);
-                        } else if (!maxChecked) {
-                          if (editMode) {
-                            widget.setMinMaxMember!(max: MAX_RECUIT_MEMBER);
-                            return;
-                          }
-                          ref
-                              .read(myDeliveryNotifierProvider.notifier)
-                              .setMyDeliverOption(maxMember: MAX_RECUIT_MEMBER);
+                              .setMyDeliverOption(minMember: curVal);
                         }
-                      })),
-            ],
+                      },
+                    )),
+                Expanded(
+                  flex: 1,
+                  child: Spacer(),
+                ),
+
+                // Checkbox(
+                //   value: maxChecked,
+                //   onChanged: (value) {
+                //     setState(() {
+                //       maxChecked = value!;
+                //     });
+                //   },
+                //   fillColor: MaterialStateProperty.resolveWith((states) {
+                //     if (states.contains(MaterialState.selected)) {
+                //       return WatsoColor.primary;
+                //     }
+                //     return Colors.grey;
+                //   }),
+                // ),
+                Expanded(
+                    flex: 3,
+                    child: TextFormField(
+                        initialValue: widget.maxMember.toString(),
+                        decoration: InputDecoration(
+                          label: Text('최대 인원'),
+                        ),
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly
+                        ],
+                        onSaved: (value) {
+                          // if (maxChecked && value!.isNotEmpty) {
+                          //   int curVal = int.parse(value); //현재 value
+                          //   if (curVal < 1) curVal = MAX_RECUIT_MEMBER;
+                          //   if (editMode) {
+                          //     widget.setMinMaxMember!(max: curVal);
+                          //     return;
+                          //   }
+                          //   ref
+                          //       .read(myDeliveryNotifierProvider.notifier)
+                          //       .setMyDeliverOption(maxMember: curVal);
+                          // } else if (!maxChecked) {
+                          //   if (editMode) {
+                          //     widget.setMinMaxMember!(max: MAX_RECUIT_MEMBER);
+                          //     return;
+                          //   }
+                          //   ref
+                          //       .read(myDeliveryNotifierProvider.notifier)
+                          //       .setMyDeliverOption(maxMember: MAX_RECUIT_MEMBER);
+                          // }
+                          if (value!.isNotEmpty) {
+                            int curVal = int.parse(value); //현재 value
+                            if (curVal < 1) curVal = MAX_RECUIT_MEMBER;
+                            if (editMode) {
+                              widget.setMinMaxMember!(max: curVal);
+                              return;
+                            }
+                            ref
+                                .read(myDeliveryNotifierProvider.notifier)
+                                .setMyDeliverOption(maxMember: curVal);
+                          }
+                        })),
+              ],
+            ),
           ),
         ],
       ),
