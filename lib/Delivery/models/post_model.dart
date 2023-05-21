@@ -1,7 +1,5 @@
 import '../../Auth/models/user_model.dart';
 
-enum PostFilter { all, joinable, joined }
-
 enum PostStatus { recruiting, closed, ordered, delivered, canceled }
 
 //PostStatus to korean

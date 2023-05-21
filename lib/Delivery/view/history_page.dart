@@ -5,6 +5,7 @@ import 'package:watso/Delivery/view/post_page.dart';
 
 import '../../Common/widget/appbar.dart';
 import '../../Common/widget/secondary_button.dart';
+import '../models/post_filter_model.dart';
 import '../models/post_model.dart';
 import '../models/post_response_model.dart';
 import '../repository/post_repository.dart';

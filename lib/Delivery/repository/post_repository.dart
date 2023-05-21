@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../Common/dio.dart';
 import '../../Common/failures.dart';
 import '../models/comment_model.dart';
+import '../models/post_filter_model.dart';
 import '../models/post_model.dart';
 import '../models/post_request_model.dart';
 import '../models/post_response_model.dart';
