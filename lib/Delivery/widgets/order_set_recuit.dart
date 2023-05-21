@@ -10,15 +10,15 @@ const int MIN_RECUIT_MEMBER = 1;
 
 class RecuitNumSelector extends ConsumerStatefulWidget {
   final GlobalKey<FormState> recruitFormKey;
-  final int? minMember;
-  final int? maxMember;
+  final int minMember;
+  final int maxMember;
   final Function({int? max, int? min})? setMinMaxMember;
 
   const RecuitNumSelector({
     Key? key,
     required this.recruitFormKey,
-    this.minMember,
-    this.maxMember,
+    required this.minMember,
+    required this.maxMember,
     this.setMinMaxMember,
   }) : super(key: key);
 
@@ -31,14 +31,11 @@ class _RecuitNumSelectorState extends ConsumerState<RecuitNumSelector> {
   late bool maxChecked;
   late bool editMode;
 
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    editMode = widget.minMember != null &&
-        widget.maxMember != null &&
-        widget.setMinMaxMember != null;
+    editMode = widget.setMinMaxMember != null;
     minChecked = editMode;
     maxChecked = editMode;
   }
@@ -72,34 +69,34 @@ class _RecuitNumSelectorState extends ConsumerState<RecuitNumSelector> {
               ),
               Expanded(
                   child: TextFormField(
-                    decoration: InputDecoration(
-                      label: Text('최소 인원'),
-                    ),
-                    initialValue: widget.minMember?.toString() ?? '2',
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    onSaved: (value) {
-                      if (minChecked && value!.isNotEmpty) {
-                        int curVal = int.parse(value); //현재 value
-                        if (curVal < 1) curVal = MIN_RECUIT_MEMBER;
-                        if (editMode) {
-                          widget.setMinMaxMember!(min: curVal);
-                          return;
-                        }
-                        ref
-                            .read(myDeliveryNotifierProvider.notifier)
-                            .setMyDeliverOption(minMember: curVal);
-                      } else if (!minChecked) {
-                        if (editMode) {
-                          widget.setMinMaxMember!(min: MIN_RECUIT_MEMBER);
-                          return;
-                        }
-                        ref
-                            .read(myDeliveryNotifierProvider.notifier)
-                            .setMyDeliverOption(minMember: MIN_RECUIT_MEMBER);
-                      }
-                    },
-                  )),
+                decoration: InputDecoration(
+                  label: Text('최소 인원'),
+                ),
+                initialValue: widget.minMember.toString(),
+                keyboardType: TextInputType.number,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                onSaved: (value) {
+                  if (minChecked && value!.isNotEmpty) {
+                    int curVal = int.parse(value); //현재 value
+                    if (curVal < 1) curVal = MIN_RECUIT_MEMBER;
+                    if (editMode) {
+                      widget.setMinMaxMember!(min: curVal);
+                      return;
+                    }
+                    ref
+                        .read(myDeliveryNotifierProvider.notifier)
+                        .setMyDeliverOption(minMember: curVal);
+                  } else if (!minChecked) {
+                    if (editMode) {
+                      widget.setMinMaxMember!(min: MIN_RECUIT_MEMBER);
+                      return;
+                    }
+                    ref
+                        .read(myDeliveryNotifierProvider.notifier)
+                        .setMyDeliverOption(minMember: MIN_RECUIT_MEMBER);
+                  }
+                },
+              )),
               Checkbox(
                 value: maxChecked,
                 onChanged: (value) {
@@ -116,7 +113,7 @@ class _RecuitNumSelectorState extends ConsumerState<RecuitNumSelector> {
               ),
               Expanded(
                   child: TextFormField(
-                      initialValue: widget.maxMember?.toString() ?? '4',
+                      initialValue: widget.maxMember.toString(),
                       decoration: InputDecoration(
                         label: Text('최대 인원'),
                       ),

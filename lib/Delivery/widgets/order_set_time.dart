@@ -8,7 +8,9 @@ import '../provider/my_deliver_provider.dart';
 class TimeSelector extends ConsumerStatefulWidget {
   const TimeSelector({
     Key? key,
+    required this.orderTime,
   }) : super(key: key);
+  final DateTime orderTime;
 
   @override
   ConsumerState createState() => _TimeSelectorState();
@@ -23,10 +25,14 @@ class _TimeSelectorState extends ConsumerState<TimeSelector> {
     super.initState();
     _dateTime = DateTime(nowDate.year, nowDate.month, nowDate.day, nowDate.hour,
         nowDate.minute - nowDate.minute % 10 + 10);
-    if (ref.read(myDeliveryNotifierProvider).orderTime.isBefore(_dateTime)) {
+    checkTime();
+  }
+
+  void checkTime() {
+    if (widget.orderTime.isBefore(_dateTime)) {
       ref
           .read(myDeliveryNotifierProvider.notifier)
-          .setMyDeliverOption(orderTime: _dateTime.add(Duration(minutes: 10)));
+          .setMyDeliverOption(orderTime: _dateTime);
     }
   }
 
@@ -43,13 +49,12 @@ class _TimeSelectorState extends ConsumerState<TimeSelector> {
               child: SafeArea(
                 top: false,
                 child: CupertinoDatePicker(
-                  initialDateTime: _dateTime,
+                  initialDateTime: widget.orderTime,
                   minuteInterval: 10,
                   minimumDate: nowDate,
                   maximumDate: nowDate.add(Duration(days: 7)),
                   use24hFormat: false,
                   onDateTimeChanged: (DateTime newDateTime) {
-                    setState(() => _dateTime = newDateTime);
                     ref
                         .read(myDeliveryNotifierProvider.notifier)
                         .setMyDeliverOption(orderTime: newDateTime);
@@ -61,7 +66,6 @@ class _TimeSelectorState extends ConsumerState<TimeSelector> {
 
   @override
   Widget build(BuildContext context) {
-    final orderTime = ref.watch(myDeliveryNotifierProvider).orderTime;
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -84,7 +88,7 @@ class _TimeSelectorState extends ConsumerState<TimeSelector> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(DateFormat('MM월 dd일 HH시 mm분').format(orderTime),
+              Text(DateFormat('MM월 dd일 HH시 mm분').format(widget.orderTime),
                   style: TextStyle(fontSize: 20)),
               Icon(Icons.timer),
             ],

@@ -7,17 +7,16 @@ import '../provider/my_deliver_provider.dart';
 class PlaceSelector extends ConsumerWidget {
   const PlaceSelector({
     Key? key,
-    this.place,
+    required this.place,
     this.setPlace,
   }) : super(key: key);
-  final String? place;
+  final String place;
   final Function(String place)? setPlace;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    bool editMode = place != null && setPlace != null;
-    String nowPlace =
-        editMode ? place! : ref.watch(myDeliveryNotifierProvider).place;
+    bool editMode = setPlace != null;
+    String nowPlace = place;
     return Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,

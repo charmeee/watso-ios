@@ -16,13 +16,18 @@ import 'menu_list_page.dart';
 
 final _recruitFormKey = GlobalKey<FormState>();
 
-class OrderSetPage extends ConsumerWidget {
+class OrderSetPage extends ConsumerStatefulWidget {
   const OrderSetPage({
     Key? key,
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState createState() => _OrderSetPageState();
+}
+
+class _OrderSetPageState extends ConsumerState<OrderSetPage> {
+  @override
+  Widget build(BuildContext context) {
     final PostOrder myPostState = ref.watch(myDeliveryNotifierProvider);
     return Scaffold(
         appBar: customAppBar(
@@ -41,20 +46,28 @@ class OrderSetPage extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      TimeSelector(),
+                      TimeSelector(
+                        orderTime: myPostState.orderTime,
+                      ),
                       SizedBox(
                         height: 15,
                       ),
-                      StoreSelector(),
+                      StoreSelector(
+                        myStore: myPostState.store,
+                      ),
                       SizedBox(
                         height: 15,
                       ),
-                      PlaceSelector(),
+                      PlaceSelector(
+                        place: myPostState.place,
+                      ),
                       SizedBox(
                         height: 15,
                       ),
                       RecuitNumSelector(
                         recruitFormKey: _recruitFormKey,
+                        minMember: myPostState.minMember,
+                        maxMember: myPostState.maxMember,
                       ),
                       SizedBox(
                         height: 15,

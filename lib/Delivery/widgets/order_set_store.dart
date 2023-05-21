@@ -8,7 +8,9 @@ import '../repository/store_repository.dart';
 class StoreSelector extends ConsumerStatefulWidget {
   const StoreSelector({
     Key? key,
+    required this.myStore,
   }) : super(key: key);
+  final Store myStore;
 
   @override
   ConsumerState createState() => _StoreSelectorState();
@@ -35,7 +37,7 @@ class _StoreSelectorState extends ConsumerState<StoreSelector> {
 
   @override
   Widget build(BuildContext context) {
-    Store myStore = ref.watch(myDeliveryNotifierProvider).store;
+    Store myStore = widget.myStore;
     return Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
