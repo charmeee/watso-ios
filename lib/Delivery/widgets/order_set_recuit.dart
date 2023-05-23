@@ -69,50 +69,58 @@ class _RecuitNumSelectorState extends ConsumerState<RecuitNumSelector> {
                 //   }),
                 // ),
                 Expanded(
-                    flex: 3,
-                    child: TextFormField(
-                      decoration: InputDecoration(
-                        label: Text('최소 인원'),
-                      ),
-                      initialValue: widget.minMember.toString(),
-                      keyboardType: TextInputType.number,
-                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                      onSaved: (value) {
-                        // if (minChecked && value!.isNotEmpty) {
-                        //   int curVal = int.parse(value); //현재 value
-                        //   if (curVal < 1) curVal = MIN_RECUIT_MEMBER;
-                        //   if (editMode) {
-                        //     widget.setMinMaxMember!(min: curVal);
-                        //     return;
-                        //   }
-                        //   ref
-                        //       .read(myDeliveryNotifierProvider.notifier)
-                        //       .setMyDeliverOption(minMember: curVal);
-                        // } else if (!minChecked) {
-                        //   if (editMode) {
-                        //     widget.setMinMaxMember!(min: MIN_RECUIT_MEMBER);
-                        //     return;
-                        //   }
-                        //   ref
-                        //       .read(myDeliveryNotifierProvider.notifier)
-                        //       .setMyDeliverOption(minMember: MIN_RECUIT_MEMBER);
-                        // }
-                        if (value!.isNotEmpty) {
-                          int curVal = int.parse(value); //현재 value
-                          if (curVal < 1) curVal = MIN_RECUIT_MEMBER;
-                          if (editMode) {
-                            widget.setMinMaxMember!(min: curVal);
-                            return;
-                          }
-                          ref
-                              .read(myDeliveryNotifierProvider.notifier)
-                              .setMyDeliverOption(minMember: curVal);
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                      label: Text('최소 인원'),
+                    ),
+                    initialValue: widget.minMember.toString(),
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return '최소 인원을 입력해주세요';
+                      }
+                      if (int.parse(value) < MIN_RECUIT_MEMBER) {
+                        return '최소 $MAX_RECUIT_MEMBER명 이상 입력해주세요';
+                      }
+                      return null;
+                    },
+                    onSaved: (value) {
+                      // if (minChecked && value!.isNotEmpty) {
+                      //   int curVal = int.parse(value); //현재 value
+                      //   if (curVal < 1) curVal = MIN_RECUIT_MEMBER;
+                      //   if (editMode) {
+                      //     widget.setMinMaxMember!(min: curVal);
+                      //     return;
+                      //   }
+                      //   ref
+                      //       .read(myDeliveryNotifierProvider.notifier)
+                      //       .setMyDeliverOption(minMember: curVal);
+                      // } else if (!minChecked) {
+                      //   if (editMode) {
+                      //     widget.setMinMaxMember!(min: MIN_RECUIT_MEMBER);
+                      //     return;
+                      //   }
+                      //   ref
+                      //       .read(myDeliveryNotifierProvider.notifier)
+                      //       .setMyDeliverOption(minMember: MIN_RECUIT_MEMBER);
+                      // }
+                      if (value!.isNotEmpty) {
+                        int curVal = int.parse(value); //현재 value
+                        if (curVal < 1) curVal = MIN_RECUIT_MEMBER;
+                        if (editMode) {
+                          widget.setMinMaxMember!(min: curVal);
+                          return;
                         }
-                      },
-                    )),
-                Expanded(
-                  flex: 1,
-                  child: Spacer(),
+                        ref
+                            .read(myDeliveryNotifierProvider.notifier)
+                            .setMyDeliverOption(minMember: curVal);
+                      }
+                    },
+                  ),
+                ),
+                SizedBox(
+                  width: 40,
                 ),
 
                 // Checkbox(
@@ -130,48 +138,53 @@ class _RecuitNumSelectorState extends ConsumerState<RecuitNumSelector> {
                 //   }),
                 // ),
                 Expanded(
-                    flex: 3,
-                    child: TextFormField(
-                        initialValue: widget.maxMember.toString(),
-                        decoration: InputDecoration(
-                          label: Text('최대 인원'),
-                        ),
-                        keyboardType: TextInputType.number,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly
-                        ],
-                        onSaved: (value) {
-                          // if (maxChecked && value!.isNotEmpty) {
-                          //   int curVal = int.parse(value); //현재 value
-                          //   if (curVal < 1) curVal = MAX_RECUIT_MEMBER;
-                          //   if (editMode) {
-                          //     widget.setMinMaxMember!(max: curVal);
-                          //     return;
-                          //   }
-                          //   ref
-                          //       .read(myDeliveryNotifierProvider.notifier)
-                          //       .setMyDeliverOption(maxMember: curVal);
-                          // } else if (!maxChecked) {
-                          //   if (editMode) {
-                          //     widget.setMinMaxMember!(max: MAX_RECUIT_MEMBER);
-                          //     return;
-                          //   }
-                          //   ref
-                          //       .read(myDeliveryNotifierProvider.notifier)
-                          //       .setMyDeliverOption(maxMember: MAX_RECUIT_MEMBER);
-                          // }
-                          if (value!.isNotEmpty) {
-                            int curVal = int.parse(value); //현재 value
-                            if (curVal < 1) curVal = MAX_RECUIT_MEMBER;
-                            if (editMode) {
-                              widget.setMinMaxMember!(max: curVal);
-                              return;
-                            }
-                            ref
-                                .read(myDeliveryNotifierProvider.notifier)
-                                .setMyDeliverOption(maxMember: curVal);
+                  child: TextFormField(
+                      initialValue: widget.maxMember.toString(),
+                      decoration: InputDecoration(
+                        label: Text('최대 인원'),
+                      ),
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      validator: (value) {
+                        if (value!.isEmpty) return '최대 인원을 입력해주세요';
+                        if (value.length > 2) return '최대 인원은 99명 이하로 입력해주세요';
+                      },
+                      onSaved: (value) {
+                        // if (maxChecked && value!.isNotEmpty) {
+                        //   int curVal = int.parse(value); //현재 value
+                        //   if (curVal < 1) curVal = MAX_RECUIT_MEMBER;
+                        //   if (editMode) {
+                        //     widget.setMinMaxMember!(max: curVal);
+                        //     return;
+                        //   }
+                        //   ref
+                        //       .read(myDeliveryNotifierProvider.notifier)
+                        //       .setMyDeliverOption(maxMember: curVal);
+                        // } else if (!maxChecked) {
+                        //   if (editMode) {
+                        //     widget.setMinMaxMember!(max: MAX_RECUIT_MEMBER);
+                        //     return;
+                        //   }
+                        //   ref
+                        //       .read(myDeliveryNotifierProvider.notifier)
+                        //       .setMyDeliverOption(maxMember: MAX_RECUIT_MEMBER);
+                        // }
+                        if (value!.isNotEmpty) {
+                          int curVal = int.parse(value); //현재 value
+                          if (curVal < 1) curVal = MAX_RECUIT_MEMBER;
+                          if (curVal > MAX_RECUIT_MEMBER) {
+                            curVal = MAX_RECUIT_MEMBER;
                           }
-                        })),
+                          if (editMode) {
+                            widget.setMinMaxMember!(max: curVal);
+                            return;
+                          }
+                          ref
+                              .read(myDeliveryNotifierProvider.notifier)
+                              .setMyDeliverOption(maxMember: curVal);
+                        }
+                      }),
+                ),
               ],
             ),
           ),

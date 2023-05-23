@@ -87,6 +87,7 @@ class _OrderSetPageState extends ConsumerState<OrderSetPage> {
                 child: primaryButton(
                   padding: EdgeInsets.all(18),
                   onPressed: () {
+                    if (!_recruitFormKey.currentState!.validate()) return;
                     _recruitFormKey.currentState!.save();
                     log(myPostState.minMember.toString());
                     log(myPostState.maxMember.toString());
