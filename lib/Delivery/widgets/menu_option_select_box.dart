@@ -32,9 +32,14 @@ class MenuOptionSelectBox extends ConsumerWidget {
           children: [
             IconButton(
                 onPressed: () {
-                  ref
-                      .read(menuOptionNotifierProvider.notifier)
-                      .setOption(isRadio, optionGroup.id, menuOption);
+                  try {
+                    ref
+                        .read(menuOptionNotifierProvider.notifier)
+                        .setOption(isRadio, optionGroup.id, menuOption);
+                  } catch (e) {
+                    ScaffoldMessenger.of(context)
+                        .showSnackBar(SnackBar(content: Text(e.toString())));
+                  }
                 },
                 icon: Icon(selectedOptions
                         .any((element) => element.id == menuOption.id)
