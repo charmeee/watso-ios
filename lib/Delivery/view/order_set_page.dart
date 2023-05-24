@@ -75,7 +75,6 @@ class _OrderSetPageState extends ConsumerState<OrderSetPage> {
                       if (myPostState.store.id.isNotEmpty) ...{
                         StoreDetailBox(
                           store: myPostState.store,
-                          peopleNum: 1,
                         ),
                       },
                     ],
