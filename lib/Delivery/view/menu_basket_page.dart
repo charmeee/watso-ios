@@ -13,14 +13,17 @@ import '../widgets/menu_basket/basket_submit_button.dart';
 class MenuBasketPage extends ConsumerWidget {
   const MenuBasketPage({
     Key? key,
+    this.recuitNum,
   }) : super(key: key);
+  final int? recuitNum;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     PostOrder postOrder = ref.watch(myDeliveryNotifierProvider);
     int totalSumPrice = postOrder.order.orderLines
         .fold(0, (pre, element) => pre + element.totalPrice);
-    int expectDeliverFee = postOrder.store.fee ~/ postOrder.minMember;
+    int expectDeliverFee =
+        postOrder.store.fee ~/ (recuitNum ?? postOrder.minMember);
     return Scaffold(
       appBar: customAppBar(context, title: '장바구니', isCenter: true),
       body: CustomScrollView(
