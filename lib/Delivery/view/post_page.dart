@@ -44,11 +44,12 @@ class PostPage extends ConsumerWidget {
           return Scaffold(
             appBar: customAppBar(context,
                 title: data.store.name,
-                action: _postDeleteButton(context, ref,
-                    isOwner: isOwner, status: data.status)),
+                action: _postActionButton(context, ref,
+                    isOwner: isOwner, status: data.status, data: data)),
             body: RefreshIndicator(
               onRefresh: () async {
                 ref.invalidate(postDetailProvider(postId));
+                ref.invalidate(postCommentListProvider(postId));
               },
               child: CustomScrollView(
                 shrinkWrap: true,
@@ -61,10 +62,6 @@ class PostPage extends ConsumerWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: StoreDetailBox(
                       store: data.store,
-                      peopleNum: data.users.length,
-                      isOwner: isOwner,
-                      postId: data.id,
-                      fee: data.fee,
                     ),
                   )),
                   SliverToBoxAdapter(
@@ -86,29 +83,6 @@ class PostPage extends ConsumerWidget {
                                     style: WatsoText.title,
                                   ),
                                 ),
-                                if (isOwner)
-                                  InkWell(
-                                    onTap: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  OptionEditPage(
-                                                    postData: PostOrder
-                                                        .fromResponsePost(data),
-                                                  )));
-                                    },
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 16.0, vertical: 16.0),
-                                      child: Text(
-                                        '수정',
-                                        style: TextStyle(
-                                          color: WatsoColor.primary,
-                                        ),
-                                      ),
-                                    ),
-                                  )
                               ],
                             ),
 
@@ -123,13 +97,42 @@ class PostPage extends ConsumerWidget {
                                 title: "현재 모인 인원",
                                 content:
                                     "${data.users.length} 명 (최소 ${data.minMember}명 필요)"),
-                            InformationTile(
-                              icon: Icons.emoji_people_sharp,
-                              title: "현재 1인당 배달비",
-                              content: data.fee == 0
-                                  ? '무료'
-                                  : ' ${data.fee ~/ data.users.length}원 ',
-                            ),
+                            if (isOwner ||
+                                (isJoined &&
+                                    data.status == PostStatus.delivered))
+                              InformationTile(
+                                  icon: Icons.delivery_dining,
+                                  title: "확정 배달비",
+                                  widget: Row(
+                                    children: [
+                                      Text("${data.fee}원"),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      if (isOwner)
+                                        InkWell(
+                                          child: Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 8, vertical: 2),
+                                            child: Text(
+                                              '수정',
+                                              style: TextStyle(
+                                                color: WatsoColor.primary,
+                                              ),
+                                            ),
+                                          ),
+                                          onTap: () {
+                                            showDialog(
+                                                context: context,
+                                                builder: (context) =>
+                                                    ModifyFeeDialog(
+                                                      postId: postId,
+                                                      storeFee: data.fee,
+                                                    ));
+                                          },
+                                        )
+                                    ],
+                                  )),
                             InformationTile(
                                 icon: Icons.waves,
                                 title: "게시글 상태",
@@ -222,6 +225,7 @@ class PostPage extends ConsumerWidget {
                                                           orderNum:
                                                               data.users.length,
                                                           status: data.status,
+                                                          fee: data.fee,
                                                         )));
                                           },
                                           text: "내 배달 상세",
@@ -281,62 +285,77 @@ class PostPage extends ConsumerWidget {
             Scaffold(body: Center(child: CircularProgressIndicator())));
   }
 
-  List<Widget>? _postDeleteButton(context, ref,
-      {required bool isOwner, required PostStatus status}) {
-    if (isOwner) {
+  List<Widget>? _postActionButton(context, WidgetRef ref,
+      {required bool isOwner,
+      required PostStatus status,
+      required ResponsePost data}) {
+    if (isOwner &&
+        (status == PostStatus.recruiting || status == PostStatus.closed)) {
       return [
         IconButton(
+          onPressed: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => OptionEditPage(
+                          postData: PostOrder.fromResponsePost(data),
+                        )));
+          },
+          icon: Icon(
+            Icons.edit,
+            color: Colors.grey,
+          ),
+        ),
+        IconButton(
           onPressed: () async {
-            if (status == PostStatus.recruiting ||
-                status == PostStatus.closed) {
-              showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                        title: Text('게시글 삭제'),
-                        content: Text('게시글을 삭제하시겠습니까?'),
-                        actions: [
-                          TextButton(
-                              onPressed: () {
-                                Navigator.pop(context, false);
-                              },
-                              child: Text('취소')),
-                          TextButton(
-                              onPressed: () {
-                                Navigator.pop(context, true);
-                              },
-                              child: Text('삭제')),
-                        ],
-                      )).then((value) async {
-                if (value) {
-                  await ref.read(postRepositoryProvider).deletePost(postId);
-                  ref.invalidate(myPostListProvider);
-                  Navigator.popUntil(context, (route) => route.isFirst);
-                }
-              });
-              return;
-            }
-            final errorText = status == PostStatus.closed
-                ? '모집 마감 상태에서는 주문을 삭제할 수 없습니다. 게시글 대표에게 문의해보세요'
-                : '${status.korName}상테어서는 주문을 삭제할 수 없습니다.';
             showDialog(
                 context: context,
                 builder: (context) => AlertDialog(
-                      title: Text('에러'),
-                      content: Text(errorText),
+                      title: Text('게시글 삭제'),
+                      content: Text('게시글을 삭제하시겠습니까?'),
                       actions: [
                         TextButton(
                             onPressed: () {
                               Navigator.pop(context);
                             },
-                            child: Text('확인')),
+                            child: Text('취소')),
+                        TextButton(
+                            onPressed: () {
+                              ref
+                                  .read(postRepositoryProvider)
+                                  .deletePost(postId)
+                                  .then((value) {
+                                ref.invalidate(myPostListProvider);
+                                Navigator.popUntil(
+                                    context, (route) => route.isFirst);
+                              }).onError((error, stackTrace) {
+                                Navigator.pop(context);
+
+                                showDialog(
+                                    context: context,
+                                    builder: (context) => AlertDialog(
+                                          title: Text('에러'),
+                                          content: Text(
+                                              '게시글 삭제에 실패했습니다.\n${error.toString()}'),
+                                          actions: [
+                                            TextButton(
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                child: Text('확인')),
+                                          ],
+                                        ));
+                              });
+                            },
+                            child: Text('삭제')),
                       ],
                     ));
           },
           icon: Icon(
             Icons.delete,
-            color: Colors.red[300],
+            color: Colors.red[200],
           ),
-        )
+        ),
       ];
     }
     return null;
@@ -365,38 +384,40 @@ class PostPage extends ConsumerWidget {
                 actions: [
                   TextButton(
                       onPressed: () {
-                        Navigator.pop(context, false);
+                        Navigator.pop(context);
                       },
                       child: Text('취소')),
                   TextButton(
                       onPressed: () {
-                        Navigator.pop(context, true);
+                        ref
+                            .read(postRepositoryProvider)
+                            .updatePostStatus(
+                                data.id, PostStatus.values[index + 1])
+                            .then((value) {
+                          //배달완료 누른
+                          ref.invalidate(postDetailProvider(postId));
+                          ref.invalidate(myPostListProvider);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('게시글 상태 업데이트 완료')));
+                          Navigator.pop(context, true);
+                        }).onError((error, stackTrace) {
+                          //snackbar
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(SnackBar(content: Text('에러')));
+                        });
                       },
                       child: Text('확인')),
                 ],
               )).then((value) {
-        if (value == null || !value) return;
-        ref
-            .read(postRepositoryProvider)
-            .updatePostStatus(data.id, PostStatus.values[index + 1])
-            .then((value) {
-          if (data.status == PostStatus.ordered) {
-            showDialog(
-                context: context,
-                builder: (context) => ModifyFeeDialog(
-                      postId: postId,
-                      storeFee: data.fee,
-                      isConfirm: true,
-                    ));
-          } //배달완료 누른거
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text('게시글 상태 업데이트 완료')));
-          ref.invalidate(postDetailProvider(postId));
-        }).onError((error, stackTrace) {
-          //snackbar
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text('에러')));
-        });
+        if (data.status == PostStatus.ordered) {
+          showDialog(
+              context: context,
+              builder: (context) => ModifyFeeDialog(
+                    postId: postId,
+                    storeFee: data.fee,
+                    isConfirm: true,
+                  ));
+        }
       });
     }
 
@@ -419,6 +440,7 @@ class PostPage extends ConsumerWidget {
         MaterialPageRoute(
             builder: (context) => MenuListPage(
                   storeId: data.store.id,
+                  recuitNum: data.users.length,
                 )),
       );
     }
