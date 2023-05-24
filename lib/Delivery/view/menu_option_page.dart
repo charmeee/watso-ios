@@ -101,7 +101,15 @@ class _MenuOptionPageState extends ConsumerState<MenuOptionPage> {
                     ),
                   ),
                 ),
-                SliverToBoxAdapter(child: Divider()),
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  sliver: SliverToBoxAdapter(
+                    child: const Divider(
+                      height: 3,
+                      thickness: 2,
+                    ),
+                  ),
+                ),
                 if (menu.optionGroups != null)
                   SliverPadding(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
