@@ -92,21 +92,18 @@ class _MyAppState extends ConsumerState<MyApp> {
   @override
   void initState() {
     super.initState();
-    FlutterNativeSplash.remove();
   }
 
   @override
   Widget build(BuildContext context) {
     final initState = ref.watch(startProvider);
+    if (!initState.isLoading) {
+      FlutterNativeSplash.remove();
+    }
 
     // TODO: implement build
     return initState.when(
         data: (data) {
-          // AuthState authState = ref.watch(authStateProvider);
-          // if (authState == AuthState.unauthenticated) {
-          //   Navigator.popUntil(context, (route) => route.isFirst);
-          //   print("authState : unauthenticated");
-          // }
           return (data == AuthState.authenticated)
               ? DeliveryMainPage()
               : SignInPage();
