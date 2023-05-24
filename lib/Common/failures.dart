@@ -63,6 +63,20 @@ class DataParsingException implements Exception {
   }
 }
 
+class LogicalException implements Exception {
+  //로직이 잘못됨.
+  final String error;
+
+  @override
+  String toString() {
+    return error;
+  }
+
+  LogicalException(this.error) {
+    log('로직 실패 : $error');
+  }
+}
+
 class TokenSetupException implements Exception {
   //토큰이 잘못됨.
   final String error;
