@@ -14,7 +14,8 @@ class CommentBox extends ConsumerWidget {
       required this.comment,
       required this.isParent,
       required this.selectedCommentId,
-      required this.selectComment})
+      required this.selectComment,
+      required this.commentFocusNode})
       : super(key: key);
   final bool isJoined;
   final bool isOwner;
@@ -22,6 +23,7 @@ class CommentBox extends ConsumerWidget {
   final bool isParent;
   final String selectedCommentId;
   final Function(String commentId) selectComment;
+  final FocusNode commentFocusNode;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

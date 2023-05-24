@@ -29,6 +29,8 @@ class CommentList extends ConsumerStatefulWidget {
 class _CommentBoxState extends ConsumerState<CommentList> {
   //textcontroller
   final TextEditingController _commentController = TextEditingController();
+  final FocusNode _commentFocusNode = FocusNode();
+
   String selectedCommentId = '';
 
   @override
@@ -90,61 +92,76 @@ class _CommentBoxState extends ConsumerState<CommentList> {
                                     data[i].parentId == 'null',
                                 selectedCommentId: selectedCommentId,
                                 selectComment: selectCommentId,
+                                commentFocusNode: _commentFocusNode,
                               ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Focus(
+                              onFocusChange: (hasFocus) {
+                                if (!hasFocus) {
+                                  selectCommentId('');
+                                }
+                              },
+                              child: outlineTextFromField(
+                                focusNode: _commentFocusNode,
+                                hintText: '댓글을 입력해주세요',
+                                suffixIcon: IconButton(
+                                  onPressed: () {
+                                    if (_commentController.text.isEmpty) return;
+                                    if (selectedCommentId.isEmpty) {
+                                      ref
+                                          .read(postRepositoryProvider)
+                                          .postComment(widget.postId,
+                                              _commentController.text)
+                                          .then((value) {
+                                        _commentController.clear();
+                                        ref.invalidate(postCommentListProvider(
+                                            widget.postId));
+                                      }).onError((error, stackTrace) {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          SnackBar(
+                                            content: Text('댓글을 작성할 수 없습니다.'),
+                                          ),
+                                        );
+                                      });
+                                    } else {
+                                      ref
+                                          .read(postRepositoryProvider)
+                                          .postChildComment(
+                                              widget.postId,
+                                              selectedCommentId,
+                                              _commentController.text)
+                                          .then((value) {
+                                        _commentController.clear();
+
+                                        selectCommentId('');
+                                        ref.invalidate(postCommentListProvider(
+                                            widget.postId));
+                                      }).onError((error, stackTrace) {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          SnackBar(
+                                            content: Text('댓글을 작성할 수 없습니다.'),
+                                          ),
+                                        );
+                                      });
+                                    }
+                                  },
+                                  icon: Icon(
+                                    Icons.send_rounded,
+                                    color: WatsoColor.primary,
+                                  ),
+                                ),
+                                controller: _commentController,
+                              ),
+                            ),
                           ],
                         );
                       },
                       error: (error, track) => Text('Error: $error'),
                       loading: () => CircularProgressIndicator()),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  outlineTextFromField(
-                    hintText: '댓글을 입력해주세요',
-                    suffixIcon: IconButton(
-                      onPressed: () {
-                        if (selectedCommentId.isEmpty) {
-                          ref
-                              .read(postRepositoryProvider)
-                              .postComment(
-                                  widget.postId, _commentController.text)
-                              .then((value) {
-                            _commentController.clear();
-                            ref.invalidate(
-                                postCommentListProvider(widget.postId));
-                          }).onError((error, stackTrace) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('댓글을 작성할 수 없습니다.'),
-                              ),
-                            );
-                          });
-                        } else {
-                          ref
-                              .read(postRepositoryProvider)
-                              .postChildComment(widget.postId,
-                                  selectedCommentId, _commentController.text)
-                              .then((value) {
-                            _commentController.clear();
-                            selectCommentId('');
-                            ref.invalidate(
-                                postCommentListProvider(widget.postId));
-                          }).onError((error, stackTrace) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('댓글을 작성할 수 없습니다.'),
-                              ),
-                            );
-                          });
-                        }
-                      },
-                      icon: Icon(
-                        Icons.send_rounded,
-                        color: WatsoColor.primary,
-                      ),
-                    ),
-                    controller: _commentController,
-                  ),
                 ],
               ),
             ))));
