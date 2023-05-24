@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../Common/failures.dart';
 import '../models/post_model.dart';
 import 'my_deliver_provider.dart';
 
@@ -65,6 +66,10 @@ class MenuOptionNotifier extends StateNotifier<OrderMenu?> {
               state = tmp;
               return;
             }
+          }
+          if (tmp.menu.optionGroups![i].maxOptionNum <=
+              tmp.menu.optionGroups![i].options.length) {
+            throw LogicalException('최대 옵션 개수를 초과했습니다.');
           }
           tmp.menu.optionGroups![i].options.add(option);
           state = tmp;
