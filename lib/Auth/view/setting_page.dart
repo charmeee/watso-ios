@@ -152,12 +152,20 @@ class SettingPage extends ConsumerWidget {
                   title: Text('로그아웃'),
                   leading: Icon(Icons.logout),
                   onTap: () async {
-                    try {
-                      await ref.read(userNotifierProvider.notifier).logout();
-                    } catch (e) {
-                      print(e);
-                    }
-                    Navigator.popUntil(context, (route) => route.isFirst);
+                    showDialog(context: context, builder: (context){
+                      return AlertDialog(
+                        title: Text('로그아웃하시겠습니까?'),
+                        actions: [
+                          TextButton(onPressed: (){
+                            Navigator.pop(context);
+                          }, child: Text('취소')),
+                          TextButton(onPressed: () async {
+                            await ref.read(userNotifierProvider.notifier).logout();
+                            Navigator.popUntil(context, (route) => route.isFirst);
+                          }, child: Text('로그아웃')),
+                        ],
+                      );
+                    });
                   },
                 ),
               ),
@@ -169,18 +177,49 @@ class SettingPage extends ConsumerWidget {
                   title: Text('탈퇴하기'),
                   leading: Icon(Icons.block_outlined),
                   onTap: () async {
-                    try {
-                      await ref
-                          .read(userNotifierProvider.notifier)
-                          .deleteUserProfile();
-                    } catch (e) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('탈퇴에 실패했습니다.'),
-                        ),
-                      );
-                    }
-                    Navigator.popUntil(context, (route) => route.isFirst);
+                    showDialog(context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: Text('정말로 탈퇴하시겠습니까'),
+                            content: Text('탈퇴하시면 모든 정보가 삭제됩니다. 정말로 탈퇴하시겟습니까?'),
+                            actions: [
+                              TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text('취소')),
+                              TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                    ref
+                                        .read(userNotifierProvider.notifier)
+                                        .deleteUserProfile().then(
+                                            (value) => Navigator.popUntil(
+                                            context, (route) => route.isFirst)
+                                    ).onError((error, stackTrace) =>
+                                        showDialog(
+                                            context: context,
+                                            builder: (context) {
+                                              return AlertDialog(
+                                                title: Text('탈퇴에 실패했습니다.'),
+                                                content: Text(
+                                                    '${error}\n다시 시도해주세요.'),
+                                                actions: [
+                                                  TextButton(
+                                                      onPressed: () {
+                                                        Navigator.pop(context);
+                                                      },
+                                                      child: Text('확인'))
+                                                ],
+                                              );
+                                            }
+                                        ));
+                                  },
+                                  child: Text('확인'))
+                            ],
+                          );
+                        }
+                    );
                   },
                 ),
               ),
