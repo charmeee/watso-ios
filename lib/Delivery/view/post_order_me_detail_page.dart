@@ -11,13 +11,15 @@ class MyPostOrderDetailPage extends ConsumerWidget {
   final Store store;
   final int orderNum;
   final PostStatus status;
+  final int fee;
 
   const MyPostOrderDetailPage(
       {Key? key,
       required this.postId,
       required this.store,
       required this.orderNum,
-      required this.status})
+      required this.status,
+      required this.fee})
       : super(key: key);
 
   @override
@@ -66,7 +68,7 @@ class MyPostOrderDetailPage extends ConsumerWidget {
                       final Order myOrderData = snapshot.data!;
                       int totalSumPrice = myOrderData.orderLines
                           .fold(0, (pre, element) => pre + element.totalPrice);
-                      int expectDeliverFee = store.fee ~/ orderNum;
+                      int expectDeliverFee = fee ~/ orderNum;
                       return Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [

@@ -95,6 +95,7 @@ class DeliverHistoryPage extends ConsumerWidget {
                                             store: nowData.store,
                                             orderNum: nowData.users.length,
                                             status: nowData.status,
+                                            fee: nowData.fee,
                                           )),
                                 );
                               },
