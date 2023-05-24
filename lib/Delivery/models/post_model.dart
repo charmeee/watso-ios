@@ -203,7 +203,12 @@ class Menu {
         'price': price,
         'name': name,
         'groups': optionGroups != null
-            ? optionGroups!.map((e) => e.toJson()).toList()
+            ? optionGroups!.fold([], (previousValue, element) {
+                if (element.options.isNotEmpty) {
+                  previousValue.add(element.toJson());
+                }
+                return previousValue;
+              })
             : null,
       };
 }
