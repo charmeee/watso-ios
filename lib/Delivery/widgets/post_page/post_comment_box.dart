@@ -57,47 +57,48 @@ class CommentBox extends ConsumerWidget {
                             style: TextStyle(
                               fontSize: 16,
                             )),
-                        InkWell(
-                          child: Icon(
-                            Icons.close,
-                            size: 14,
-                          ),
-                          onTap: () {
-                            showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: Text("댓글 삭제"),
-                                    content: Text("댓글을 삭제하시겠습니까?"),
-                                    actions: [
-                                      TextButton(
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                          },
-                                          child: Text("취소")),
-                                      TextButton(
-                                          onPressed: () {
-                                            ref
-                                                .read(postRepositoryProvider)
-                                                .deleteComment(
-                                                    comment.postId, comment.id)
-                                                .then((value) => ref.invalidate(
-                                                    postCommentListProvider(
-                                                        comment.postId)))
-                                                .onError((error, stackTrace) {
-                                              ScaffoldMessenger.of(context)
-                                                  .showSnackBar(SnackBar(
-                                                      content: Text(
-                                                          "댓글 삭제에 실패했습니다.")));
-                                            });
-                                            Navigator.of(context).pop();
-                                          },
-                                          child: Text("삭제")),
-                                    ],
-                                  );
-                                });
-                          },
-                        )
+                        if (isOwner)
+                          InkWell(
+                            child: Icon(
+                              Icons.close,
+                              size: 14,
+                            ),
+                            onTap: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: Text("댓글 삭제"),
+                                      content: Text("댓글을 삭제하시겠습니까?"),
+                                      actions: [
+                                        TextButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: Text("취소")),
+                                        TextButton(
+                                            onPressed: () {
+                                              ref
+                                                  .read(postRepositoryProvider)
+                                                  .deleteComment(comment.postId,
+                                                      comment.id)
+                                                  .then((value) => ref.invalidate(
+                                                      postCommentListProvider(
+                                                          comment.postId)))
+                                                  .onError((error, stackTrace) {
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(SnackBar(
+                                                        content: Text(
+                                                            "댓글 삭제에 실패했습니다.")));
+                                              });
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: Text("삭제")),
+                                      ],
+                                    );
+                                  });
+                            },
+                          )
                       ],
                     ),
                     SizedBox(
@@ -129,8 +130,10 @@ class CommentBox extends ConsumerWidget {
                         onTap: () {
                           if (selectedCommentId == comment.id) {
                             selectComment('');
+                            commentFocusNode.unfocus();
                           } else {
                             selectComment(comment.id);
+                            commentFocusNode.requestFocus();
                           }
                         },
                         highlightColor: Colors.red,
