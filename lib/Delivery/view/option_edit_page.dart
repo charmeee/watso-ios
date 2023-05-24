@@ -5,6 +5,7 @@ import 'package:watso/Common/widget/appbar.dart';
 import 'package:watso/Common/widget/primary_button.dart';
 
 import '../models/post_request_model.dart';
+import '../provider/post_list_provider.dart';
 import '../repository/post_repository.dart';
 import '../widgets/common/store_detail_box.dart';
 import '../widgets/order_set_place.dart';
@@ -110,7 +111,6 @@ class _OptionEditPageState extends ConsumerState<OptionEditPage> {
                       if (postData.store.id.isNotEmpty) ...{
                         StoreDetailBox(
                           store: postData.store,
-                          peopleNum: 1,
                         ),
                       },
                     ],
@@ -152,9 +152,11 @@ class _OptionEditPageState extends ConsumerState<OptionEditPage> {
                     ref
                         .read(postRepositoryProvider)
                         .updatePost(postData.postId!, postData.editableInfo)
-                        .then((value) => Navigator.of(context).pop())
-                        .onError((error, stackTrace) =>
-                        showDialog(context: context,
+                        .then((value) {
+                      ref.invalidate(postDetailProvider(postData.postId!));
+                      Navigator.of(context).pop();
+                    }).onError((error, stackTrace) => showDialog(
+                            context: context,
                             builder: (BuildContext dialogContext) {
                               return AlertDialog(
                                 title: Text('에러'),
