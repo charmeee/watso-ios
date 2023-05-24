@@ -14,9 +14,25 @@ class PostList extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     AsyncValue<List<ResponsePost>> joinablePostList =
         ref.watch(joinablePostListProvider);
+    AsyncValue<List<ResponsePost>> myPostList = ref.watch(myPostListProvider);
     DateTime beforeTime = DateTime(2000, 1, 1);
     return SizedBox(
       child: joinablePostList.when(data: (data) {
+        if (data.isEmpty &&
+            !myPostList.isLoading &&
+            myPostList.value!.isEmpty) {
+          return Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                //Center(child: Text('참여 가능한 배달이 없어요 ㅠ.ㅠ\n같이 배달할 사람을 직접 모아보는건 어때요?')))
+                children: [
+                  Text('참여 가능한 배달이 없어요 ㅠ.ㅠ'),
+                  Text('같이 배달할 사람을 직접 모아보는건 어때요?')
+                ],
+              ));
+        }
         return ListView.separated(
             itemBuilder: (BuildContext context, int index) {
               final nowData = data[index];
