@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:watso/Common/commonType.dart';
@@ -16,8 +18,10 @@ class MenuListPage extends ConsumerStatefulWidget {
   const MenuListPage({
     Key? key,
     required this.storeId,
+    this.recuitNum,
   }) : super(key: key);
   final String storeId;
+  final int? recuitNum;
 
   @override
   ConsumerState createState() => _MenuListPageState();
@@ -52,6 +56,8 @@ class _MenuListPageState extends ConsumerState<MenuListPage> {
   @override
   Widget build(BuildContext context) {
     PostOrder myOrder = ref.watch(myDeliveryNotifierProvider);
+    log("loadState: $loadState storeMenus: $storeMenus myOrder: $myOrder");
+    log("myOrder.store.id != widget.storeId: ${myOrder.store.id} , ${widget.storeId}");
     if (loadState == LoadState.loading && storeMenus == null) {
       return Scaffold(
         body: const Center(child: CircularProgressIndicator()),
@@ -77,6 +83,10 @@ class _MenuListPageState extends ConsumerState<MenuListPage> {
               shrinkWrap: true,
               physics: const BouncingScrollPhysics(),
               slivers: [
+                // SliverToBoxAdapter(
+                //   child: Image.network(storeMenus!.logoImgUrl,
+                //       height: 60, fit: BoxFit.fitWidth),
+                // ),
                 SliverList(
                   delegate: SliverChildBuilderDelegate(
                     (context, indexOfSection) {
@@ -163,7 +173,10 @@ class _MenuListPageState extends ConsumerState<MenuListPage> {
 
   navigateToBasket() {
     Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) => MenuBasketPage()),
+      MaterialPageRoute(
+          builder: (context) => MenuBasketPage(
+                recuitNum: widget.recuitNum,
+              )),
     );
   }
 
