@@ -37,6 +37,7 @@ class PostPage extends ConsumerWidget {
     String userId = ref.watch(userNotifierProvider)!.id;
 
     return postData.when(
+        skipLoadingOnRefresh: false,
         data: (data) {
           bool isJoined = data.users.any((element) => element == userId);
           bool isOwner = data.userId == userId;

@@ -77,6 +77,7 @@ class _CommentBoxState extends ConsumerState<CommentList> {
                     ],
                   ),
                   commentsList.when(
+                      skipLoadingOnRefresh: false,
                       data: (data) {
                         log('data: ${data.map((e) => e.toJson())}');
                         return Column(
