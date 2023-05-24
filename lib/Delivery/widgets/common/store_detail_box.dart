@@ -1,25 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:watso/Common/theme/color.dart';
 import 'package:watso/Common/theme/text.dart';
 
 import '../../models/post_model.dart';
-import '../post_page/modify_fee_dialog.dart';
 import 'information_tile.dart';
 
 class StoreDetailBox extends StatelessWidget {
-  const StoreDetailBox(
-      {Key? key,
-      required this.store,
-      required this.peopleNum,
-      this.fee,
-      this.postId,
-      this.isOwner = false})
-      : super(key: key);
+  const StoreDetailBox({Key? key, required this.store}) : super(key: key);
   final Store store;
-  final int peopleNum;
-  final int? fee;
-  final bool isOwner;
-  final String? postId;
 
   @override
   Widget build(BuildContext context) {
@@ -43,37 +30,15 @@ class StoreDetailBox extends StatelessWidget {
             content: store.phoneNumber,
           ),
           InformationTile(
-              icon: Icons.attach_money,
-              title: "배달비",
-              widget: Row(
-                children: [
-                  Text("${fee ?? store.fee}원"),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  if (isOwner && postId != null)
-                    InkWell(
-                      child: Padding(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                        child: Text(
-                          '수정',
-                          style: TextStyle(
-                            color: WatsoColor.primary,
-                          ),
-                        ),
-                      ),
-                      onTap: () {
-                        showDialog(
-                            context: context,
-                            builder: (context) => ModifyFeeDialog(
-                                  postId: postId!,
-                                  storeFee: fee ?? store.fee,
-                                ));
-                      },
-                    )
-                ],
-              )),
+            icon: Icons.attach_money,
+            title: "최소 주문 금액",
+            content: '${store.minOrder}원',
+          ),
+          InformationTile(
+            icon: Icons.delivery_dining,
+            title: "기본 배달비",
+            content: "${store.fee}원",
+          ),
           InformationTile(
             icon: Icons.info,
             title: "배달비 상세 정보",
