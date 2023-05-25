@@ -22,11 +22,17 @@ class _SignUpFormState extends State<SignUpForm> {
   String nickname = '';
   String name = '';
   String password = '';
+  String checkPassword = '';
   String email = '';
   String emailValidationCode = '';
   String account = '';
   String token = '';
 
+  //visible
+  bool passwordVisible = false;
+  bool checkPasswordVisible = false;
+
+  //duplicate check
   bool checkUsernameDuplicate = false;
   bool checkNicknameDuplicate = false;
   bool checkEmailDuplicate = false;
@@ -264,26 +270,75 @@ class _SignUpFormState extends State<SignUpForm> {
           ),
           SizedBox(height: 5),
           outlineTextFromField(
-            hintText: '비밀번호',
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return '숫자,영대소문자,특수문자를 사용할 수 있습니다';
-              }
-              if (value.length < 6) {
-                return '비밀번호는 6자 이상이어야 합니다';
-              }
-              return null;
-            },
-            onChanged: (value) {
-              setState(() {
-                password = value;
-              });
-            },
-            inputFormatters: [
-              //include ! ~ @ ?
-              FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9!@~?]')),
-            ],
+              hintText: '비밀번호',
+              obscureText: !passwordVisible,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return '숫자,영대소문자,특수문자를 사용할 수 있습니다';
+                }
+                if (value.length < 6) {
+                  return '비밀번호는 6자 이상이어야 합니다';
+                }
+                return null;
+              },
+              onChanged: (value) {
+                setState(() {
+                  password = value;
+                });
+              },
+              inputFormatters: [
+                //include ! ~ @ ?
+                FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9!@~?]')),
+              ],
+              suffixIcon: IconButton(
+                  onPressed: () {
+                    setState(() {
+                      passwordVisible = !passwordVisible;
+                    });
+                  },
+                  icon: Icon(
+                    passwordVisible ? Icons.visibility : Icons.visibility_off,
+                    color: Colors.grey,
+                  ))),
+          SizedBox(height: 16),
+          Text(
+            "비밀번호 확인",
+            style: WatsoText.lightBold,
           ),
+          SizedBox(height: 5),
+          outlineTextFromField(
+              hintText: '비밀번호 확인',
+              obscureText: !checkPasswordVisible,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return '숫자,영대소문자,특수문자를 사용할 수 있습니다';
+                }
+                if (value != password) {
+                  return '비밀번호가 일치하지 않습니다';
+                }
+                return null;
+              },
+              onChanged: (value) {
+                setState(() {
+                  checkPassword = value;
+                });
+              },
+              inputFormatters: [
+                //include ! ~ @ ?
+                FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9!@~?]')),
+              ],
+              suffixIcon: IconButton(
+                  onPressed: () {
+                    setState(() {
+                      checkPasswordVisible = !checkPasswordVisible;
+                    });
+                  },
+                  icon: Icon(
+                    checkPasswordVisible
+                        ? Icons.visibility
+                        : Icons.visibility_off,
+                    color: Colors.grey,
+                  ))),
           SizedBox(height: 16),
           Text(
             "계좌번호",

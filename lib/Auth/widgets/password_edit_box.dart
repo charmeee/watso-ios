@@ -19,6 +19,9 @@ class _PasswordEditBoxState extends ConsumerState<PasswordEditBox> {
   String beforePassword = '';
   String newPassword = '';
 
+  bool beforePasswordVisible = false;
+  bool newPasswordVisible = false;
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -31,13 +34,25 @@ class _PasswordEditBoxState extends ConsumerState<PasswordEditBox> {
         ),
         const SizedBox(height: 20),
         outlineTextFromField(
-          hintText: '기존 비밀번호',
-          onChanged: (value) {
-            setState(() {
-              beforePassword = value;
-            });
-          },
-        ),
+            hintText: '기존 비밀번호',
+            obscureText: !beforePasswordVisible,
+            onChanged: (value) {
+              setState(() {
+                beforePassword = value;
+              });
+            },
+            suffixIcon: IconButton(
+                onPressed: () {
+                  setState(() {
+                    beforePasswordVisible = !beforePasswordVisible;
+                  });
+                },
+                icon: Icon(
+                  beforePasswordVisible
+                      ? Icons.visibility
+                      : Icons.visibility_off,
+                  color: Colors.grey,
+                ))),
         const SizedBox(height: 20),
         Text(
           '새로운 비밀번호를 입력해주세요',
@@ -51,6 +66,17 @@ class _PasswordEditBoxState extends ConsumerState<PasswordEditBox> {
               newPassword = value;
             });
           },
+          obscureText: !newPasswordVisible,
+          suffixIcon: IconButton(
+              onPressed: () {
+                setState(() {
+                  newPasswordVisible = !newPasswordVisible;
+                });
+              },
+              icon: Icon(
+                newPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                color: Colors.grey,
+              )),
         ),
         const SizedBox(height: 20),
         primaryButton(
