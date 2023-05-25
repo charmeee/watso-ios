@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:watso/Common/theme/text.dart';
 
 import '../models/post_response_model.dart';
@@ -76,7 +77,7 @@ class MyPostBox extends ConsumerWidget {
                 padding:
                     const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
                 child: Text(
-                  '${nowDataDate.year}년 ${nowDataDate.month}월 ${nowDataDate.day}일',
+                  DateFormat("M월 d일 E요일", 'ko').format(nowDataDate),
                   style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
