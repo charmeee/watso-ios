@@ -54,117 +54,124 @@ class _CommentBoxState extends ConsumerState<CommentList> {
         child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Card(
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0)),
                 child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0, vertical: 16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(
-                        "댓글",
-                        style: WatsoText.title,
+                      Row(
+                        children: [
+                          Text(
+                            "댓글",
+                            style: WatsoText.title,
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            "해당 배달관련 문의사항은 댓글로 적어주세요",
+                            style: TextStyle(fontSize: 14),
+                          ),
+                        ],
                       ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text(
-                        "해당 배달관련 문의사항은 댓글로 적어주세요",
-                        style: TextStyle(fontSize: 14),
-                      ),
-                    ],
-                  ),
-                  commentsList.when(
-                      skipLoadingOnRefresh: false,
-                      data: (data) {
-                        log('data: ${data.map((e) => e.toJson())}');
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            for (int i = 0; i < data.length; i++)
-                              CommentBox(
-                                isJoined: widget.isJoined,
-                                isOwner: widget.isOwner,
-                                comment: data[i],
-                                isParent: data[i].parentId == null ||
-                                    data[i].parentId == 'null',
-                                selectedCommentId: selectedCommentId,
-                                selectComment: selectCommentId,
-                                commentFocusNode: _commentFocusNode,
-                              ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Focus(
-                              onFocusChange: (hasFocus) {
-                                if (!hasFocus) {
-                                  selectCommentId('');
-                                }
-                              },
-                              child: outlineTextFromField(
-                                focusNode: _commentFocusNode,
-                                hintText: '댓글을 입력해주세요',
-                                suffixIcon: IconButton(
-                                  onPressed: () {
-                                    if (_commentController.text.isEmpty) return;
-                                    if (selectedCommentId.isEmpty) {
-                                      ref
-                                          .read(postRepositoryProvider)
-                                          .postComment(widget.postId,
-                                              _commentController.text)
-                                          .then((value) {
-                                        _commentController.clear();
-                                        ref.invalidate(postCommentListProvider(
-                                            widget.postId));
-                                      }).onError((error, stackTrace) {
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                          SnackBar(
-                                            content: Text('댓글을 작성할 수 없습니다.'),
-                                          ),
-                                        );
-                                      });
-                                    } else {
-                                      ref
-                                          .read(postRepositoryProvider)
-                                          .postChildComment(
-                                              widget.postId,
-                                              selectedCommentId,
-                                              _commentController.text)
-                                          .then((value) {
-                                        _commentController.clear();
-
-                                        selectCommentId('');
-                                        ref.invalidate(postCommentListProvider(
-                                            widget.postId));
-                                      }).onError((error, stackTrace) {
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                          SnackBar(
-                                            content: Text('댓글을 작성할 수 없습니다.'),
-                                          ),
-                                        );
-                                      });
+                      commentsList.when(
+                          skipLoadingOnRefresh: false,
+                          data: (data) {
+                            log('data: ${data.map((e) => e.toJson())}');
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                for (int i = 0; i < data.length; i++)
+                                  CommentBox(
+                                    isJoined: widget.isJoined,
+                                    isOwner: widget.isOwner,
+                                    comment: data[i],
+                                    isParent: data[i].parentId == null ||
+                                        data[i].parentId == 'null',
+                                    selectedCommentId: selectedCommentId,
+                                    selectComment: selectCommentId,
+                                    commentFocusNode: _commentFocusNode,
+                                  ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Focus(
+                                  onFocusChange: (hasFocus) {
+                                    if (!hasFocus) {
+                                      selectCommentId('');
                                     }
                                   },
-                                  icon: Icon(
-                                    Icons.send_rounded,
-                                    color: WatsoColor.primary,
+                                  child: outlineTextFromField(
+                                    focusNode: _commentFocusNode,
+                                    hintText: '댓글을 입력해주세요',
+                                    suffixIcon: IconButton(
+                                      onPressed: () {
+                                        if (_commentController.text.isEmpty)
+                                          return;
+                                        if (selectedCommentId.isEmpty) {
+                                          ref
+                                              .read(postRepositoryProvider)
+                                              .postComment(widget.postId,
+                                                  _commentController.text)
+                                              .then((value) {
+                                            _commentController.clear();
+                                            ref.invalidate(
+                                                postCommentListProvider(
+                                                    widget.postId));
+                                          }).onError((error, stackTrace) {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              SnackBar(
+                                                content:
+                                                    Text('댓글을 작성할 수 없습니다.'),
+                                              ),
+                                            );
+                                          });
+                                        } else {
+                                          ref
+                                              .read(postRepositoryProvider)
+                                              .postChildComment(
+                                                  widget.postId,
+                                                  selectedCommentId,
+                                                  _commentController.text)
+                                              .then((value) {
+                                            _commentController.clear();
+                                            selectCommentId('');
+                                            ref.invalidate(
+                                                postCommentListProvider(
+                                                    widget.postId));
+                                          }).onError((error, stackTrace) {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              SnackBar(
+                                                content:
+                                                    Text('댓글을 작성할 수 없습니다.'),
+                                              ),
+                                            );
+                                          });
+                                        }
+                                      },
+                                      icon: Icon(
+                                        Icons.send_rounded,
+                                        color: WatsoColor.primary,
+                                      ),
+                                    ),
+                                    controller: _commentController,
                                   ),
                                 ),
-                                controller: _commentController,
-                              ),
-                            ),
-                          ],
-                        );
-                      },
-                      error: (error, track) => Text('Error: $error'),
-                      loading: () => CircularProgressIndicator()),
-                ],
-              ),
-            ))));
+                              ],
+                            );
+                          },
+                          error: (error, track) => Text('Error: $error'),
+                          loading: () => CircularProgressIndicator()),
+                    ],
+                  ),
+                ))));
   }
 }

@@ -22,12 +22,13 @@ class UserEditPage extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         child: Card(
           elevation: 0,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24),
             child: _buildEditBox(field),
           ),
         ),
-
       ),
     );
   }
@@ -41,7 +42,9 @@ class UserEditPage extends StatelessWidget {
       case 'password':
         return PasswordEditBox();
       default:
-        return SizedBox(height: 10,);
+        return SizedBox(
+          height: 10,
+        );
     }
   }
 }

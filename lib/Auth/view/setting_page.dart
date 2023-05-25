@@ -31,6 +31,9 @@ class SettingPage extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Card(
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0)),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
@@ -117,6 +120,9 @@ class SettingPage extends ConsumerWidget {
               ),
             ),
             Card(
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0)),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
@@ -146,38 +152,54 @@ class SettingPage extends ConsumerWidget {
               ),
             ),
             Card(
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0)),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: ListTile(
                   title: Text('로그아웃'),
                   leading: Icon(Icons.logout),
                   onTap: () async {
-                    showDialog(context: context, builder: (context){
-                      return AlertDialog(
-                        title: Text('로그아웃하시겠습니까?'),
-                        actions: [
-                          TextButton(onPressed: (){
-                            Navigator.pop(context);
-                          }, child: Text('취소')),
-                          TextButton(onPressed: () async {
-                            await ref.read(userNotifierProvider.notifier).logout();
-                            Navigator.popUntil(context, (route) => route.isFirst);
-                          }, child: Text('로그아웃')),
-                        ],
-                      );
-                    });
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: Text('로그아웃하시겠습니까?'),
+                            actions: [
+                              TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text('취소')),
+                              TextButton(
+                                  onPressed: () async {
+                                    await ref
+                                        .read(userNotifierProvider.notifier)
+                                        .logout();
+                                    Navigator.popUntil(
+                                        context, (route) => route.isFirst);
+                                  },
+                                  child: Text('로그아웃')),
+                            ],
+                          );
+                        });
                   },
                 ),
               ),
             ),
             Card(
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0)),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: ListTile(
                   title: Text('탈퇴하기'),
                   leading: Icon(Icons.block_outlined),
                   onTap: () async {
-                    showDialog(context: context,
+                    showDialog(
+                        context: context,
                         builder: (context) {
                           return AlertDialog(
                             title: Text('정말로 탈퇴하시겠습니까'),
@@ -193,33 +215,32 @@ class SettingPage extends ConsumerWidget {
                                     Navigator.pop(context);
                                     ref
                                         .read(userNotifierProvider.notifier)
-                                        .deleteUserProfile().then(
-                                            (value) => Navigator.popUntil(
-                                            context, (route) => route.isFirst)
-                                    ).onError((error, stackTrace) =>
-                                        showDialog(
-                                            context: context,
-                                            builder: (context) {
-                                              return AlertDialog(
-                                                title: Text('탈퇴에 실패했습니다.'),
-                                                content: Text(
-                                                    '${error}\n다시 시도해주세요.'),
-                                                actions: [
-                                                  TextButton(
-                                                      onPressed: () {
-                                                        Navigator.pop(context);
-                                                      },
-                                                      child: Text('확인'))
-                                                ],
-                                              );
-                                            }
-                                        ));
+                                        .deleteUserProfile()
+                                        .then((value) => Navigator.popUntil(
+                                            context, (route) => route.isFirst))
+                                        .onError(
+                                            (error, stackTrace) => showDialog(
+                                                context: context,
+                                                builder: (context) {
+                                                  return AlertDialog(
+                                                    title: Text('탈퇴에 실패했습니다.'),
+                                                    content: Text(
+                                                        '${error}\n다시 시도해주세요.'),
+                                                    actions: [
+                                                      TextButton(
+                                                          onPressed: () {
+                                                            Navigator.pop(
+                                                                context);
+                                                          },
+                                                          child: Text('확인'))
+                                                    ],
+                                                  );
+                                                }));
                                   },
                                   child: Text('확인'))
                             ],
                           );
-                        }
-                    );
+                        });
                   },
                 ),
               ),

@@ -34,7 +34,9 @@ class MyPostOrderDetailPage extends ConsumerWidget {
         physics: const BouncingScrollPhysics(),
         child: Card(
           margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          elevation: 4,
+          elevation: 0,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [

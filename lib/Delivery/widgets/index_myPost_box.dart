@@ -23,6 +23,9 @@ class MyPostBox extends ConsumerWidget {
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Card(
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0)),
                 child: Column(
                   //참여한 배닱톡
                   mainAxisSize: MainAxisSize.min,

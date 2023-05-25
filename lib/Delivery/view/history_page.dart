@@ -34,6 +34,9 @@ class DeliverHistoryPage extends ConsumerWidget {
                 String orderDate =
                     DateFormat("M.d(E)", 'ko').format(nowData.orderTime);
                 return Card(
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0)),
                   margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(

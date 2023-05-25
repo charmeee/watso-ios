@@ -59,6 +59,8 @@ class _FindAccountPageState extends ConsumerState<FindAccountPage> {
               ]),
               Card(
                 elevation: 0,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0)),
                 margin:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                 child: Padding(

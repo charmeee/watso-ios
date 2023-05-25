@@ -39,7 +39,9 @@ class PostOrderDetailPage extends ConsumerWidget {
                           previousValue + element.totalPrice);
                   return Card(
                     margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    elevation: 4,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0)),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
