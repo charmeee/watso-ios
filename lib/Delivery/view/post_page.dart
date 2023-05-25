@@ -18,6 +18,7 @@ import '../repository/post_repository.dart';
 import '../widgets/common/information_tile.dart';
 import '../widgets/common/store_detail_box.dart';
 import '../widgets/post_page/modify_fee_dialog.dart';
+import '../widgets/post_page/post_account_box.dart';
 import '../widgets/post_page/post_comment_list.dart';
 import 'menu_list_page.dart';
 import 'option_edit_page.dart';
@@ -268,6 +269,11 @@ class PostPage extends ConsumerWidget {
                           ]),
                     ),
                   )),
+                  AccountCard(
+                    isOwner: isOwner,
+                    status: data.status,
+                    postId: data.id,
+                  ),
                   CommentList(
                     postId: postId,
                     isOwner: isOwner,
