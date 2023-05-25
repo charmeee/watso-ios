@@ -83,10 +83,10 @@ class _MenuListPageState extends ConsumerState<MenuListPage> {
               shrinkWrap: true,
               physics: const BouncingScrollPhysics(),
               slivers: [
-                // SliverToBoxAdapter(
-                //   child: Image.network(storeMenus!.logoImgUrl,
-                //       height: 60, fit: BoxFit.fitWidth),
-                // ),
+                SliverToBoxAdapter(
+                  child: Image.network(storeMenus!.logoImgUrl,
+                      height: 150, fit: BoxFit.cover),
+                ),
                 SliverList(
                   delegate: SliverChildBuilderDelegate(
                     (context, indexOfSection) {
