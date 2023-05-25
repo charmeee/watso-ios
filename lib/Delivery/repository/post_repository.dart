@@ -180,4 +180,14 @@ class PostRepository {
       throw ServerException(e);
     }
   }
+
+  //대표 계좌번호 확인
+  Future<String> getAccountNumber(String postId) async {
+    try {
+      final response = await _dio.get('$staticUrl/$postId/account-number');
+      return response.data['account_number'];
+    } on DioError catch (e) {
+      throw ServerException(e);
+    }
+  }
 }
