@@ -110,6 +110,7 @@ class _MenuListPageState extends ConsumerState<MenuListPage> {
                               Menu menu = menuSection[indexOfSection]
                                   .menus[indexOfMenu];
                               return ListTile(
+                                tileColor: Colors.white,
                                 title: Text(
                                   menu.name,
                                   style: const TextStyle(
