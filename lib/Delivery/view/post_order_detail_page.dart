@@ -71,8 +71,8 @@ class PostOrderDetailPage extends ConsumerWidget {
                             OrderMenu orderMenu =
                                 postDetailOrder.orderLines[index];
                             return Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 16),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 8),
                               child: Column(
                                 mainAxisSize: MainAxisSize.min,
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -121,9 +121,7 @@ class PostOrderDetailPage extends ConsumerWidget {
                           shrinkWrap: true,
                           physics: NeverScrollableScrollPhysics(),
                           separatorBuilder: (context, index) {
-                            return SizedBox(
-                              height: 8,
-                            );
+                            return SizedBox(height: 24);
                           },
                         ),
                       ],
@@ -132,7 +130,7 @@ class PostOrderDetailPage extends ConsumerWidget {
                 },
                 separatorBuilder: (context, index) {
                   return Divider(
-                    height: 12,
+                    height: 4,
                     thickness: 4,
                     color: Colors.transparent,
                   );
