@@ -1,26 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-Widget outlineTextFromField({ValueChanged<String>? onChanged,
-  EdgeInsetsGeometry? contentPadding,
-  String? label,
-  String? hintText,
-  FocusNode? focusNode,
-  FormFieldValidator? validator,
-  List<TextInputFormatter>? inputFormatters,
-  TextInputType? keyboardType,
-  TextEditingController? controller,
-  String? initialValue,
-  Widget? suffix,
-  Widget? suffixIcon}) {
+Widget outlineTextFromField(
+    {ValueChanged<String>? onChanged,
+    EdgeInsetsGeometry? contentPadding,
+    String? label,
+    String? hintText,
+    FocusNode? focusNode,
+    FormFieldValidator? validator,
+    List<TextInputFormatter>? inputFormatters,
+    TextInputType? keyboardType,
+    TextEditingController? controller,
+    String? initialValue,
+    bool obscureText = false,
+    Widget? suffix,
+    Widget? suffixIcon}) {
   return TextFormField(
-
+    obscureText: obscureText,
     focusNode: focusNode,
     autovalidateMode: AutovalidateMode.onUserInteraction,
     initialValue: initialValue,
     decoration: InputDecoration(
       contentPadding:
-      contentPadding ?? EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+          contentPadding ?? EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       hintText: hintText,
       enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(
