@@ -70,6 +70,7 @@ class _NickNameEditBoxState extends ConsumerState<NickNameEditBox> {
               field: DuplicateCheckField.nickname,
               setValid: setDuplicationFlag,
               value: nickname,
+              isValid: checkNicknameDuplicate,
             ),
           ],
         ),

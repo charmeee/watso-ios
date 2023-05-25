@@ -10,17 +10,19 @@ class DuplicateCheckButton extends ConsumerWidget {
     required this.field,
     required this.value,
     required this.setValid,
+    required this.isValid,
   }) : super(key: key);
   final DuplicateCheckField field;
   final String value;
   final Function(DuplicateCheckField, bool) setValid;
+  final bool isValid;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         foregroundColor: Colors.black,
-        backgroundColor: Colors.grey[300],
+        backgroundColor: isValid ? Colors.green[200] : Colors.grey[300],
       ),
       onPressed: () async {
         if (value.isNotEmpty) {
@@ -57,8 +59,11 @@ class DuplicateCheckButton extends ConsumerWidget {
               SnackBar(content: Text('${field.korName}을 입력해주세요')));
         }
       },
-      child:
-          field == (DuplicateCheckField.email) ? Text('인증코드 발송') : Text('중복검사'),
+      child: isValid
+          ? Text('✔')
+          : field == (DuplicateCheckField.email)
+              ? Text('인증코드 발송')
+              : Text('중복검사'),
     );
   }
 }
