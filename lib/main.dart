@@ -71,6 +71,7 @@ void main() async {
         theme: ThemeData(
           primaryColor: Color(0xffFF7700),
           fontFamily: 'suite',
+          scaffoldBackgroundColor: Color(0xfff7f7fa),
           // scaffoldBackgroundColor: backgroundColor,
           // textTheme: TextTheme()
           //     .apply(bodyColor: Colors.white, displayColor: Colors.white)
