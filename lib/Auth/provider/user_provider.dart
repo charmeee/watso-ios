@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../Common/dio.dart';
@@ -19,21 +20,16 @@ final startProvider = FutureProvider((ref) async {
   final storage = ref.watch(secureStorageProvider);
   final refreshToken = await storage.read(key: 'refreshToken');
 
-
   log(authState.toString());
   if (authState == AuthState.initial) {
     try {
       if (refreshToken != null) {
         await ref.read(userNotifierProvider.notifier).getUserProfile();
       } else {
-        ref
-            .read(authStateProvider.notifier)
-            .state = AuthState.unauthenticated;
+        ref.read(authStateProvider.notifier).state = AuthState.unauthenticated;
       }
     } catch (e) {
-      ref
-          .read(authStateProvider.notifier)
-          .state = AuthState.unauthenticated;
+      ref.read(authStateProvider.notifier).state = AuthState.unauthenticated;
     }
   }
 
@@ -42,8 +38,10 @@ final startProvider = FutureProvider((ref) async {
 
 final authStateProvider = StateProvider<AuthState>((ref) => AuthState.initial);
 
+//상위껄만들어서 null이면 dispose하게끔..하면되지않을까?
+
 final userNotifierProvider =
-StateNotifierProvider<UserNotifier, UserInfo?>((ref) {
+    StateNotifierProvider<UserNotifier, UserInfo?>((ref) {
   return UserNotifier(ref);
 });
 
@@ -57,16 +55,20 @@ class UserNotifier extends StateNotifier<UserInfo?> {
   //로긴됏을때! 머다? authorize 한다.
 
   Future signIn(username, password) async {
-    await ref.read(authRepositoryProvider).login(username, password);
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+    String? fcmToken = await messaging.getToken();
+    log(fcmToken ?? 'null');
+
+    await ref
+        .read(authRepositoryProvider)
+        .login(username, password, fcmToken ?? '');
     await getUserProfile();
   }
 
   Future getUserProfile() async {
     final userInfo = await ref.read(userRepositoryProvider).getUserProfile();
     state = userInfo;
-    ref
-        .read(authStateProvider.notifier)
-        .state = AuthState.authenticated;
+    ref.read(authStateProvider.notifier).state = AuthState.authenticated;
   }
 
   Future<void> logout() async {
@@ -85,9 +87,7 @@ class UserNotifier extends StateNotifier<UserInfo?> {
   }
 
   init() {
-    ref
-        .read(authStateProvider.notifier)
-        .state = AuthState.unauthenticated;
+    ref.read(authStateProvider.notifier).state = AuthState.unauthenticated;
     state = null;
   }
 
