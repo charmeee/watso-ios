@@ -7,16 +7,23 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:watso/Auth/provider/user_provider.dart';
 
 import 'Auth/view/signIn.dart';
+import 'Common/firebase/firebase_options.dart';
 import 'Common/global.dart';
 import 'Delivery/view/post_list_page.dart';
-import 'firebase_options.dart';
 
+/*in storage
+  refresh token string
+  access token string
+  fcmAllow bool
+ */
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // If you're going to use other Firebase services in the background, such as Firestore,
   // make sure you call `initializeApp` before using other Firebase services.
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
-  print("Handling a background message: ${message.messageId}");
+  print("Handling a background message: ${message.messageId} ${message.data}");
 }
 
 void main() async {
@@ -30,23 +37,33 @@ void main() async {
 
   NotificationSettings settings = await messaging.requestPermission(
     alert: true,
-    announcement: false,
     badge: true,
-    carPlay: false,
-    criticalAlert: false,
-    provisional: false,
     sound: true,
   );
+  await messaging.setForegroundNotificationPresentationOptions(
+    alert: true, // Required to display a heads up notification
+    badge: true,
+    sound: true,
+  );
+
+  //onMessageOpenedApp
+  FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+    print('A new onMessageOpenedApp event was published!');
+    print(message);
+  });
 
   print('User granted permission: ${settings.authorizationStatus}');
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
     print('Got a message whilst in the foreground!');
     print('Message data: ${message.data}');
+    print('Message notification: ${message.notification}');
 
     if (message.notification != null) {
-      print('Message also contained a notification: ${message.notification}');
+      print(
+          'Message also contained a notification: ${message.notification!.toMap()}');
     }
   });
+
   runApp(ProviderScope(
     child: GestureDetector(
       onTap: () {
