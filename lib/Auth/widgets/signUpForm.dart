@@ -375,7 +375,8 @@ class _SignUpFormState extends State<SignUpForm> {
             email: email,
             account: account,
             token: token,
-          )
+          ),
+          SizedBox(height: 24),
         ],
       ),
     );
