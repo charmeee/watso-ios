@@ -4,6 +4,7 @@ import 'package:watso/Auth/models/user_model.dart';
 import 'package:watso/Common/widget/appbar.dart';
 
 import '../provider/user_provider.dart';
+import '../widgets/notification_allow_box.dart';
 import 'edit_page.dart';
 
 class SettingPage extends ConsumerWidget {
@@ -119,38 +120,7 @@ class SettingPage extends ConsumerWidget {
                 ),
               ),
             ),
-            Card(
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0)),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
-                      child: Text(
-                        "알림",
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    ListTile(
-                      title: Text('알림 설정'),
-                      trailing: Switch(
-                        value: true,
-                        onChanged: (value) {},
-                        activeTrackColor: Colors.indigo[100],
-                        activeColor: Colors.indigo,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            NotificationAllowBox(),
             Card(
               elevation: 0,
               shape: RoundedRectangleBorder(
