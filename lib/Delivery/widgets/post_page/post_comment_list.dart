@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -30,12 +31,14 @@ class _CommentBoxState extends ConsumerState<CommentList> {
   //textcontroller
   final TextEditingController _commentController = TextEditingController();
   final FocusNode _commentFocusNode = FocusNode();
+  Timer? _debounce;
 
   String selectedCommentId = '';
 
   @override
   void dispose() {
     _commentController.dispose();
+    _debounce?.cancel();
     super.dispose();
   }
 
@@ -43,6 +46,29 @@ class _CommentBoxState extends ConsumerState<CommentList> {
     setState(() {
       selectedCommentId = commentId;
     });
+  }
+
+  postComment(context) async {
+    try {
+      if (selectedCommentId.isEmpty) {
+        await ref
+            .read(postRepositoryProvider)
+            .postComment(widget.postId, _commentController.text);
+      } else {
+        log('selectedCommentId: $selectedCommentId');
+        await ref.read(postRepositoryProvider).postChildComment(
+            widget.postId, selectedCommentId, _commentController.text);
+        selectCommentId('');
+      }
+      _commentController.clear();
+      ref.invalidate(postCommentListProvider(widget.postId));
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('댓글을 작성할 수 없습니다.'),
+        ),
+      );
+    }
   }
 
   @override
@@ -112,48 +138,16 @@ class _CommentBoxState extends ConsumerState<CommentList> {
                                     hintText: '댓글을 입력해주세요',
                                     suffixIcon: IconButton(
                                       onPressed: () {
-                                        if (_commentController.text.isEmpty)
-                                          return;
-                                        if (selectedCommentId.isEmpty) {
-                                          ref
-                                              .read(postRepositoryProvider)
-                                              .postComment(widget.postId,
-                                                  _commentController.text)
-                                              .then((value) {
-                                            _commentController.clear();
-                                            ref.invalidate(
-                                                postCommentListProvider(
-                                                    widget.postId));
-                                          }).onError((error, stackTrace) {
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(
-                                              SnackBar(
-                                                content:
-                                                    Text('댓글을 작성할 수 없습니다.'),
-                                              ),
-                                            );
-                                          });
-                                        } else {
-                                          ref
-                                              .read(postRepositoryProvider)
-                                              .postChildComment(
-                                                  widget.postId,
-                                                  selectedCommentId,
-                                                  _commentController.text)
-                                              .then((value) {
-                                            _commentController.clear();
-                                            selectCommentId('');
-                                            ref.invalidate(
-                                                postCommentListProvider(
-                                                    widget.postId));
-                                          }).onError((error, stackTrace) {
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(
-                                              SnackBar(
-                                                content:
-                                                    Text('댓글을 작성할 수 없습니다.'),
-                                              ),
-                                            );
+                                        if (_commentController
+                                            .text.isNotEmpty) {
+                                          log('press');
+                                          if (_debounce?.isActive ?? false) {
+                                            _debounce?.cancel();
+                                          }
+                                          _debounce = Timer(
+                                              const Duration(milliseconds: 300),
+                                              () {
+                                            postComment(context);
                                           });
                                         }
                                       },
