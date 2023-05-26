@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:watso/Delivery/models/comment_model.dart';
 
+import '../../../Auth/provider/user_provider.dart';
 import '../../provider/post_list_provider.dart';
 import '../../repository/post_repository.dart';
 
@@ -28,6 +29,7 @@ class CommentBox extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     String createdAt = DateFormat("M.d h:m", 'ko').format(comment.createdAt);
+    final user = ref.watch(userNotifierProvider);
     return Padding(
       padding: isParent
           ? const EdgeInsets.only()
@@ -57,7 +59,7 @@ class CommentBox extends ConsumerWidget {
                             style: TextStyle(
                               fontSize: 16,
                             )),
-                        if (isOwner)
+                        if (user?.id == comment.userId)
                           InkWell(
                             child: Icon(
                               Icons.close,
