@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +12,7 @@ import 'Auth/view/signIn.dart';
 import 'Common/firebase/firebase_options.dart';
 import 'Common/global.dart';
 import 'Delivery/view/post_list_page.dart';
+import 'Delivery/view/post_page.dart';
 
 /*in storage
   refresh token string
@@ -32,37 +35,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  FirebaseMessaging messaging = FirebaseMessaging.instance;
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-
-  NotificationSettings settings = await messaging.requestPermission(
-    alert: true,
-    badge: true,
-    sound: true,
-  );
-  await messaging.setForegroundNotificationPresentationOptions(
-    alert: true, // Required to display a heads up notification
-    badge: true,
-    sound: true,
-  );
-
-  //onMessageOpenedApp
-  FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-    print('A new onMessageOpenedApp event was published!');
-    print(message);
-  });
-
-  print('User granted permission: ${settings.authorizationStatus}');
-  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    print('Got a message whilst in the foreground!');
-    print('Message data: ${message.data}');
-    print('Message notification: ${message.notification}');
-
-    if (message.notification != null) {
-      print(
-          'Message also contained a notification: ${message.notification!.toMap()}');
-    }
-  });
 
   runApp(ProviderScope(
     child: GestureDetector(
@@ -110,6 +83,65 @@ class _MyAppState extends ConsumerState<MyApp> {
   @override
   void initState() {
     super.initState();
+    getFcmPermission().then((value) {
+      onFcmMessageListen();
+    });
+  }
+
+  getFcmPermission() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      print('User granted permission: ${settings.authorizationStatus}');
+      if (Platform.isIOS) {
+        await messaging.setForegroundNotificationPresentationOptions(
+          alert: true, // Required to display a heads up notification
+          badge: true,
+          sound: true,
+        );
+      }
+      return true;
+    }
+  }
+
+  onFcmMessageListen() {
+    //onMessageOpenedApp background -> notificaiton 클릭시에 실행됨.
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      print('background!');
+      handleMessage(message);
+    });
+
+    // //onforeground 자동으로 이함수가 실행됨
+    // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    //   print('foreground!');
+    //   // handleMessage(message);
+    //   //포그라운드
+    // });
+  }
+
+  handleMessage(RemoteMessage message) {
+    print('Message data: ${message.data}');
+    print('Message notification: ${message.notification}');
+
+    if (message.notification != null) {
+      print(
+          'Message also contained a notification: ${message.notification!.toMap()}');
+    }
+    final postId = message.data['post_id'];
+    if (postId is String) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => PostPage(
+                  postId: postId,
+                )),
+      );
+    }
   }
 
   @override
