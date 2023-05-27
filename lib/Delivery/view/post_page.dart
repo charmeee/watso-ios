@@ -303,6 +303,32 @@ class PostPage extends ConsumerWidget {
       return [
         IconButton(
           onPressed: () {
+            if (status == PostStatus.closed) {
+              showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                        title: Text('게시글 수정'),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              '모집이 완료된 게시글은 수정할 수 없습니다.',
+                            ),
+                            Text(
+                              '수정을 하기 위해서는 팀원들과 상의 후 모집 상태를 변경해주세요.',
+                            ),
+                          ],
+                        ),
+                        actions: [
+                          TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: Text('확인'))
+                        ],
+                      ));
+              return;
+            }
             Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -317,6 +343,32 @@ class PostPage extends ConsumerWidget {
         ),
         IconButton(
           onPressed: () async {
+            if (status == PostStatus.closed) {
+              showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                        title: Text('게시글 삭제'),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              '모집이 완료된 게시글은 삭제할 수 없습니다.',
+                            ),
+                            Text(
+                              '삭제를 하기 위해서는 팀원들과 상의 후 모집 상태를 변경해주세요.',
+                            ),
+                          ],
+                        ),
+                        actions: [
+                          TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: Text('확인'))
+                        ],
+                      ));
+              return;
+            }
             showDialog(
                 context: context,
                 builder: (context) => AlertDialog(
@@ -410,15 +462,27 @@ class PostPage extends ConsumerWidget {
                               SnackBar(content: Text('게시글 상태 업데이트 완료')));
                           Navigator.pop(context, true);
                         }).onError((error, stackTrace) {
-                          //snackbar
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(SnackBar(content: Text('에러')));
+                          //alertDialog
+                          showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                    title: Text('에러'),
+                                    content: Text(
+                                        '게시글 상태 업데이트에 실패했습니다.\n${error.toString()}'),
+                                    actions: [
+                                      TextButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: Text('확인')),
+                                    ],
+                                  ));
                         });
                       },
                       child: Text('확인')),
                 ],
               )).then((value) {
-        if (data.status == PostStatus.ordered) {
+        if (value == true && data.status == PostStatus.ordered) {
           showDialog(
               context: context,
               builder: (context) => ModifyFeeDialog(
