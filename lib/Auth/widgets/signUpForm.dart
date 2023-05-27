@@ -86,14 +86,13 @@ class _SignUpFormState extends State<SignUpForm> {
               if (value == null || value.isEmpty) {
                 return '이름을 입력해주세요';
               }
+              if (RegExp(r'[ㄱ-ㅎㅏ-ㅣ가-힣 ]').hasMatch(value) == false) {
+                return '한글만 입력이 가능합니다.';
+              }
               return null;
             },
             hintText: '이름',
             keyboardType: TextInputType.text,
-            inputFormatters: [
-              //number and korean and space
-              FilteringTextInputFormatter.allow(RegExp(r'[ㄱ-ㅎㅏ-ㅣ가-힣 ]')),
-            ],
           ),
           SizedBox(height: 16),
           Text(
@@ -117,24 +116,25 @@ class _SignUpFormState extends State<SignUpForm> {
                     if (value == null || value.isEmpty) {
                       return '아이디를 입력해주세요';
                     }
+                    if (RegExp(r'[a-zA-Z0-9]{5,20}$').hasMatch(value) ==
+                        false) {
+                      return '영문, 숫자 5~20자리로 입력해주세요';
+                    }
                     if (!checkUsernameDuplicate) {
                       return '아이디 중복검사를 해주세요';
                     }
                     return null;
                   },
-                  inputFormatters: [
-                    FilteringTextInputFormatter.allow(
-                        RegExp(r'[a-zA-Z0-9!@~?]')),
-                  ],
                 ),
               ),
               SizedBox(width: 15),
-              DuplicateCheckButton(
-                field: DuplicateCheckField.username,
-                setValid: setDuplicationFlag,
-                value: username,
-                isValid: checkUsernameDuplicate,
-              ),
+              if (RegExp(r'[a-zA-Z0-9]{5,20}$').hasMatch(username))
+                DuplicateCheckButton(
+                  field: DuplicateCheckField.username,
+                  setValid: setDuplicationFlag,
+                  value: username,
+                  isValid: checkUsernameDuplicate,
+                ),
             ],
           ),
           SizedBox(height: 16),
@@ -159,6 +159,10 @@ class _SignUpFormState extends State<SignUpForm> {
                   if (value == null || value.isEmpty) {
                     return '닉네임을 입력해주세요';
                   }
+                  if (RegExp(r'[a-zA-Z가-힣0-9]{2,10}$').hasMatch(value) ==
+                      false) {
+                    return '한글, 영문, 숫자 2~10자리로 입력해주세요';
+                  }
                   if (!checkNicknameDuplicate) {
                     return '닉네임 중복검사를 해주세요';
                   }
@@ -166,12 +170,13 @@ class _SignUpFormState extends State<SignUpForm> {
                 },
               )),
               SizedBox(width: 15),
-              DuplicateCheckButton(
-                field: DuplicateCheckField.nickname,
-                setValid: setDuplicationFlag,
-                value: nickname,
-                isValid: checkNicknameDuplicate,
-              ),
+              if (RegExp(r'[a-zA-Z가-힣0-9]{2,10}$').hasMatch(nickname))
+                DuplicateCheckButton(
+                  field: DuplicateCheckField.nickname,
+                  setValid: setDuplicationFlag,
+                  value: nickname,
+                  isValid: checkNicknameDuplicate,
+                ),
             ],
           ),
           SizedBox(height: 16),
@@ -274,7 +279,12 @@ class _SignUpFormState extends State<SignUpForm> {
               obscureText: !passwordVisible,
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return '숫자,영대소문자,특수문자를 사용할 수 있습니다';
+                  return '비밀번호를 입력해주세요';
+                }
+                if (!RegExp(
+                        r'^(?=.*?[a-zA-Z])(?=.*?[0-9])(?=.*[!@#\$%^&*(),.?:{}|<>])[a-zA-Z0-9!@#\$%^&*(),.?:{}|<>].{8,40}$')
+                    .hasMatch(value)) {
+                  return '비밀번호는 영문, 숫자, 특수문자를 포함하여 8자 이상이어야 합니다';
                 }
                 if (value.length < 6) {
                   return '비밀번호는 6자 이상이어야 합니다';
@@ -287,9 +297,10 @@ class _SignUpFormState extends State<SignUpForm> {
                 });
               },
               inputFormatters: [
-                //include ! ~ @ ?
-                FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9!@~?]')),
+                FilteringTextInputFormatter.allow(
+                    RegExp(r'[a-zA-Z0-9!@#\$%^&*(),.?:{}|<>]')),
               ],
+              //                    r'^(?=.*?[a-zA-Z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,40}$')),
               suffixIcon: IconButton(
                   onPressed: () {
                     setState(() {
@@ -311,7 +322,7 @@ class _SignUpFormState extends State<SignUpForm> {
               obscureText: !checkPasswordVisible,
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return '숫자,영대소문자,특수문자를 사용할 수 있습니다';
+                  return '다시 한번 비밀번호를 입력해주세요';
                 }
                 if (value != password) {
                   return '비밀번호가 일치하지 않습니다';
@@ -324,8 +335,8 @@ class _SignUpFormState extends State<SignUpForm> {
                 });
               },
               inputFormatters: [
-                //include ! ~ @ ?
-                FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9!@~?]')),
+                FilteringTextInputFormatter.allow(
+                    RegExp(r'[a-zA-Z0-9!@#\$%^&*(),.?:{}|<>]')),
               ],
               suffixIcon: IconButton(
                   onPressed: () {
@@ -344,6 +355,10 @@ class _SignUpFormState extends State<SignUpForm> {
             "계좌번호",
             style: WatsoText.lightBold,
           ),
+          Text(
+            "팀원들과 배달비를 편리하게 나누기 위한 계좌번호 입니다. 정확히 입력해주세요",
+            style: WatsoText.normal,
+          ),
           SizedBox(height: 5),
           outlineTextFromField(
             //account
@@ -351,6 +366,11 @@ class _SignUpFormState extends State<SignUpForm> {
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return '계좌번호를 입력해주세요';
+              }
+              if (!RegExp(
+                      r'(?=.*?[a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣])(?=.*?[0-9])[a-zA-Z0-9ㄱ-ㅎㅏ-ㅣ가-힣-\s]{8,30}$')
+                  .hasMatch(value)) {
+                return '계좌번호 형식이 올바르지 않습니다';
               }
               return null;
             },
@@ -362,7 +382,8 @@ class _SignUpFormState extends State<SignUpForm> {
             keyboardType: TextInputType.text,
             inputFormatters: [
               //number and korean and space
-              FilteringTextInputFormatter.allow(RegExp(r'[0-9ㄱ-ㅎㅏ-ㅣ가-힣 ]')),
+              FilteringTextInputFormatter.allow(
+                  RegExp(r'[a-zA-Z0-9ㄱ-ㅎㅏ-ㅣ가-힣-\s]')),
             ],
           ),
           SizedBox(height: 16),
