@@ -18,7 +18,6 @@ class InformationTile extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
       child: Row(
-        mainAxisSize: MainAxisSize.min,
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15.0),
@@ -31,24 +30,26 @@ class InformationTile extends StatelessWidget {
           SizedBox(
             width: 10,
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(title,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey,
-                  )),
-              if (widget != null) widget!,
-              if (content != null)
-                Text(
-                  content!,
-                  style: TextStyle(
-                    fontSize: 16,
+          Flexible(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey,
+                    )),
+                if (widget != null) widget!,
+                if (content != null)
+                  Text(
+                    content!,
+                    style: TextStyle(
+                      fontSize: 16,
+                    ),
                   ),
-                ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
