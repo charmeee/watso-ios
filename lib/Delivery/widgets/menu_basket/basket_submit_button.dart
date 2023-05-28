@@ -9,6 +9,7 @@ import '../../provider/my_deliver_provider.dart';
 import '../../provider/post_list_provider.dart';
 import '../../repository/order_repository.dart';
 import '../../repository/post_repository.dart';
+import '../check_account_page.dart';
 
 class BasketSubmitButton extends ConsumerWidget {
   const BasketSubmitButton({Key? key, required this.postOrder})
@@ -92,7 +93,10 @@ class BasketSubmitButton extends ConsumerWidget {
               ref.invalidate(myPostListProvider);
               ref.invalidate(joinablePostListProvider);
               ref.read(myDeliveryNotifierProvider.notifier).deleteMyDeliver();
-              Navigator.of(context).popUntil((route) => route.isFirst);
+              Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(
+                      builder: (BuildContext context) => CheckMyAccount()),
+                  (route) => route.isFirst);
             }).onError((error, stackTrace) {
               showDialog(
                   context: context,
