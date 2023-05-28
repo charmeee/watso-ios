@@ -66,6 +66,15 @@ class _ModifyFeeDialogState extends ConsumerState<ModifyFeeDialog> {
             inputFormatters: [
               FilteringTextInputFormatter.digitsOnly,
             ],
+            validator: (value) {
+              int tmp = int.parse(value);
+              if (tmp >= 100000) {
+                return '배달비는 10만원을 넘을 수 없습니다.';
+              }
+              if (tmp < 0) {
+                return '배달비는 음수가 될 수 없습니다.';
+              }
+            },
             suffix: Text(
               '원',
               style: TextStyle(
@@ -74,7 +83,7 @@ class _ModifyFeeDialogState extends ConsumerState<ModifyFeeDialog> {
             ),
             onChanged: (value) {
               int tmp = int.parse(value);
-              if (tmp > 0) {
+              if (tmp > 0 && tmp < 100000) {
                 setState(() {
                   fee = tmp;
                 });
