@@ -14,8 +14,8 @@ class StoreDetailBox extends StatelessWidget {
       elevation: 0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
       child: Column(
-        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Padding(
             padding: const EdgeInsets.only(top: 16.0, left: 16.0),
@@ -44,9 +44,13 @@ class StoreDetailBox extends StatelessWidget {
           InformationTile(
             icon: Icons.info,
             title: "배달비 상세 정보",
-            content: store.note.isNotEmpty
-                ? store.note.map((x) => '﹒$x').join('\n')
-                : '없음',
+            widget: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: store.note.isNotEmpty
+                  ? store.note.map((x) => Flexible(child: Text('﹒$x'))).toList()
+                  : [Text('없음')],
+            ),
           ),
           SizedBox(
             height: 10,
