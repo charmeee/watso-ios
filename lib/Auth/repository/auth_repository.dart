@@ -22,15 +22,13 @@ class AuthRepository {
   final FlutterSecureStorage storage;
   final Dio _dio;
 
-  Future<void> login(String username, String password, String fcmToken) async {
+  Future<void> login(String username, String password) async {
     try {
       //storage 읽고
       final response = await _dio.post('$staticUrl/login', data: {
         'username': username,
         'pw': password,
-        'registration_token': fcmToken
       });
-      handleFcmAllow(fcmToken.isNotEmpty);
       final token =
           response.headers["authentication"]![0].toString().split("/");
       await storage.delete(key: "accessToken");
@@ -39,15 +37,6 @@ class AuthRepository {
       await storage.write(key: "refreshToken", value: token[1]);
     } on DioError catch (e) {
       throw ServerException(e);
-    } catch (e) {
-      throw TokenSetupException(e.toString());
-    }
-  }
-
-  Future<void> handleFcmAllow(bool allow) async {
-    try {
-      await storage.delete(key: "fcmAllow");
-      await storage.write(key: "fcmAllow", value: allow ? "true" : "false");
     } catch (e) {
       throw TokenSetupException(e.toString());
     }
