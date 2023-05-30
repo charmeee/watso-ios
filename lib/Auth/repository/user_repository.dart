@@ -10,18 +10,16 @@ import 'auth_repository.dart';
 final userRepositoryProvider = Provider<UserRepository>(
   (ref) {
     final dio = ref.watch(dioProvider);
-    final storage = ref.watch(secureStorageProvider);
     const staticUrl = '/user';
 
-    return UserRepository(dio, storage, staticUrl, ref);
+    return UserRepository(dio, staticUrl, ref);
   },
 );
 
 class UserRepository {
-  UserRepository(this._dio, this.storage, this.staticUrl, this.ref);
+  UserRepository(this._dio, this.staticUrl, this.ref);
 
   final String staticUrl;
-  final FlutterSecureStorage storage;
   final Dio _dio;
   final Ref ref;
 
