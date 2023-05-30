@@ -71,7 +71,10 @@ class CustomInterceptor extends Interceptor {
 
       final isExpiredToken = (err.response?.data is Map) &&
           (err.response?.data['code'] == 201 ||
-              err.response?.data['code'] == "201");
+              err.response?.data['code'] == "201" ||
+              err.response?.data['code'] == 200 ||
+              err.response?.data['code'] == "200");
+
       final isPathAuthRefresh = err.requestOptions.path == '/auth/refresh';
       if (isStatus401 && isExpiredToken && !isPathAuthRefresh) {
         final dio = Dio(options);
