@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:watso/Common/view/error_page.dart';
 
 import '../../Common/widget/appbar.dart';
 import '../models/post_model.dart';
@@ -204,7 +205,7 @@ class MyPostOrderDetailPage extends ConsumerWidget {
                         ],
                       );
                     } else if (snapshot.hasError) {
-                      return Center(child: Text('에러'));
+                      return ErrorPage(error: Exception(snapshot.error));
                     } else {
                       return Center(child: CircularProgressIndicator());
                     }

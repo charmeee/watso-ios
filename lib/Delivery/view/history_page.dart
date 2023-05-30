@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:watso/Common/view/error_page.dart';
 import 'package:watso/Delivery/view/post_page.dart';
 
 import '../../Common/widget/appbar.dart';
@@ -161,9 +162,7 @@ class DeliverHistoryPage extends ConsumerWidget {
               },
             );
           } else if (snapshot.hasError) {
-            return Center(
-              child: Text('에러'),
-            );
+            return ErrorPage(error: Exception(snapshot.error));
           } else {
             return Center(
               child: CircularProgressIndicator(),

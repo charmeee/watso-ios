@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:watso/Common/theme/text.dart';
+import 'package:watso/Common/view/error_page.dart';
 
 import '../../Common/widget/appbar.dart';
 import '../models/post_model.dart';
@@ -31,12 +32,12 @@ class PostOrderDetailPage extends ConsumerWidget {
               final List<Order> orderDataList = snapshot.data!;
               int totalSumPrice = orderDataList.fold(
                   0,
-                      (previousValue, element) =>
-                  previousValue +
+                  (previousValue, element) =>
+                      previousValue +
                       element.orderLines.fold(
                           0,
-                              (previousValue, element) =>
-                          previousValue + element.totalPrice));
+                          (previousValue, element) =>
+                              previousValue + element.totalPrice));
               return SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -49,11 +50,11 @@ class PostOrderDetailPage extends ConsumerWidget {
                         final Order postDetailOrder = orderDataList[index];
                         final int sum = postDetailOrder.orderLines.fold(
                             0,
-                                (previousValue, element) =>
-                            previousValue + element.totalPrice);
+                            (previousValue, element) =>
+                                previousValue + element.totalPrice);
                         return Card(
                           margin:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                              EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                           elevation: 0,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8.0)),
@@ -65,7 +66,7 @@ class PostOrderDetailPage extends ConsumerWidget {
                                     vertical: 8.0, horizontal: 16),
                                 child: Row(
                                   mainAxisAlignment:
-                                  MainAxisAlignment.spaceBetween,
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(postDetailOrder.nickname,
                                         style: TextStyle(
@@ -85,14 +86,14 @@ class PostOrderDetailPage extends ConsumerWidget {
                               ListView.separated(
                                 itemBuilder: (context, index) {
                                   OrderMenu orderMenu =
-                                  postDetailOrder.orderLines[index];
+                                      postDetailOrder.orderLines[index];
                                   return Padding(
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 16, vertical: 8),
                                     child: Column(
                                       mainAxisSize: MainAxisSize.min,
                                       crossAxisAlignment:
-                                      CrossAxisAlignment.stretch,
+                                          CrossAxisAlignment.stretch,
                                       children: [
                                         Text(
                                           orderMenu.menu.name +
@@ -108,13 +109,13 @@ class PostOrderDetailPage extends ConsumerWidget {
                                               color: Colors.grey, fontSize: 12),
                                         ),
                                         if (orderMenu.menu.optionGroups !=
-                                            null &&
+                                                null &&
                                             orderMenu
                                                 .menu.optionGroups!.isNotEmpty)
                                           Column(
                                               mainAxisSize: MainAxisSize.min,
                                               crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                                  CrossAxisAlignment.start,
                                               children: [
                                                 for (var group in orderMenu
                                                     .menu.optionGroups!)
@@ -143,7 +144,6 @@ class PostOrderDetailPage extends ConsumerWidget {
                                   return SizedBox(height: 24);
                                 },
                               ),
-
                               if (postDetailOrder.requestComment.isNotEmpty)
                                 Column(
                                   mainAxisSize: MainAxisSize.min,
@@ -188,7 +188,7 @@ class PostOrderDetailPage extends ConsumerWidget {
                 ),
               );
             } else if (snapshot.hasError) {
-              return Center(child: Text('에러'));
+              return ErrorPage(error: Exception(snapshot.error));
             } else {
               return Center(child: CircularProgressIndicator());
             }

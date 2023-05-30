@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:watso/Auth/models/user_model.dart';
+import 'package:watso/Common/view/error_page.dart';
 import 'package:watso/Common/widget/appbar.dart';
 
 import '../provider/user_provider.dart';
@@ -16,13 +17,7 @@ class SettingPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     UserInfo? userInfo = ref.watch(userNotifierProvider);
     if (userInfo == null)
-      return Scaffold(
-        body: Container(
-          child: Center(
-            child: Text('로그인이 필요합니다.'),
-          ),
-        ),
-      );
+      return ErrorPage(error: Exception('유저 정보를 불러오는데 실패했습니다.'));
 
     return Scaffold(
       appBar: customAppBar(context, title: '설정'),

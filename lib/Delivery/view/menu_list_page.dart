@@ -6,6 +6,7 @@ import 'package:watso/Common/commonType.dart';
 import 'package:watso/Common/widget/appbar.dart';
 import 'package:watso/Common/widget/primary_button.dart';
 
+import '../../Common/view/error_page.dart';
 import '../models/post_model.dart';
 import '../models/post_request_model.dart';
 import '../models/post_response_model.dart';
@@ -29,6 +30,7 @@ class MenuListPage extends ConsumerStatefulWidget {
 
 class _MenuListPageState extends ConsumerState<MenuListPage> {
   LoadState loadState = LoadState.loading;
+  Exception? error;
   StoreMenus? storeMenus;
 
   @override
@@ -49,6 +51,7 @@ class _MenuListPageState extends ConsumerState<MenuListPage> {
     }).onError((error, stackTrace) {
       setState(() {
         loadState = LoadState.error;
+        error = error;
       });
     });
   }
@@ -67,8 +70,8 @@ class _MenuListPageState extends ConsumerState<MenuListPage> {
         loadState == LoadState.error ||
         (loadState != LoadState.loading &&
             myOrder.store.id != widget.storeId)) {
-      return Scaffold(
-        body: const Center(child: Text('에러')),
+      return ErrorPage(
+        error: error ?? Exception("로직 에러."),
       );
     }
     List<OrderMenu> orderMenus = myOrder.order.orderLines;

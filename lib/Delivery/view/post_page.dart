@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:watso/Common/view/error_page.dart';
 import 'package:watso/Common/widget/appbar.dart';
 import 'package:watso/Delivery/models/post_model.dart';
 import 'package:watso/Delivery/models/post_request_model.dart';
@@ -289,7 +290,7 @@ class PostPage extends ConsumerWidget {
             ),
           );
         },
-        error: (error, track) => Scaffold(body: Center(child: Text('에러'))),
+        error: (error, track) => ErrorPage(error: Exception(error)),
         loading: () =>
             Scaffold(body: Center(child: CircularProgressIndicator())));
   }

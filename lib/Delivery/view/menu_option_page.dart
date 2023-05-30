@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:watso/Common/view/error_page.dart';
 import 'package:watso/Common/widget/appbar.dart';
 
 import '../../Common/commonType.dart';
@@ -69,10 +70,7 @@ class _MenuOptionPageState extends ConsumerState<MenuOptionPage> {
       );
     }
     if (loadMenu == null || loadState == LoadState.error || orderMenu == null) {
-      return Scaffold(
-        appBar: customAppBar(context, title: '메뉴 옵션'),
-        body: const Center(child: Text('에러')),
-      );
+      return ErrorPage(error: Exception('메뉴를 불러오는데 실패했습니다.'));
     }
     Menu menu = loadMenu!;
     return Scaffold(
