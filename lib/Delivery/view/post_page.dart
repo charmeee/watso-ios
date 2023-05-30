@@ -50,7 +50,7 @@ class PostPage extends ConsumerWidget {
             body: RefreshIndicator(
               onRefresh: () async {
                 ref.invalidate(postDetailProvider(postId));
-                ref.invalidate(postCommentListProvider(postId));
+                // ref.invalidate(postCommentListProvider(postId));
               },
               child: CustomScrollView(
                 shrinkWrap: true,
