@@ -1,10 +1,9 @@
 import 'dart:developer';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../Common/dio.dart';
-import '../repository/auth_repository.dart';
+import 'package:watso/Auth/repository/user_repository.dart';
 
 class NotificationAllowBox extends ConsumerStatefulWidget {
   const NotificationAllowBox({
@@ -17,27 +16,39 @@ class NotificationAllowBox extends ConsumerStatefulWidget {
 
 class _NotificationAllowBoxState extends ConsumerState<NotificationAllowBox> {
   bool notificationAllow = false;
+  bool permission = true;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    setAllow();
-  }
-
-  setAllow() async {
-    final storage = ref.read(secureStorageProvider);
-    final fcmAllow = await storage.read(key: "fcmAllow");
-    log(fcmAllow.toString());
-    if (fcmAllow == "true") {
+    getPermission().then((value) {
+      log('permission: $value');
       setState(() {
-        notificationAllow = true;
+        permission = value;
       });
-    } else {
+    });
+    ref.read(userRepositoryProvider).getNotificationAllow().then((value) {
+      setState(() {
+        notificationAllow = value;
+      });
+    }).onError((error, stackTrace) {
       setState(() {
         notificationAllow = false;
       });
-    }
+    });
+  }
+
+  Future<bool> getPermission() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+    log('User granted permission: ${settings.authorizationStatus}');
+    return settings.authorizationStatus == AuthorizationStatus.authorized;
   }
 
   @override
@@ -58,20 +69,39 @@ class _NotificationAllowBoxState extends ConsumerState<NotificationAllowBox> {
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
             ),
-            ListTile(
-              title: Text('알림 설정'),
-              trailing: Switch(
-                value: notificationAllow,
-                onChanged: (value) {
-                  setState(() {
-                    notificationAllow = value;
-                  });
-                  ref.read(authRepositoryProvider).handleFcmAllow(value);
-                },
-                activeTrackColor: Colors.indigo[100],
-                activeColor: Colors.indigo,
+            if (permission == false) ...{
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                ),
+                child: Text("알림 권한이 없습니다. 알림을 받으시려면 알림 권한을 허용해주세요."),
               ),
-            ),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: Text("설정 > 왔소 > 알림 > 알림 허용"),
+              )
+            } else ...{
+              ListTile(
+                title: Text('알림 설정'),
+                trailing: Switch(
+                  value: notificationAllow,
+                  onChanged: (value) {
+                    ref
+                        .read(userRepositoryProvider)
+                        .updateNotificationAllow(value)
+                        .then((_) => setState(() {
+                              notificationAllow = value;
+                            }))
+                        .onError((error, stackTrace) =>
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content: Text('알림 변경이 적용되지않았습니다. 다시 시도해주세요'))));
+                  },
+                  activeTrackColor: Colors.indigo[100],
+                  activeColor: Colors.indigo,
+                ),
+              ),
+            }
           ],
         ),
       ),
