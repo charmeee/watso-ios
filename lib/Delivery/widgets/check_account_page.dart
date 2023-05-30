@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:watso/Common/widget/appbar.dart';
 import 'package:watso/Common/widget/primary_button.dart';
-import 'package:watso/Common/widget/secondary_button.dart';
 
 import '../../Auth/models/user_model.dart';
 import '../../Auth/provider/user_provider.dart';
 import '../../Auth/widgets/account_edit_box.dart';
 import '../../Common/theme/text.dart';
+import '../../Common/widget/secondary_button.dart';
 
 class CheckMyAccount extends ConsumerStatefulWidget {
   const CheckMyAccount({
@@ -30,23 +30,29 @@ class _CheckMyAccountState extends ConsumerState<CheckMyAccount> {
           body: Container(
         child: Text('로그인이 필요합니다.'),
       ));
-    UserInfo validUser = user!;
+    UserInfo validUser = user;
     return Scaffold(
       appBar: customAppBar(context, title: '계좌번호 확인'),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text('계좌번호는 배달완료 후 모임 참가자에게 노출됩니다.'),
-              Text('정확한 배달비 분배를 위해 계좌번호를 확인해 주세요.'),
-              SizedBox(
-                height: 20,
-              ),
-              Card(
+      body: SafeArea(
+        child: CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(
+                child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16.0, vertical: 8.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Text('계좌번호는 배달완료 후 모임 참가자에게 노출됩니다.'),
+                        Text('정확한 배달비 분배를 위해 계좌번호를 확인해 주세요.'),
+                      ],
+                    ))),
+            SliverToBoxAdapter(
+              child: Card(
                   elevation: 0,
+                  margin: const EdgeInsets.symmetric(
+                      horizontal: 16.0, vertical: 8.0),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.0)),
                   child: Padding(
@@ -84,27 +90,36 @@ class _CheckMyAccountState extends ConsumerState<CheckMyAccount> {
                       ],
                     ),
                   )),
-              SizedBox(
-                height: 20,
-              ),
-              if (isEdit)
-                AccountEditBox(
-                  isSecondary: true,
+            ),
+            if (isEdit)
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0, vertical: 8.0),
+                  child: AccountEditBox(
+                    isSecondary: true,
+                  ),
                 ),
-            ],
-          ),
+              ),
+            SliverFillRemaining(
+              hasScrollBody: false,
+              child: Container(
+                color: Colors.transparent,
+                alignment: Alignment.bottomCenter,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                child: primaryButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  text: '확인',
+                  minimumSize: const Size.fromHeight(50),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: primaryButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            text: '확인',
-            minimumSize: const Size.fromHeight(50),
-          )),
     );
   }
 }

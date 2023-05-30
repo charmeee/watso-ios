@@ -27,66 +27,69 @@ class MenuBasketPage extends ConsumerWidget {
         postOrder.store.fee ~/ (recuitNum ?? postOrder.minMember);
     return Scaffold(
       appBar: customAppBar(context, title: '장바구니', isCenter: true),
-      body: CustomScrollView(
-        slivers: [
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text(
-                postOrder.store.name,
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+      body: SafeArea(
+        child: CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  postOrder.store.name,
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
               ),
             ),
-          ),
-          BasketList(
-            orderLines: postOrder.order.orderLines,
-          ),
-          const AddMoreBtn(),
-          SliverToBoxAdapter(
-            child: CalculateBox(
-              totalSumPrice: totalSumPrice,
-              expectDeliverFee: expectDeliverFee,
+            BasketList(
+              orderLines: postOrder.order.orderLines,
             ),
-          ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    '요청사항',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 8),
-                  outlineTextFromField(
-                    hintText: '요청사항을 입력해주세요',
-                    minLines: 3,
-                    maxLines: 5,
-                    onChanged: (value) {
-                      ref
-                          .read(myDeliveryNotifierProvider.notifier)
-                          .setRequest(value);
-                    },
-                  )
-                ],
+            const AddMoreBtn(),
+            SliverToBoxAdapter(
+              child: CalculateBox(
+                totalSumPrice: totalSumPrice,
+                expectDeliverFee: expectDeliverFee,
               ),
             ),
-          ),
-          SliverFillRemaining(
-            hasScrollBody: false,
-            child: Container(
-              color: Colors.transparent,
-              alignment: Alignment.bottomCenter,
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),
-              child: BasketSubmitButton(
-                postOrder: postOrder,
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      '요청사항',
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 8),
+                    outlineTextFromField(
+                      hintText: '요청사항을 입력해주세요',
+                      minLines: 3,
+                      maxLines: 5,
+                      onChanged: (value) {
+                        ref
+                            .read(myDeliveryNotifierProvider.notifier)
+                            .setRequest(value);
+                      },
+                    )
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+            SliverFillRemaining(
+              hasScrollBody: false,
+              child: Container(
+                color: Colors.transparent,
+                alignment: Alignment.bottomCenter,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+                child: BasketSubmitButton(
+                  postOrder: postOrder,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

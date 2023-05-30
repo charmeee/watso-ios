@@ -16,17 +16,14 @@ class MenuOptionAddBtn extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       color: Colors.transparent,
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 48.0),
-        child: primaryButton(
-            text: '${orderMenu.totalPrice}원 담기',
-            padding: const EdgeInsets.symmetric(vertical: 16.0),
-            onPressed: () {
-              ref.read(menuOptionNotifierProvider.notifier).addInMyOrder();
-              Navigator.pop(context);
-            }),
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+      child: primaryButton(
+          text: '${orderMenu.totalPrice}원 담기',
+          padding: const EdgeInsets.symmetric(vertical: 16.0),
+          onPressed: () {
+            ref.read(menuOptionNotifierProvider.notifier).addInMyOrder();
+            Navigator.pop(context);
+          }),
     );
   }
 }

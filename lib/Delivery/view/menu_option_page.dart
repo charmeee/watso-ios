@@ -78,76 +78,78 @@ class _MenuOptionPageState extends ConsumerState<MenuOptionPage> {
         context,
         title: menu.name,
       ),
-      body: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Expanded(
-            child: CustomScrollView(
-              shrinkWrap: true,
-              physics: const BouncingScrollPhysics(),
-              slivers: [
-                SliverToBoxAdapter(
-                  child: Container(
-                    padding: const EdgeInsets.only(left: 16.0, bottom: 8.0),
-                    child: Text(
-                      '기본 가격 : ${menu.price}원',
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
+      body: SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Expanded(
+              child: CustomScrollView(
+                shrinkWrap: true,
+                physics: const BouncingScrollPhysics(),
+                slivers: [
+                  SliverToBoxAdapter(
+                    child: Container(
+                      padding: const EdgeInsets.only(left: 16.0, bottom: 8.0),
+                      child: Text(
+                        '기본 가격 : ${menu.price}원',
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),
-                ),
-                SliverPadding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  sliver: SliverToBoxAdapter(
-                    child: const Divider(
-                      height: 3,
-                      thickness: 2,
-                    ),
-                  ),
-                ),
-                if (menu.optionGroups != null)
                   SliverPadding(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    sliver: SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              MenuOptionGroupBox(
-                                optionGroup: menu.optionGroups![index],
-                                selectedOptions:
-                                    orderMenu.menu.optionGroups![index].options,
-                              ),
-                              const Divider(
-                                height: 3,
-                                thickness: 2,
-                              ),
-                            ],
-                          );
-                        },
-                        childCount: menu.optionGroups!.length,
+                    sliver: SliverToBoxAdapter(
+                      child: const Divider(
+                        height: 3,
+                        thickness: 2,
                       ),
                     ),
                   ),
-                MenuCountBtn(
-                  orderMenu: orderMenu,
-                ),
-                SliverToBoxAdapter(
-                    child: SizedBox(
-                  height: 30,
-                ))
-              ],
+                  if (menu.optionGroups != null)
+                    SliverPadding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      sliver: SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                          (context, index) {
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                MenuOptionGroupBox(
+                                  optionGroup: menu.optionGroups![index],
+                                  selectedOptions: orderMenu
+                                      .menu.optionGroups![index].options,
+                                ),
+                                const Divider(
+                                  height: 3,
+                                  thickness: 2,
+                                ),
+                              ],
+                            );
+                          },
+                          childCount: menu.optionGroups!.length,
+                        ),
+                      ),
+                    ),
+                  MenuCountBtn(
+                    orderMenu: orderMenu,
+                  ),
+                  SliverToBoxAdapter(
+                      child: SizedBox(
+                    height: 30,
+                  ))
+                ],
+              ),
             ),
-          ),
-          MenuOptionAddBtn(
-            orderMenu: orderMenu,
-          ),
-        ],
+            MenuOptionAddBtn(
+              orderMenu: orderMenu,
+            ),
+          ],
+        ),
       ),
     );
   }
