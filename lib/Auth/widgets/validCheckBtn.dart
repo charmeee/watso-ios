@@ -23,7 +23,7 @@ class ValidCheckButton extends ConsumerWidget {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         foregroundColor: Colors.black,
-        backgroundColor: Colors.grey[300],
+        backgroundColor: checkEmailValid ? Colors.green[200] : Colors.grey[300],
       ),
       onPressed: () {
         ref
