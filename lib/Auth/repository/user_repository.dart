@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:watso/Auth/models/user_model.dart';
 
 import '../../Common/dio.dart';
@@ -178,6 +177,42 @@ class UserRepository {
       throw ServerException(e);
     } catch (e) {
       throw Exception("알 수 없는 에러");
+    }
+  }
+
+  ///device/notification
+  Future<void> updateDeviceToken(String deviceToken) async {
+    try {
+      await _dio.patch('$staticUrl/device/token', data: {
+        'device_token': deviceToken,
+      });
+    } on DioError catch (e) {
+      throw ServerException(e);
+    } catch (e, s) {
+      throw DataParsingException(e, s);
+    }
+  }
+
+  Future<bool> getNotificationAllow() async {
+    try {
+      final response = await _dio.get('$staticUrl/device/notification');
+      return response.data['allow'];
+    } on DioError catch (e) {
+      throw ServerException(e);
+    } catch (e, s) {
+      throw DataParsingException(e, s);
+    }
+  }
+
+  Future<void> updateNotificationAllow(bool allow) async {
+    try {
+      await _dio.patch('$staticUrl/device/notification', data: {
+        'allow': allow,
+      });
+    } on DioError catch (e) {
+      throw ServerException(e);
+    } catch (e, s) {
+      throw DataParsingException(e, s);
     }
   }
 }
