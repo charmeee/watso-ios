@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -44,10 +46,9 @@ class AuthRepository {
 
   Future<void> logout() async {
     try {
-      await _dio.delete('$staticUrl/logout');
+      await _dio.post('$staticUrl/logout');
       await initUser();
     } on DioError catch (e) {
-      await initUser();
       throw ServerException(e);
     } catch (e) {
       throw TokenSetupException(e.toString());
@@ -55,6 +56,7 @@ class AuthRepository {
   }
 
   Future<void> initUser() async {
+    log('initUser');
     await storage.delete(key: "accessToken");
     await storage.delete(key: "refreshToken");
   }
