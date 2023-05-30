@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:watso/Common/widget/appbar.dart';
+import 'package:watso/Common/widget/outline_textformfield.dart';
 
 import '../models/post_request_model.dart';
 import '../provider/my_deliver_provider.dart';
@@ -41,19 +42,52 @@ class MenuBasketPage extends ConsumerWidget {
             orderLines: postOrder.order.orderLines,
           ),
           const AddMoreBtn(),
-          CalculateBox(
-            totalSumPrice: totalSumPrice,
-            expectDeliverFee: expectDeliverFee,
+          SliverToBoxAdapter(
+            child: CalculateBox(
+              totalSumPrice: totalSumPrice,
+              expectDeliverFee: expectDeliverFee,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    '요청사항',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 8),
+                  outlineTextFromField(
+                    hintText: '요청사항을 입력해주세요',
+                    minLines: 3,
+                    maxLines: 5,
+                    onChanged: (value) {
+                      ref
+                          .read(myDeliveryNotifierProvider.notifier)
+                          .setRequest(value);
+                    },
+                  )
+                ],
+              ),
+            ),
+          ),
+          SliverFillRemaining(
+            hasScrollBody: false,
+            child: Container(
+              color: Colors.transparent,
+              alignment: Alignment.bottomCenter,
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),
+              child: BasketSubmitButton(
+                postOrder: postOrder,
+              ),
+            ),
           ),
         ],
       ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: BasketSubmitButton(
-          postOrder: postOrder,
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }
