@@ -26,16 +26,22 @@ class DeliverHistoryPage extends ConsumerWidget {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             final List<ResponsePost> data = snapshot.data!;
-            if (data.length == 0) {
-              return Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                  child: Card(
+            if (data.isEmpty) {
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Card(
                       elevation: 0,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8.0)),
                       margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      child: Text('배달왔소 이전 참가 내역이 없습니다.')));
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 20),
+                        child: Text('배달왔소 이전 참가 내역이 없습니다.'),
+                      )),
+                ],
+              );
             }
 
             return ListView.builder(
