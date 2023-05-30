@@ -115,7 +115,10 @@ class CustomInterceptor extends Interceptor {
         } catch (e) {
           log('e refresh token 실패 ${e.toString()}');
         }
-        showErrorDialog('다시 로그인 해 주세요');
+        if (ref.read(authStateProvider.notifier).state ==
+            AuthState.authenticated) {
+          showErrorDialog('다시 로그인 해 주세요');
+        }
         await ref.read(userNotifierProvider.notifier).init();
         await storage.delete(key: "accessToken");
         await storage.delete(key: "refreshToken");
