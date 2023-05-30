@@ -23,25 +23,25 @@ class DeliverHistoryPage extends ConsumerWidget {
       appBar: customAppBar(context, title: '배달왔소 참가 내역'),
       body: FutureBuilder<List<ResponsePost>>(
         future:
-            ref.read(postRepositoryProvider).getDeliveryList(PostFilter.all),
+        ref.read(postRepositoryProvider).getDeliveryList(PostFilter.all),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             final List<ResponsePost> data = snapshot.data!;
             if (data.isEmpty) {
-              return Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Card(
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0)),
-                      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 20),
-                        child: Text('배달왔소 이전 참가 내역이 없습니다.'),
-                      )),
-                ],
+              return SizedBox(
+                width: double.infinity,
+                child: Card(
+                    elevation: 0,
+
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0)),
+                    margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 20),
+                      child: Text(
+                        '배달 마감된 이전 참가 내역이 없습니다.', textAlign: TextAlign.center,),
+                    )),
               );
             }
 
@@ -50,7 +50,7 @@ class DeliverHistoryPage extends ConsumerWidget {
               itemBuilder: (context, index) {
                 ResponsePost nowData = data[index];
                 String orderDate =
-                    DateFormat("M.d(E)", 'ko').format(nowData.orderTime);
+                DateFormat("M.d(E)", 'ko').format(nowData.orderTime);
                 return Card(
                   elevation: 0,
                   shape: RoundedRectangleBorder(
@@ -123,7 +123,7 @@ class DeliverHistoryPage extends ConsumerWidget {
                               child: Text(
                                 '내 배달 보기',
                                 style:
-                                    TextStyle(height: 1, color: Colors.black),
+                                TextStyle(height: 1, color: Colors.black),
                               ),
                               style: OutlinedButton.styleFrom(
                                 padding: EdgeInsets.symmetric(
@@ -145,7 +145,8 @@ class DeliverHistoryPage extends ConsumerWidget {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => PostPage(
+                                    builder: (context) =>
+                                        PostPage(
                                           postId: nowData.id,
                                         )),
                               );
