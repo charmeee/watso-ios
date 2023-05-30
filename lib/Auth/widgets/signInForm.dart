@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../Common/widget/primary_button.dart';
@@ -54,10 +53,6 @@ class _EmailSignInState extends ConsumerState<SignInForm> {
             },
             onSaved: (value) => password = value!,
             keyboardType: TextInputType.text,
-            inputFormatters: [
-              //include ! ~ @ ?
-              FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9!@~?]')),
-            ],
           ),
           SizedBox(
             height: 30,

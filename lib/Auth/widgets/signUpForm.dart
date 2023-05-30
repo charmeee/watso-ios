@@ -282,7 +282,7 @@ class _SignUpFormState extends State<SignUpForm> {
                   return '비밀번호를 입력해주세요';
                 }
                 if (!RegExp(
-                        r'^(?=.*?[a-zA-Z])(?=.*?[0-9])(?=.*[!@#\$%^&*(),.?:{}|<>])[a-zA-Z0-9!@#\$%^&*(),.?:{}|<>].{8,40}$')
+                        r'^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#\$%^&*(),.?:{}|<>~])[a-zA-Z0-9!@#\$%^&*(),.?:{}|<>~].{8,40}$')
                     .hasMatch(value)) {
                   return '비밀번호는 영문, 숫자, 특수문자를 포함하여 8자 이상이어야 합니다';
                 }
@@ -298,7 +298,7 @@ class _SignUpFormState extends State<SignUpForm> {
               },
               inputFormatters: [
                 FilteringTextInputFormatter.allow(
-                    RegExp(r'[a-zA-Z0-9!@#\$%^&*(),.?:{}|<>]')),
+                    RegExp(r'[a-zA-Z0-9!@#\$%^&*(),.?:{}|<>~]')),
               ],
               //                    r'^(?=.*?[a-zA-Z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,40}$')),
               suffixIcon: IconButton(
@@ -336,7 +336,7 @@ class _SignUpFormState extends State<SignUpForm> {
               },
               inputFormatters: [
                 FilteringTextInputFormatter.allow(
-                    RegExp(r'[a-zA-Z0-9!@#\$%^&*(),.?:{}|<>]')),
+                    RegExp(r'[a-zA-Z0-9!@#\$%^&*(),.?:{}|<>~]')),
               ],
               suffixIcon: IconButton(
                   onPressed: () {
@@ -397,7 +397,7 @@ class _SignUpFormState extends State<SignUpForm> {
             account: account,
             token: token,
           ),
-          SizedBox(height: 24),
+          SizedBox(height: 30),
         ],
       ),
     );
