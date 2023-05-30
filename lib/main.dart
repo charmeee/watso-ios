@@ -107,6 +107,7 @@ class _MyAppState extends ConsumerState<MyApp> {
       }
       return true;
     }
+    return false;
   }
 
   onFcmMessageListen() {
@@ -151,7 +152,6 @@ class _MyAppState extends ConsumerState<MyApp> {
       FlutterNativeSplash.remove();
     }
 
-    // TODO: implement build
     return initState.when(
         data: (data) {
           return (data == AuthState.authenticated)
