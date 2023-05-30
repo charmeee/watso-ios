@@ -36,6 +36,7 @@ class CustomInterceptor extends Interceptor {
         'Authorization': token,
       });
     }
+    log('[REQ]header: ${options.headers}');
 
     return super.onRequest(options, handler);
   }
@@ -54,63 +55,74 @@ class CustomInterceptor extends Interceptor {
     // 401에러가 났을때 (status code)
     // 토큰을 재발급 받는 시도를하고 토큰이 재발급되면
     // 다시 새로운 토큰으로 요청을한다.
-    log('[ERR] [${err.requestOptions.method}] ${err.requestOptions.uri} ${err.response?.statusCode} ${err.requestOptions.data} ${err.response?.data}');
+    try {
+      log('[ERR] [${err.requestOptions.method}] ${err.requestOptions.uri} ${err.response?.statusCode} ${err.requestOptions.data} ${err.response?.data}');
 
-    final refreshToken = await storage.read(key: 'refreshToken');
+      final refreshToken = await storage.read(key: 'refreshToken');
 
-    // refreshToken 아예 없으면
-    // 당연히 에러를 던진다
-    if (refreshToken == null) {
-      // 에러를 던질때는 handler.reject를 사용한다.
+      // refreshToken 아예 없으면
+      // 당연히 에러를 던진다
+      if (refreshToken == null) {
+        // 에러를 던질때는 handler.reject를 사용한다.
+        return handler.reject(err);
+      }
+
+      final isStatus401 = err.response?.statusCode == 401;
+
+      final isExpiredToken = (err.response?.data is Map) &&
+          (err.response?.data['code'] == 201 ||
+              err.response?.data['code'] == "201");
+      final isPathAuthRefresh = err.requestOptions.path == '/auth/refresh';
+      if (isStatus401 && isExpiredToken && !isPathAuthRefresh) {
+        final dio = Dio(options);
+        try {
+          log('refresh token 발급');
+          final refreshToken = await storage.read(key: 'refreshToken');
+          dio.options.headers['Authorization'] = refreshToken;
+          if (refreshToken == null) {
+            throw DioError(
+              requestOptions: err.requestOptions,
+              response: err.response,
+            );
+          }
+          final resp = await dio.get('/auth/refresh');
+          final accessToken = resp.headers["authentication"]?[0];
+          if (accessToken == null) {
+            throw DioError(
+              requestOptions: err.requestOptions,
+              response: err.response,
+            );
+          }
+          log('refresh token 성공 $accessToken');
+          final options = err.requestOptions;
+
+          // 토큰 변경하기
+          options.headers.addAll({
+            'Authorization': accessToken,
+          });
+
+          await storage.write(key: 'accessToken', value: accessToken);
+
+          // 요청 재전송
+          final response = await dio.fetch(options);
+
+          return handler.resolve(response);
+        } on DioError catch (e) {
+          log('Dio refresh token 실패 ${e.response?.statusCode} ${e.response?.data}');
+        } catch (e) {
+          log('e refresh token 실패 ${e.toString()}');
+        }
+        showErrorDialog('다시 로그인 해 주세요');
+        await ref.read(userNotifierProvider.notifier).init();
+        await storage.delete(key: "accessToken");
+        await storage.delete(key: "refreshToken");
+      }
+      return handler.reject(err);
+    } catch (e, s) {
+      log('error: ${e.toString()}');
+      log('stack: $s');
       return handler.reject(err);
     }
-
-    final isStatus401 = err.response?.statusCode == 401;
-    final isExpiredToken = err.response?.data['code'] == 201 ||
-        err.response?.data['code'] == "201";
-    final isPathAuthRefresh = err.requestOptions.path == '/auth/refresh';
-    if (isStatus401 && isExpiredToken && !isPathAuthRefresh) {
-      final dio = Dio(options);
-      try {
-        log('refresh token 발급');
-        final refreshToken = await storage.read(key: 'refreshToken');
-        dio.options.headers['Authorization'] = refreshToken;
-        final resp = await dio.get('/auth/refresh');
-        final accessToken = resp.headers["authentication"]?[0];
-        if (accessToken == null) {
-          throw DioError(
-            requestOptions: err.requestOptions,
-            response: err.response,
-          );
-        }
-        log('refresh token 성공 $accessToken');
-        final options = err.requestOptions;
-
-        // 토큰 변경하기
-        options.headers.addAll({
-          'Authorization': accessToken,
-        });
-
-        await storage.write(key: 'accessToken', value: accessToken);
-
-        // 요청 재전송
-        final response = await dio.fetch(options);
-
-        return handler.resolve(response);
-      } on DioError catch (e) {
-        log('refresh token 실패 ${e.response?.statusCode} ${e.response?.data}');
-        if (ref.read(authStateProvider.notifier).state ==
-            AuthState.authenticated) {
-          showErrorDialog('다시 로그인 해 주세요');
-          await ref.read(userNotifierProvider.notifier).init();
-        }
-      } catch (e) {
-        log('refresh token 실패 ${e.toString()}');
-      }
-      await storage.delete(key: "accessToken");
-      await storage.delete(key: "refreshToken");
-    }
-    return handler.reject(err);
   }
 }
 
@@ -134,7 +146,7 @@ void showErrorDialog(String errorMessage) {
             ],
           );
         },
-      ).then((value) {
+      ).then((value) async {
         Navigator.popUntil(context, (route) => route.isFirst);
       });
     }
