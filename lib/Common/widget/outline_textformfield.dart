@@ -5,7 +5,10 @@ Widget outlineTextFromField(
     {ValueChanged<String>? onChanged,
     EdgeInsetsGeometry? contentPadding,
     String? label,
+    Key? key,
     String? hintText,
+    int? minLines,
+    int? maxLines,
     FocusNode? focusNode,
     FormFieldValidator? validator,
     List<TextInputFormatter>? inputFormatters,
@@ -16,6 +19,9 @@ Widget outlineTextFromField(
     Widget? suffix,
     Widget? suffixIcon}) {
   return TextFormField(
+    key: key,
+    minLines: minLines ?? 1,
+    maxLines: maxLines ?? 1,
     obscureText: obscureText,
     focusNode: focusNode,
     autovalidateMode: AutovalidateMode.onUserInteraction,
