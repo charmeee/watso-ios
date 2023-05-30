@@ -144,11 +144,18 @@ class SettingPage extends ConsumerWidget {
                                   child: Text('취소')),
                               TextButton(
                                   onPressed: () async {
-                                    await ref
-                                        .read(userNotifierProvider.notifier)
-                                        .logout();
-                                    Navigator.popUntil(
-                                        context, (route) => route.isFirst);
+                                    try {
+                                      await ref
+                                          .read(userNotifierProvider.notifier)
+                                          .logout();
+                                      Navigator.popUntil(
+                                          context, (route) => route.isFirst);
+                                    } catch (e) {
+                                      //snackbar
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                              content: Text('로그아웃 실패 : $e')));
+                                    }
                                   },
                                   child: Text('로그아웃')),
                             ],
