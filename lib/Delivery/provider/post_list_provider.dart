@@ -7,14 +7,15 @@ import '../models/post_response_model.dart';
 
 const List<String> filterPlace = <String>['모두', '생자대', '기숙사'];
 
-final myPostListProvider = FutureProvider<List<ResponsePost>>((ref) async {
+final myPostListProvider =
+    FutureProvider.autoDispose<List<ResponsePost>>((ref) async {
   return await ref
       .read(postRepositoryProvider)
       .getDeliveryList(PostFilter.joined);
 });
 
 final joinablePostListProvider =
-    FutureProvider<List<ResponsePost>>((ref) async {
+    FutureProvider.autoDispose<List<ResponsePost>>((ref) async {
   PostPlaceFilter filter = ref.watch(joinablePostFilterProvider);
   List<ResponsePost> list = await ref
       .read(postRepositoryProvider)
