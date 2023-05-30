@@ -76,6 +76,7 @@ class _FindAccountPageState extends ConsumerState<FindAccountPage> {
                         ),
                         const SizedBox(height: 20),
                         outlineTextFromField(
+                          key: const ValueKey('findID_email'),
                           hintText: '이메일',
                           onChanged: (value) {
                             setState(() {
@@ -123,6 +124,7 @@ class _FindAccountPageState extends ConsumerState<FindAccountPage> {
                         ),
                         const SizedBox(height: 20),
                         outlineTextFromField(
+                          key: const ValueKey('findPassword_username'),
                           hintText: '아이디',
                           onChanged: (value) {
                             setState(() {
@@ -137,6 +139,7 @@ class _FindAccountPageState extends ConsumerState<FindAccountPage> {
                         ),
                         const SizedBox(height: 20),
                         outlineTextFromField(
+                          key: const ValueKey('findPassword_email'),
                           hintText: '이메일',
                           onChanged: (value) {
                             setState(() {
