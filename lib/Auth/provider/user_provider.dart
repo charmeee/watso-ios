@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../../Common/dio.dart';
 import '../models/user_model.dart';
@@ -42,26 +43,22 @@ final authStateProvider = StateProvider<AuthState>((ref) => AuthState.initial);
 
 final userNotifierProvider =
     StateNotifierProvider<UserNotifier, UserInfo?>((ref) {
-  return UserNotifier(ref);
+  final storage = ref.watch(secureStorageProvider);
+
+  return UserNotifier(ref, storage);
 });
 
 class UserNotifier extends StateNotifier<UserInfo?> {
   // final AuthRepository authRepo;
   final Ref ref;
+  final FlutterSecureStorage storage;
 
-  // UserNotifier( {required this.authRepo,required this.ref}) : super(null);
-  UserNotifier(this.ref) : super(null);
+  UserNotifier(this.ref, this.storage) : super(null);
 
   //로긴됏을때! 머다? authorize 한다.
 
   Future signIn(username, password) async {
-    FirebaseMessaging messaging = FirebaseMessaging.instance;
-    String? fcmToken = await messaging.getToken();
-    log(fcmToken ?? 'null');
-
-    await ref
-        .read(authRepositoryProvider)
-        .login(username, password, fcmToken ?? '');
+    await ref.read(authRepositoryProvider).login(username, password);
     await getUserProfile();
   }
 
@@ -69,14 +66,20 @@ class UserNotifier extends StateNotifier<UserInfo?> {
     final userInfo = await ref.read(userRepositoryProvider).getUserProfile();
     state = userInfo;
     ref.read(authStateProvider.notifier).state = AuthState.authenticated;
+    try {
+      FirebaseMessaging messaging = FirebaseMessaging.instance;
+      String? fcmToken = await messaging.getToken();
+      log(fcmToken ?? 'null');
+      if (fcmToken != null) {
+        ref.read(userRepositoryProvider).updateDeviceToken(fcmToken);
+      }
+    } catch (e) {
+      log('fcm token error');
+    }
   }
 
   Future<void> logout() async {
-    try {
-      await ref.read(authRepositoryProvider).logout();
-    } catch (e) {
-      log('로그아웃 실패');
-    }
+    await ref.read(authRepositoryProvider).logout();
     init();
   }
 
