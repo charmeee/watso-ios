@@ -85,7 +85,7 @@ class _RecuitNumSelectorState extends ConsumerState<RecuitNumSelector> {
                       }
                       return null;
                     },
-                    onSaved: (value) {
+                    onChanged: (value) {
                       // if (minChecked && value!.isNotEmpty) {
                       //   int curVal = int.parse(value); //현재 value
                       //   if (curVal < 1) curVal = MIN_RECUIT_MEMBER;
@@ -105,7 +105,7 @@ class _RecuitNumSelectorState extends ConsumerState<RecuitNumSelector> {
                       //       .read(myDeliveryNotifierProvider.notifier)
                       //       .setMyDeliverOption(minMember: MIN_RECUIT_MEMBER);
                       // }
-                      if (value!.isNotEmpty) {
+                      if (value.isNotEmpty) {
                         int curVal = int.parse(value); //현재 value
                         if (curVal < 1) curVal = MIN_RECUIT_MEMBER;
                         if (editMode) {
@@ -149,7 +149,7 @@ class _RecuitNumSelectorState extends ConsumerState<RecuitNumSelector> {
                         if (value!.isEmpty) return '최대 인원을 입력해주세요';
                         if (value.length > 2) return '최대 인원은 99명 이하로 입력해주세요';
                       },
-                      onSaved: (value) {
+                      onChanged: (value) {
                         // if (maxChecked && value!.isNotEmpty) {
                         //   int curVal = int.parse(value); //현재 value
                         //   if (curVal < 1) curVal = MAX_RECUIT_MEMBER;
@@ -169,7 +169,7 @@ class _RecuitNumSelectorState extends ConsumerState<RecuitNumSelector> {
                         //       .read(myDeliveryNotifierProvider.notifier)
                         //       .setMyDeliverOption(maxMember: MAX_RECUIT_MEMBER);
                         // }
-                        if (value!.isNotEmpty) {
+                        if (value.isNotEmpty) {
                           int curVal = int.parse(value); //현재 value
                           if (curVal < 1) curVal = MAX_RECUIT_MEMBER;
                           if (curVal > MAX_RECUIT_MEMBER) {
