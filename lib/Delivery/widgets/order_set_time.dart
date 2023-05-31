@@ -9,8 +9,10 @@ class TimeSelector extends ConsumerStatefulWidget {
   const TimeSelector({
     Key? key,
     required this.orderTime,
+    this.setOrderTime,
   }) : super(key: key);
   final DateTime orderTime;
+  final Function(DateTime time)? setOrderTime;
 
   @override
   ConsumerState createState() => _TimeSelectorState();
@@ -38,9 +40,13 @@ class _TimeSelectorState extends ConsumerState<TimeSelector> {
                   maximumDate: nowDate.add(Duration(days: 7)),
                   use24hFormat: false,
                   onDateTimeChanged: (DateTime newDateTime) {
-                    ref
-                        .read(myDeliveryNotifierProvider.notifier)
-                        .setMyDeliverOption(orderTime: newDateTime);
+                    if (widget.setOrderTime != null) {
+                      widget.setOrderTime!(newDateTime);
+                    } else {
+                      ref
+                          .read(myDeliveryNotifierProvider.notifier)
+                          .setMyDeliverOption(orderTime: newDateTime);
+                    }
                   },
                 ),
               ),
