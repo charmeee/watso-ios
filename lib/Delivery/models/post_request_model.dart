@@ -5,7 +5,7 @@ import 'package:watso/Delivery/models/post_response_model.dart';
 import '../../Auth/models/user_model.dart';
 
 //post /post
-class PostOrder extends PostOption {
+class PostOrder extends OrderOption {
   Order order;
 
   PostOrder({

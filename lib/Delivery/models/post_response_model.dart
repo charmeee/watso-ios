@@ -1,7 +1,7 @@
 import 'package:watso/Delivery/models/post_model.dart';
 
 //get /post
-class ResponsePost extends PostOption {
+class ResponsePost extends OrderOption {
   String id;
   String userId;
   String nickname;

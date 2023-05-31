@@ -8,6 +8,8 @@ import '../models/post_model.dart';
 import '../models/post_request_model.dart';
 import '../models/post_response_model.dart';
 
+//order stateprovider과
+//PostOption stateprovider을 합친것.
 final myDeliveryNotifierProvider =
     StateNotifierProvider.autoDispose<MyDeliveryNotifier, PostOrder>((ref) {
   UserInfo? user = ref.watch(userNotifierProvider);
