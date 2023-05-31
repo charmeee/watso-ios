@@ -18,23 +18,6 @@ class TimeSelector extends ConsumerStatefulWidget {
 
 class _TimeSelectorState extends ConsumerState<TimeSelector> {
   DateTime nowDate = DateTime.now();
-  late DateTime _dateTime;
-
-  @override
-  void initState() {
-    super.initState();
-    _dateTime = DateTime(nowDate.year, nowDate.month, nowDate.day, nowDate.hour,
-        nowDate.minute - nowDate.minute % 10 + 10);
-    checkTime();
-  }
-
-  void checkTime() {
-    if (widget.orderTime.isBefore(_dateTime)) {
-      ref
-          .read(myDeliveryNotifierProvider.notifier)
-          .setMyDeliverOption(orderTime: _dateTime);
-    }
-  }
 
   void _showTimePicker() {
     showCupertinoModalPopup<void>(
