@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 
+import '../../Common/util/date_util.dart';
 import '../models/post_response_model.dart';
 import '../provider/post_list_provider.dart';
 import 'index_common_listTile.dart';
@@ -50,7 +50,7 @@ class PostList extends ConsumerWidget {
                       padding: const EdgeInsets.symmetric(
                           vertical: 4, horizontal: 16),
                       child: Text(
-                        DateFormat("M월 d일 E요일", 'ko').format(nowDataDate),
+                        getStringDate(nowDataDate),
                         style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
