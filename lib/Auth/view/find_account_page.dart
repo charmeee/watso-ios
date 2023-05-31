@@ -18,7 +18,7 @@ class FindAccountPage extends ConsumerStatefulWidget {
 }
 
 class _FindAccountPageState extends ConsumerState<FindAccountPage> {
-  bool isFindId = false;
+  bool isFindId = true;
 
   String username = '';
   String email1 = '';
