@@ -26,13 +26,18 @@ class OptionEditPage extends ConsumerStatefulWidget {
 }
 
 class _OptionEditPageState extends ConsumerState<OptionEditPage> {
+  DateTime nowDate = DateTime.now();
   late PostOrder postData;
+  bool unEditable = false;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     postData = widget.postData;
+    if (postData.orderTime.isBefore(nowDate)) {
+      unEditable = true;
+    }
   }
 
   setPlace(String place) {
@@ -65,6 +70,32 @@ class _OptionEditPageState extends ConsumerState<OptionEditPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (unEditable) {
+      return Scaffold(
+          appBar: customAppBar(
+            context,
+            title: '배달왔소 수정',
+          ),
+          body: Container(
+            width: double.infinity,
+            padding: EdgeInsets.all(10),
+            color: Colors.transparent,
+            child: Card(
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0)),
+              margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Text(
+                  "주문 시간이 지났을 시 수정이 불가능합니다.",
+                  style: WatsoText.readable,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+          ));
+    }
     return Scaffold(
         appBar: customAppBar(
           context,
