@@ -31,14 +31,13 @@ class Store {
   String logoImgUrl;
   List<String> note;
 
-  Store(
-      {required this.id,
-      required this.name,
-      required this.minOrder,
-      required this.fee,
-      required this.phoneNumber,
-      required this.logoImgUrl,
-      required this.note});
+  Store({required this.id,
+    required this.name,
+    required this.minOrder,
+    required this.fee,
+    required this.phoneNumber,
+    required this.logoImgUrl,
+    required this.note});
 
   Store.init()
       : id = '',
@@ -73,24 +72,32 @@ class PostOption {
   DateTime orderTime;
   int minMember;
   int maxMember;
+  Store store;
+  String? postId;
 
-  PostOption(
-      {required this.place,
-      required this.orderTime,
-      required this.minMember,
-      required this.maxMember});
+  PostOption({required this.place,
+    required this.orderTime,
+    required this.minMember,
+    required this.maxMember,
+    required this.store,
+    this.postId});
 
   PostOption.fromJson(Map<String, dynamic> json)
       : place = json['place'],
         orderTime = DateTime.parse(json['order_time']),
         minMember = json['min_member'],
-        maxMember = json['max_member'];
+        maxMember = json['max_member'],
+        store = Store.fromJson(json['store']),
+        postId = json['post_id'];
+
 
   PostOption.clone(PostOption postOption)
       : place = postOption.place,
         orderTime = postOption.orderTime,
         minMember = postOption.minMember,
-        maxMember = postOption.maxMember;
+        maxMember = postOption.maxMember,
+        store = Store.clone(postOption.store),
+        postId = postOption.postId;
 }
 
 class Order extends User {
@@ -106,12 +113,13 @@ class Order extends User {
 
   Order.fromJson(Map<String, dynamic> json)
       : orderLines = List<OrderMenu>.from(
-            json['order_lines'].map((x) => OrderMenu.fromJson(x))),
+      json['order_lines'].map((x) => OrderMenu.fromJson(x))),
         requestComment = json['request_comment'] ?? '',
         super.fromJson(json);
 
   @override
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() =>
+      {
         'user_id': id,
         'nickname': nickname,
         'order_lines': orderLines.map((e) => e.toJson()).toList(),
@@ -148,7 +156,8 @@ class OrderMenu {
     );
   }
 
-  Map toJson() => {
+  Map toJson() =>
+      {
         'quantity': quantity,
         'menu': menu.toJson(),
       };
@@ -172,11 +181,10 @@ class Menu {
   int price;
   List<MenuOptionGroup>? optionGroups;
 
-  Menu(
-      {required this.id,
-      required this.name,
-      required this.price,
-      this.optionGroups});
+  Menu({required this.id,
+    required this.name,
+    required this.price,
+    this.optionGroups});
 
   Menu.fromJson(Map<String, dynamic> json)
       : id = json['_id'].toString(),
@@ -184,7 +192,7 @@ class Menu {
         price = int.tryParse(json['price'].toString()) ?? 0,
         optionGroups = json['groups'] != null
             ? List<MenuOptionGroup>.from(
-                json['groups'].map((x) => MenuOptionGroup.fromJson(x)))
+            json['groups'].map((x) => MenuOptionGroup.fromJson(x)))
             : null;
 
   factory Menu.clone(Menu menu) {
@@ -198,17 +206,18 @@ class Menu {
     );
   }
 
-  Map toJson() => {
+  Map toJson() =>
+      {
         '_id': id,
         'price': price,
         'name': name,
         'groups': optionGroups != null
             ? optionGroups!.fold([], (previousValue, element) {
-                if (element.options.isNotEmpty) {
-                  previousValue.add(element.toJson());
-                }
-                return previousValue;
-              })
+          if (element.options.isNotEmpty) {
+            previousValue.add(element.toJson());
+          }
+          return previousValue;
+        })
             : null,
       };
 }
@@ -231,12 +240,11 @@ class MenuOptionGroup {
   int maxOptionNum;
   List<MenuOption> options;
 
-  MenuOptionGroup(
-      {required this.id,
-      required this.name,
-      required this.options,
-      required this.minOptionNum,
-      required this.maxOptionNum});
+  MenuOptionGroup({required this.id,
+    required this.name,
+    required this.options,
+    required this.minOptionNum,
+    required this.maxOptionNum});
 
   MenuOptionGroup.fromJson(Map<String, dynamic> json)
       : id = json['_id'],
@@ -256,7 +264,8 @@ class MenuOptionGroup {
     );
   }
 
-  Map toJson() => {
+  Map toJson() =>
+      {
         '_id': id,
         'name': name,
         'min_order_quantity': minOptionNum,
@@ -289,7 +298,8 @@ class MenuOption {
     );
   }
 
-  Map toJson() => {
+  Map toJson() =>
+      {
         '_id': id,
         'name': name,
         'price': price,

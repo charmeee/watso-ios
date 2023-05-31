@@ -6,7 +6,6 @@ class ResponsePost extends PostOption {
   String userId;
   String nickname;
   int fee;
-  Store store;
   PostStatus status;
   List<String> users;
 
@@ -19,22 +18,21 @@ class ResponsePost extends PostOption {
       required minMember,
       required maxMember,
       required orderTime,
-      required this.store,
+      required store,
       required this.status,
       required this.users})
       : super(
-          place: place,
-          minMember: minMember,
-          maxMember: maxMember,
-          orderTime: orderTime,
-        );
+            place: place,
+            minMember: minMember,
+            maxMember: maxMember,
+            orderTime: orderTime,
+            store: store);
 
   ResponsePost.fromJson(Map<String, dynamic> json)
       : id = json['_id'].toString(),
         userId = json['user_id'].toString(),
         nickname = json['nickname'],
         fee = json['fee'],
-        store = Store.fromJson(json['store']),
         status = PostStatus.values.byName(json['status']),
         users = List<String>.from(json['users'].map((x) => x.toString())),
         super.fromJson(json);

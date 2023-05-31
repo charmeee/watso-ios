@@ -7,26 +7,26 @@ import '../../Auth/models/user_model.dart';
 //post /post
 class PostOrder extends PostOption {
   Order order;
-  Store store;
-  String? postId;
 
-  PostOrder(
-      {required this.order,
-      required this.store,
-      required String place,
-      required DateTime orderTime,
-      required int minMember,
-      required int maxMember,
-      this.postId})
-      : super(
-            place: place,
-            orderTime: orderTime,
-            minMember: minMember,
-            maxMember: maxMember);
+  PostOrder({
+    required this.order,
+    required String place,
+    required DateTime orderTime,
+    required int minMember,
+    required int maxMember,
+    required Store store,
+    String? postId,
+  }) : super(
+          place: place,
+          orderTime: orderTime,
+          minMember: minMember,
+          maxMember: maxMember,
+          store: store,
+          postId: postId,
+        );
 
   PostOrder.fromJson(Map<String, dynamic> json)
       : order = Order.fromJson(json['order']),
-        store = Store.fromJson(json['store']),
         super.fromJson(json);
 
   factory PostOrder.init(User user) {
@@ -45,8 +45,6 @@ class PostOrder extends PostOption {
 
   PostOrder.clone(PostOrder postOrder)
       : order = Order.clone(postOrder.order),
-        store = Store.clone(postOrder.store),
-        postId = postOrder.postId,
         super.clone(postOrder);
 
   Map newPostToJson() => {
