@@ -9,8 +9,10 @@ class TimeSelector extends ConsumerStatefulWidget {
   const TimeSelector({
     Key? key,
     required this.orderTime,
+    this.setOrderTime,
   }) : super(key: key);
   final DateTime orderTime;
+  final Function(DateTime time)? setOrderTime;
 
   @override
   ConsumerState createState() => _TimeSelectorState();
@@ -18,23 +20,6 @@ class TimeSelector extends ConsumerStatefulWidget {
 
 class _TimeSelectorState extends ConsumerState<TimeSelector> {
   DateTime nowDate = DateTime.now();
-  late DateTime _dateTime;
-
-  @override
-  void initState() {
-    super.initState();
-    _dateTime = DateTime(nowDate.year, nowDate.month, nowDate.day, nowDate.hour,
-        nowDate.minute - nowDate.minute % 10 + 10);
-    checkTime();
-  }
-
-  void checkTime() {
-    if (widget.orderTime.isBefore(_dateTime)) {
-      ref
-          .read(myDeliveryNotifierProvider.notifier)
-          .setMyDeliverOption(orderTime: _dateTime);
-    }
-  }
 
   void _showTimePicker() {
     showCupertinoModalPopup<void>(
@@ -55,9 +40,13 @@ class _TimeSelectorState extends ConsumerState<TimeSelector> {
                   maximumDate: nowDate.add(Duration(days: 7)),
                   use24hFormat: false,
                   onDateTimeChanged: (DateTime newDateTime) {
-                    ref
-                        .read(myDeliveryNotifierProvider.notifier)
-                        .setMyDeliverOption(orderTime: newDateTime);
+                    if (widget.setOrderTime != null) {
+                      widget.setOrderTime!(newDateTime);
+                    } else {
+                      ref
+                          .read(myDeliveryNotifierProvider.notifier)
+                          .setMyDeliverOption(orderTime: newDateTime);
+                    }
                   },
                 ),
               ),

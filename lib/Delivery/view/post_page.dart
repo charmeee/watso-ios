@@ -158,11 +158,10 @@ class PostPage extends ConsumerWidget {
                                   ],
                                   borderRadius: const BorderRadius.all(
                                       Radius.circular(8)),
-                                  selectedBorderColor: WatsoColor.primary,
+                                  selectedBorderColor: Colors.green,
                                   selectedColor: Colors.white,
-                                  fillColor:
-                                      WatsoColor.primary.withOpacity(0.8),
-                                  color: WatsoColor.primary,
+                                  fillColor: Colors.green[300],
+                                  color: Colors.grey,
                                   constraints: const BoxConstraints(
                                     minHeight: 30.0,
                                     minWidth: 80.0,
@@ -265,7 +264,7 @@ class PostPage extends ConsumerWidget {
                             if (isJoined && !isOwner)
                               _quitButton(context, ref, status: data.status),
                             SizedBox(
-                              height: 4,
+                              height: 10,
                             )
                           ]),
                     ),
@@ -441,8 +440,18 @@ class PostPage extends ConsumerWidget {
           context: context,
           builder: (context) => AlertDialog(
                 title: Text('게시글 상태 변경'),
-                content:
-                    Text('${PostStatus.values[index + 1].korName}로 처리하시겠습니까?'),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('${PostStatus.values[index + 1].korName}을 완료 하였나요?',
+                        style: WatsoText.readable),
+                    Text('처리 후에는 되돌릴 수 없습니다.'),
+                    Text(
+                      '${PostStatus.values[index + 1].korName} 이후에 확인을 눌러주시기 바랍니다.',
+                    )
+                  ],
+                ),
                 actions: [
                   TextButton(
                       onPressed: () {
@@ -497,12 +506,9 @@ class PostPage extends ConsumerWidget {
 
     return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
-        child: Padding(
-          padding: const EdgeInsets.only(bottom: 6.0),
-          child: primaryButton(
-            onPressed: onButtonClick,
-            text: PostStatus.values[index + 1].korName,
-          ),
+        child: primaryButton(
+          onPressed: onButtonClick,
+          text: PostStatus.values[index + 1].korName,
         ));
   }
 
@@ -521,67 +527,59 @@ class PostPage extends ConsumerWidget {
 
     return (Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 6.0),
-        child: primaryButton(onPressed: onButtonClick, text: '배달 참가'),
-      ),
+      child: primaryButton(onPressed: onButtonClick, text: '배달 참가'),
     ));
   }
 
   Widget _quitButton(context, ref, {required PostStatus status}) {
     return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
-        child: Padding(
-          padding: const EdgeInsets.only(bottom: 6.0),
-          child: primaryButton(
-              onPressed: () async {
-                if (status == PostStatus.recruiting) {
-                  showDialog(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                            title: Text('게시글 탈퇴'),
-                            content: Text('해당 주문 내역을 모두 취소하고 게시글을 탈퇴하시겠습니까?'),
-                            actions: [
-                              TextButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: Text('아니요')),
-                              TextButton(
-                                  onPressed: () {
-                                    Navigator.pop(context, true);
-                                  },
-                                  child: Text('네')),
-                            ],
-                          )).then((value) async {
-                    if (value) {
-                      await ref
-                          .read(orderRepositoryProvider(postId))
-                          .leavePost();
-                      ref.invalidate(myPostListProvider);
-                      Navigator.popUntil(context, (route) => route.isFirst);
-                    }
-                  });
-                  return;
-                }
-                final errorText = status == PostStatus.closed
-                    ? '모집 마감 상태에서는 주문을 삭제할 수 없습니다. 게시글 대표에게 문의해보세요'
-                    : '${status.korName}상테어서는 주문을 삭제할 수 없습니다.';
+        child: primaryButton(
+            onPressed: () async {
+              if (status == PostStatus.recruiting) {
                 showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
-                          title: Text('에러'),
-                          content: Text(errorText),
+                          title: Text('게시글 탈퇴'),
+                          content: Text('해당 주문 내역을 모두 취소하고 게시글을 탈퇴하시겠습니까?'),
                           actions: [
                             TextButton(
                                 onPressed: () {
                                   Navigator.pop(context);
                                 },
-                                child: Text('확인')),
+                                child: Text('아니요')),
+                            TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context, true);
+                                },
+                                child: Text('네')),
                           ],
-                        ));
-              },
-              text: '배달 탈퇴하기'),
-        ));
+                        )).then((value) async {
+                  if (value) {
+                    await ref.read(orderRepositoryProvider(postId)).leavePost();
+                    ref.invalidate(myPostListProvider);
+                    Navigator.popUntil(context, (route) => route.isFirst);
+                  }
+                });
+                return;
+              }
+              final errorText = status == PostStatus.closed
+                  ? '모집 마감 상태에서는 주문을 삭제할 수 없습니다. 게시글 대표에게 문의해보세요'
+                  : '${status.korName}상테어서는 주문을 삭제할 수 없습니다.';
+              showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                        title: Text('에러'),
+                        content: Text(errorText),
+                        actions: [
+                          TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: Text('확인')),
+                        ],
+                      ));
+            },
+            text: '배달 탈퇴하기'));
   }
 }

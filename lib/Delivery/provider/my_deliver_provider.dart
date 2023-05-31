@@ -9,7 +9,7 @@ import '../models/post_request_model.dart';
 import '../models/post_response_model.dart';
 
 final myDeliveryNotifierProvider =
-StateNotifierProvider<MyDeliveryNotifier, PostOrder>((ref) {
+    StateNotifierProvider.autoDispose<MyDeliveryNotifier, PostOrder>((ref) {
   UserInfo? user = ref.watch(userNotifierProvider);
   if (user == null) {
     throw Exception('user is null');
@@ -27,11 +27,13 @@ class MyDeliveryNotifier extends StateNotifier<PostOrder> {
     state = PostOrder.init(user);
   }
 
-  setMyDeliverOption({String? place,
+  setMyDeliverOption({
+    String? place,
     DateTime? orderTime,
     int? minMember,
     int? maxMember,
-    String? postId,}) {
+    String? postId,
+  }) {
     state = PostOrder(
         order: state.order,
         store: state.store,

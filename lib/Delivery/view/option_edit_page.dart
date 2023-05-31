@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 import 'package:watso/Common/widget/appbar.dart';
 import 'package:watso/Common/widget/primary_button.dart';
 
+import '../../Common/theme/text.dart';
 import '../models/post_request_model.dart';
 import '../provider/post_list_provider.dart';
 import '../repository/post_repository.dart';
 import '../widgets/common/store_detail_box.dart';
 import '../widgets/order_set_place.dart';
 import '../widgets/order_set_recuit.dart';
+import '../widgets/order_set_time.dart';
 
 final _recruitEditFormKey = GlobalKey<FormState>();
 
@@ -25,13 +26,18 @@ class OptionEditPage extends ConsumerStatefulWidget {
 }
 
 class _OptionEditPageState extends ConsumerState<OptionEditPage> {
+  DateTime nowDate = DateTime.now();
   late PostOrder postData;
+  bool unEditable = false;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     postData = widget.postData;
+    if (postData.orderTime.isBefore(nowDate)) {
+      unEditable = true;
+    }
   }
 
   setPlace(String place) {
@@ -53,130 +59,164 @@ class _OptionEditPageState extends ConsumerState<OptionEditPage> {
     }
   }
 
+  setOrderTime(DateTime time) {
+    if (time.isBefore(nowDate)) {
+      return;
+    }
+    setState(() {
+      postData.orderTime = time;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (unEditable) {
+      return Scaffold(
+          appBar: customAppBar(
+            context,
+            title: '배달왔소 수정',
+          ),
+          body: Container(
+            width: double.infinity,
+            padding: EdgeInsets.all(10),
+            color: Colors.transparent,
+            child: Card(
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0)),
+              margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Text(
+                  "주문 시간이 지났을 시 수정이 불가능합니다.",
+                  style: WatsoText.readable,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+          ));
+    }
     return Scaffold(
         appBar: customAppBar(
           context,
           title: '배달왔소 수정',
         ),
-        body: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        "주문 예정 시간",
-                        style: TextStyle(fontSize: 15),
-                      ),
-                      Text(
-                          DateFormat('MM월 dd일 HH시 mm분')
-                              .format(postData.orderTime),
-                          style: TextStyle(fontSize: 20)),
-                      SizedBox(
-                        height: 15,
-                      ),
-                      Text(
-                        "가게 선택",
-                        style: TextStyle(fontSize: 15),
-                      ),
-                      Text(postData.store.name,
-                          style: TextStyle(fontSize: 20, color: Colors.black)),
-                      SizedBox(
-                        height: 15,
-                      ),
-                      PlaceSelector(
-                        place: postData.place,
-                        setPlace: setPlace,
-                      ),
-                      SizedBox(
-                        height: 15,
-                      ),
-                      RecuitNumSelector(
-                        recruitFormKey: _recruitEditFormKey,
-                        minMember: postData.minMember,
-                        maxMember: postData.maxMember,
-                        setMinMaxMember: setMinMaxMember,
-                      ),
-                      SizedBox(
-                        height: 15,
-                      ),
-                      if (postData.store.id.isNotEmpty) ...{
-                        StoreDetailBox(
-                          store: postData.store,
+        body: SafeArea(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        TimeSelector(
+                          orderTime: postData.orderTime,
+                          setOrderTime: setOrderTime,
                         ),
-                      },
-                    ],
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Text(
+                          "가게 선택",
+                          style: TextStyle(fontSize: 15),
+                        ),
+                        Text(postData.store.name,
+                            style:
+                                TextStyle(fontSize: 20, color: Colors.black)),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        PlaceSelector(
+                          place: postData.place,
+                          setPlace: setPlace,
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        RecuitNumSelector(
+                          recruitFormKey: _recruitEditFormKey,
+                          minMember: postData.minMember,
+                          maxMember: postData.maxMember,
+                          setMinMaxMember: setMinMaxMember,
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        if (postData.store.id.isNotEmpty) ...{
+                          StoreDetailBox(
+                            store: postData.store,
+                          ),
+                        },
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 40.0),
-                child: primaryButton(
-                  padding: EdgeInsets.all(18),
-                  onPressed: () {
-                    _recruitEditFormKey.currentState!.save();
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  child: primaryButton(
+                    padding: EdgeInsets.all(18),
+                    onPressed: () {
+                      _recruitEditFormKey.currentState!.save();
 
-                    if (!postData.isMemberLogical) {
-                      String memberError = '최소인원이 최대인원보다 클 수 없습니다.';
+                      if (!postData.isMemberLogical) {
+                        String memberError = '최소인원이 최대인원보다 클 수 없습니다.';
 
-                      showDialog<void>(
-                        context: context,
-                        barrierDismissible: true,
-                        // false = user must tap button, true = tap outside dialog
-                        builder: (BuildContext dialogContext) {
-                          return AlertDialog(
-                            title: Text('에러'),
-                            content: Text(memberError),
-                            actions: <Widget>[
-                              TextButton(
-                                child: Text('확인'),
-                                onPressed: () {
-                                  Navigator.of(dialogContext)
-                                      .pop(); // Dismiss alert dialog
-                                },
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                      return;
-                    }
-                    ref
-                        .read(postRepositoryProvider)
-                        .updatePost(postData.postId!, postData.editableInfo)
-                        .then((value) {
-                      ref.invalidate(postDetailProvider(postData.postId!));
-                      Navigator.of(context).pop();
-                    }).onError((error, stackTrace) => showDialog(
-                            context: context,
-                            builder: (BuildContext dialogContext) {
-                              return AlertDialog(
-                                title: Text('에러'),
-                                content: Text(error.toString()),
-                                actions: <Widget>[
-                                  TextButton(
-                                    child: Text('확인'),
-                                    onPressed: () {
-                                      Navigator.of(dialogContext)
-                                          .pop(); // Dismiss alert dialog
-                                    },
-                                  ),
-                                ],
-                              );
-                            }));
-                  },
-                  text: '수정하기',
-                ),
-              )
-            ],
+                        showDialog<void>(
+                          context: context,
+                          barrierDismissible: true,
+                          // false = user must tap button, true = tap outside dialog
+                          builder: (BuildContext dialogContext) {
+                            return AlertDialog(
+                              title: Text('에러'),
+                              content: Text(memberError),
+                              actions: <Widget>[
+                                TextButton(
+                                  child: Text('확인'),
+                                  onPressed: () {
+                                    Navigator.of(dialogContext)
+                                        .pop(); // Dismiss alert dialog
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                        return;
+                      }
+                      ref
+                          .read(postRepositoryProvider)
+                          .updatePost(postData.postId!, postData.editableInfo)
+                          .then((value) {
+                        ref.invalidate(postDetailProvider(postData.postId!));
+                        Navigator.of(context).pop();
+                      }).onError((error, stackTrace) => showDialog(
+                              context: context,
+                              builder: (BuildContext dialogContext) {
+                                return AlertDialog(
+                                  title: Text('에러'),
+                                  content: Text(error.toString()),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      child: Text('확인'),
+                                      onPressed: () {
+                                        Navigator.of(dialogContext)
+                                            .pop(); // Dismiss alert dialog
+                                      },
+                                    ),
+                                  ],
+                                );
+                              }));
+                    },
+                    text: '수정하기',
+                  ),
+                )
+              ],
+            ),
           ),
         ));
   }
