@@ -167,7 +167,7 @@ class UserRepository {
 
   Future<void> findPassword(String email, String username) async {
     try {
-      await _dio.get('$staticUrl/forgot/password', queryParameters: {
+      await _dio.post('$staticUrl/forgot/password', queryParameters: {
         'email': email,
         'username': username,
       });
