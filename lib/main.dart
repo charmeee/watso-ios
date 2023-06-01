@@ -135,13 +135,20 @@ class _MyAppState extends ConsumerState<MyApp> {
     }
     final postId = message.data['post_id'];
     if (postId is String) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => PostPage(
-                  postId: postId,
-                )),
-      );
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+              builder: (context) => PostPage(
+                    postId: postId,
+                  )),
+          (route) => route.isFirst);
+      // Navigator.push(
+      //   context,
+      //   MaterialPageRoute(
+      //       builder: (context) => PostPage(
+      //             postId: postId,
+      //           )),
+      // );
     }
   }
 
