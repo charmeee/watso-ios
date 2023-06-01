@@ -25,40 +25,44 @@ class MenuOptionSelectBox extends ConsumerWidget {
     final unSelectIcon =
         isRadio ? Icons.radio_button_unchecked : Icons.check_box_outline_blank;
     MenuOption menuOption = optionGroup.options[index];
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Row(
+    return InkWell(
+      onTap: () {
+        try {
+          ref
+              .read(menuOptionNotifierProvider.notifier)
+              .setOption(isRadio, optionGroup.id, menuOption);
+        } catch (e) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text(e.toString())));
+        }
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            IconButton(
-                onPressed: () {
-                  try {
-                    ref
-                        .read(menuOptionNotifierProvider.notifier)
-                        .setOption(isRadio, optionGroup.id, menuOption);
-                  } catch (e) {
-                    ScaffoldMessenger.of(context)
-                        .showSnackBar(SnackBar(content: Text(e.toString())));
-                  }
-                },
-                icon: Icon(selectedOptions
+            Row(
+              children: [
+                Icon(selectedOptions
                         .any((element) => element.id == menuOption.id)
                     ? selectIcon
-                    : unSelectIcon)),
-            Text(
-              menuOption.name,
-              style: WatsoText.bold,
+                    : unSelectIcon),
+                Text(
+                  menuOption.name,
+                  style: WatsoText.bold,
+                ),
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsets.only(right: 16.0),
+              child: Text(
+                '${menuOption.price}원',
+                style: WatsoText.bold,
+              ),
             ),
           ],
         ),
-        Padding(
-          padding: const EdgeInsets.only(right: 16.0),
-          child: Text(
-            '${menuOption.price}원',
-            style: WatsoText.bold,
-          ),
-        ),
-      ],
+      ),
     );
   }
 }

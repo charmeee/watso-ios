@@ -125,7 +125,7 @@ class _MenuOptionPageState extends ConsumerState<MenuOptionPage> {
                                       .menu.optionGroups![index].options,
                                 ),
                                 const Divider(
-                                  height: 3,
+                                  height: 6,
                                   thickness: 2,
                                 ),
                               ],
