@@ -77,219 +77,227 @@ class PostPage extends ConsumerWidget {
                 slivers: [
                   SliverToBoxAdapter(
                       child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: StoreDetailBox(
-                      store: data.orderOption.store,
-                    ),
-                  )),
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: StoreDetailBox(
+                          store: data.orderOption.store,
+                        ),
+                      )),
                   SliverToBoxAdapter(
                       child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Card(
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0)),
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Card(
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0)),
+                          child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              mainAxisSize: MainAxisSize.min,
                               children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 16.0, left: 16.0),
-                                  child: Text(
-                                    "모집정보",
-                                    style: WatsoText.title,
-                                  ),
-                                ),
-                              ],
-                            ),
-
-                            InformationTile(
-                                icon: Icons.access_time_rounded,
-                                title: "주문시간",
-                                content: DateFormat("M월 d일(E) HH시 mm분", 'ko')
-                                    .format(data.orderOption.orderTime)),
-                            //"3월 19일(일) 10시 30분"
-                            InformationTile(
-                                icon: Icons.people,
-                                title: "현재 모인 인원",
-                                content:
-                                    "${data.users.length} 명 (최소 ${data.orderOption.minMember}명 필요)"),
-                            if (isOwner ||
-                                (isJoined &&
-                                    data.status == PostStatus.delivered))
-                              InformationTile(
-                                  icon: Icons.delivery_dining,
-                                  title: "확정 배달비",
-                                  widget: Row(
-                                    children: [
-                                      Text("${data.fee}원"),
-                                      SizedBox(
-                                        width: 10,
-                                      ),
-                                      if (isOwner)
-                                        InkWell(
-                                          child: Padding(
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 8, vertical: 2),
-                                            child: Text(
-                                              '수정',
-                                              style: TextStyle(
-                                                color: WatsoColor.primary,
-                                              ),
-                                            ),
-                                          ),
-                                          onTap: () {
-                                            showDialog(
-                                                context: context,
-                                                builder: (context) =>
-                                                    ModifyFeeDialog(
-                                                      postId: postId,
-                                                      storeFee: data.fee,
-                                                    ));
-                                          },
-                                        )
-                                    ],
-                                  )),
-                            InformationTile(
-                                icon: Icons.waves,
-                                title: "게시글 상태",
-                                content: "${data.status.korName}"),
-                            if (isOwner)
-                              InformationTile(
-                                  icon: data.status == PostStatus.recruiting
-                                      ? Icons.person
-                                      : Icons.person_off,
-                                  title: "모집 여부",
-                                  widget: ToggleButtons(
-                                    children: [
-                                      Text("모집중"),
-                                      Text("모집완료"),
-                                    ],
-                                    isSelected: [
-                                      data.status == PostStatus.recruiting,
-                                      data.status != PostStatus.recruiting
-                                    ],
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(8)),
-                                    selectedBorderColor: Colors.green,
-                                    selectedColor: Colors.white,
-                                    fillColor: Colors.green[300],
-                                    color: Colors.grey,
-                                    constraints: const BoxConstraints(
-                                      minHeight: 30.0,
-                                      minWidth: 80.0,
-                                    ),
-                                    onPressed: (index) async {
-                                      if (!isOwner) return;
-                                      if (data.status == PostStatus.ordered ||
-                                          data.status == PostStatus.delivered) {
-                                        showDialog(
-                                            context: context,
-                                            builder: (context) {
-                                              return AlertDialog(
-                                                title: Text(
-                                                    "주문/배달 완료된 글은 모집 상태를 변경할 수 없습니다."),
-                                                actions: [
-                                                  TextButton(
-                                                      onPressed: () {
-                                                        Navigator.pop(context);
-                                                      },
-                                                      child: Text("확인"))
-                                                ],
-                                              );
-                                            });
-                                        return;
-                                      }
-                                      try {
-                                        if (index == 0) {
-                                          await ref
-                                              .read(postRepositoryProvider)
-                                              .updatePostStatus(postId,
-                                                  PostStatus.recruiting);
-                                        } else {
-                                          await ref
-                                              .read(postRepositoryProvider)
-                                              .updatePostStatus(
-                                                  postId, PostStatus.closed);
-                                        }
-                                        ref.invalidate(
-                                            postDetailProvider(postId));
-                                      } catch (e) {
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(SnackBar(
-                                                content: Text("모집 상태 변경 실패")));
-                                      }
-                                    },
-                                  )),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 8.0, vertical: 2),
-                              child: SizedBox(
-                                height: 40,
-                                child: Row(
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment
+                                      .spaceBetween,
                                   children: [
-                                    if (isJoined) ...{
-                                      Expanded(
-                                        child: secondaryButton(
-                                          onPressed: () {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        MyPostOrderDetailPage(
-                                                          postId: postId,
-                                                          store: data
-                                                              .orderOption
-                                                              .store,
-                                                          orderNum:
-                                                              data.users.length,
-                                                          status: data.status,
-                                                          fee: data.fee,
-                                                        )));
-                                          },
-                                          text: "내 배달 상세",
-                                        ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 16.0, left: 16.0),
+                                      child: Text(
+                                        "모집정보",
+                                        style: WatsoText.title,
                                       ),
-                                      SizedBox(
-                                        width: 12,
-                                      ),
-                                    },
-                                    Expanded(
-                                      child: secondaryButton(
-                                          onPressed: () {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        PostOrderDetailPage(
-                                                          postId: postId,
-                                                          fee: data.fee,
-                                                        )));
-                                          },
-                                          text: "전체 배달"),
                                     ),
                                   ],
                                 ),
-                              ),
-                            ),
-                            if (isJoined && isOwner)
-                              _statusButton(data, ref, context),
-                            if (!isJoined &&
-                                !isOwner &&
-                                data.status == PostStatus.recruiting)
-                              _joinButton(data, context, ref),
-                            if (isJoined && !isOwner)
-                              _quitButton(context, ref, status: data.status),
-                            SizedBox(
-                              height: 10,
-                            )
-                          ]),
-                    ),
-                  )),
+
+                                InformationTile(
+                                    icon: Icons.access_time_rounded,
+                                    title: "주문시간",
+                                    content: DateFormat(
+                                        "M월 d일(E) HH시 mm분", 'ko')
+                                        .format(data.orderOption.orderTime)),
+                                //"3월 19일(일) 10시 30분"
+                                InformationTile(
+                                    icon: Icons.people,
+                                    title: "현재 모인 인원",
+                                    content:
+                                    "${data.users.length} 명 (최소 ${data
+                                        .orderOption.minMember}명 필요)"),
+                                if (isOwner ||
+                                    (isJoined &&
+                                        data.status == PostStatus.delivered))
+                                  InformationTile(
+                                      icon: Icons.delivery_dining,
+                                      title: "확정 배달비",
+                                      widget: Row(
+                                        children: [
+                                          Text("${data.fee}원"),
+                                          SizedBox(
+                                            width: 10,
+                                          ),
+                                          if (isOwner)
+                                            InkWell(
+                                              child: Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 8, vertical: 2),
+                                                child: Text(
+                                                  '수정',
+                                                  style: TextStyle(
+                                                    color: WatsoColor.primary,
+                                                  ),
+                                                ),
+                                              ),
+                                              onTap: () {
+                                                showDialog(
+                                                    context: context,
+                                                    builder: (context) =>
+                                                        ModifyFeeDialog(
+                                                          postId: postId,
+                                                          storeFee: data.fee,
+                                                        ));
+                                              },
+                                            )
+                                        ],
+                                      )),
+                                InformationTile(
+                                    icon: Icons.waves,
+                                    title: "게시글 상태",
+                                    content: "${data.status.korName}"),
+                                if (isOwner)
+                                  InformationTile(
+                                      icon: data.status == PostStatus.recruiting
+                                          ? Icons.person
+                                          : Icons.person_off,
+                                      title: "모집 여부",
+                                      widget: ToggleButtons(
+                                        children: [
+                                          Text("모집중"),
+                                          Text("모집완료"),
+                                        ],
+                                        isSelected: [
+                                          data.status == PostStatus.recruiting,
+                                          data.status != PostStatus.recruiting
+                                        ],
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(8)),
+                                        selectedBorderColor: Colors.green,
+                                        selectedColor: Colors.white,
+                                        fillColor: Colors.green[300],
+                                        color: Colors.grey,
+                                        constraints: const BoxConstraints(
+                                          minHeight: 30.0,
+                                          minWidth: 80.0,
+                                        ),
+                                        onPressed: (index) async {
+                                          if (!isOwner) return;
+                                          if (data.status ==
+                                              PostStatus.ordered ||
+                                              data.status ==
+                                                  PostStatus.delivered) {
+                                            showDialog(
+                                                context: context,
+                                                builder: (context) {
+                                                  return AlertDialog(
+                                                    title: Text(
+                                                        "주문/배달 완료된 글은 모집 상태를 변경할 수 없습니다."),
+                                                    actions: [
+                                                      TextButton(
+                                                          onPressed: () {
+                                                            Navigator.pop(
+                                                                context);
+                                                          },
+                                                          child: Text("확인"))
+                                                    ],
+                                                  );
+                                                });
+                                            return;
+                                          }
+                                          try {
+                                            if (index == 0) {
+                                              await ref
+                                                  .read(postRepositoryProvider)
+                                                  .updatePostStatus(postId,
+                                                  PostStatus.recruiting);
+                                            } else {
+                                              await ref
+                                                  .read(postRepositoryProvider)
+                                                  .updatePostStatus(
+                                                  postId, PostStatus.closed);
+                                            }
+                                            ref.invalidate(
+                                                postDetailProvider(postId));
+                                          } catch (e) {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(SnackBar(
+                                                content: Text("모집 상태 변경 실패")));
+                                          }
+                                        },
+                                      )),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8.0, vertical: 2),
+                                  child: SizedBox(
+                                    height: 40,
+                                    child: Row(
+                                      children: [
+                                        if (isJoined) ...{
+                                          Expanded(
+                                            child: secondaryButton(
+                                              onPressed: () {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            MyPostOrderDetailPage(
+                                                              postId: postId,
+                                                              store: data
+                                                                  .orderOption
+                                                                  .store,
+                                                              orderNum:
+                                                              data.users.length,
+                                                              status: data
+                                                                  .status,
+                                                              fee: data.fee,
+                                                            )));
+                                              },
+                                              text: "내 배달 상세",
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: 12,
+                                          ),
+                                        },
+                                        Expanded(
+                                          child: secondaryButton(
+                                              onPressed: () {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            PostOrderDetailPage(
+                                                              postId: postId,
+                                                              fee: data.fee,
+                                                            )));
+                                              },
+                                              text: "전체 배달"),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                if (isJoined && isOwner)
+                                  _statusButton(data, ref, context),
+                                if (!isJoined &&
+                                    !isOwner &&
+                                    data.status == PostStatus.recruiting)
+                                  _joinButton(data, context, ref),
+                                if (isJoined && !isOwner)
+                                  _quitButton(
+                                      context, ref, status: data.status),
+                                SizedBox(
+                                  height: 10,
+                                )
+                              ]),
+                        ),
+                      )),
                   AccountCard(
                     isOwner: isOwner,
                     status: data.status,
@@ -317,9 +325,9 @@ class PostPage extends ConsumerWidget {
 
   List<Widget>? _postActionButton(context, WidgetRef ref,
       {required bool isOwner,
-      required PostStatus status,
-      required User user,
-      required ResponsePost data}) {
+        required PostStatus status,
+        required User user,
+        required ResponsePost data}) {
     if (isOwner &&
         (status == PostStatus.recruiting || status == PostStatus.closed)) {
       return [
@@ -328,7 +336,8 @@ class PostPage extends ConsumerWidget {
             if (status == PostStatus.closed) {
               showDialog(
                   context: context,
-                  builder: (context) => AlertDialog(
+                  builder: (context) =>
+                      AlertDialog(
                         title: Text('게시글 수정'),
                         content: Column(
                           mainAxisSize: MainAxisSize.min,
@@ -356,7 +365,8 @@ class PostPage extends ConsumerWidget {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => OptionEditPage(
+                    builder: (context) =>
+                        OptionEditPage(
                           postData: PostOrder(
                               orderOption: option, order: Order.init(user)),
                         )));
@@ -371,7 +381,8 @@ class PostPage extends ConsumerWidget {
             if (status == PostStatus.closed) {
               showDialog(
                   context: context,
-                  builder: (context) => AlertDialog(
+                  builder: (context) =>
+                      AlertDialog(
                         title: Text('게시글 삭제'),
                         content: Column(
                           mainAxisSize: MainAxisSize.min,
@@ -396,7 +407,8 @@ class PostPage extends ConsumerWidget {
             }
             showDialog(
                 context: context,
-                builder: (context) => AlertDialog(
+                builder: (context) =>
+                    AlertDialog(
                       title: Text('게시글 삭제'),
                       content: Text('게시글을 삭제하시겠습니까?'),
                       actions: [
@@ -419,10 +431,12 @@ class PostPage extends ConsumerWidget {
 
                                 showDialog(
                                     context: context,
-                                    builder: (context) => AlertDialog(
+                                    builder: (context) =>
+                                        AlertDialog(
                                           title: Text('에러'),
                                           content: Text(
-                                              '게시글 삭제에 실패했습니다.\n${error.toString()}'),
+                                              '게시글 삭제에 실패했습니다.\n${error
+                                                  .toString()}'),
                                           actions: [
                                             TextButton(
                                                 onPressed: () {
@@ -463,7 +477,8 @@ class PostPage extends ConsumerWidget {
       }
       showDialog(
           context: context,
-          builder: (context) => AlertDialog(
+          builder: (context) =>
+              AlertDialog(
                 title: Text('게시글 상태 변경'),
                 content: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -473,7 +488,8 @@ class PostPage extends ConsumerWidget {
                         style: WatsoText.readable),
                     Text('처리 후에는 되돌릴 수 없습니다.'),
                     Text(
-                      '${PostStatus.values[index + 1].korName} 이후에 확인을 눌러주시기 바랍니다.',
+                      '${PostStatus.values[index + 1]
+                          .korName} 이후에 확인을 눌러주시기 바랍니다.',
                     )
                   ],
                 ),
@@ -488,7 +504,7 @@ class PostPage extends ConsumerWidget {
                         ref
                             .read(postRepositoryProvider)
                             .updatePostStatus(
-                                data.id, PostStatus.values[index + 1])
+                            data.id, PostStatus.values[index + 1])
                             .then((value) {
                           //배달완료 누른
                           ref.invalidate(postDetailProvider(postId));
@@ -500,10 +516,12 @@ class PostPage extends ConsumerWidget {
                           //alertDialog
                           showDialog(
                               context: context,
-                              builder: (context) => AlertDialog(
+                              builder: (context) =>
+                                  AlertDialog(
                                     title: Text('에러'),
                                     content: Text(
-                                        '게시글 상태 업데이트에 실패했습니다.\n${error.toString()}'),
+                                        '게시글 상태 업데이트에 실패했습니다.\n${error
+                                            .toString()}'),
                                     actions: [
                                       TextButton(
                                           onPressed: () {
@@ -520,7 +538,8 @@ class PostPage extends ConsumerWidget {
         if (value == true && data.status == PostStatus.ordered) {
           showDialog(
               context: context,
-              builder: (context) => ModifyFeeDialog(
+              builder: (context) =>
+                  ModifyFeeDialog(
                     postId: postId,
                     storeFee: data.fee,
                     isConfirm: true,
@@ -545,7 +564,8 @@ class PostPage extends ConsumerWidget {
       Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => MenuListPage(
+            builder: (context) =>
+                MenuListPage(
                   storeId: data.orderOption.store.id,
                   recuitNum: data.users.length,
                 )),
@@ -566,7 +586,8 @@ class PostPage extends ConsumerWidget {
               if (status == PostStatus.recruiting) {
                 showDialog(
                     context: context,
-                    builder: (context) => AlertDialog(
+                    builder: (context) =>
+                        AlertDialog(
                           title: Text('게시글 탈퇴'),
                           content: Text('해당 주문 내역을 모두 취소하고 게시글을 탈퇴하시겠습니까?'),
                           actions: [
@@ -583,9 +604,28 @@ class PostPage extends ConsumerWidget {
                           ],
                         )).then((value) async {
                   if (value) {
-                    await ref.read(orderRepositoryProvider(postId)).leavePost();
-                    ref.invalidate(myPostListProvider);
-                    Navigator.popUntil(context, (route) => route.isFirst);
+                    try {
+                      await ref.read(orderRepositoryProvider(postId))
+                          .leavePost();
+                      ref.invalidate(myPostListProvider);
+                      Navigator.popUntil(context, (route) => route.isFirst);
+                    } catch (e) {
+                      showDialog(
+                          context: context,
+                          builder: (context) =>
+                              AlertDialog(
+                                title: Text('에러'),
+                                content: Text('주문 취소에 실패했습니다.\n${e
+                                    .toString()}'),
+                                actions: [
+                                  TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: Text('확인')),
+                                ],
+                              ));
+                    }
                   }
                 });
                 return;
@@ -595,7 +635,8 @@ class PostPage extends ConsumerWidget {
                   : '${status.korName}상테어서는 주문을 삭제할 수 없습니다.';
               showDialog(
                   context: context,
-                  builder: (context) => AlertDialog(
+                  builder: (context) =>
+                      AlertDialog(
                         title: Text('에러'),
                         content: Text(errorText),
                         actions: [
