@@ -31,14 +31,13 @@ class _CommentBoxState extends ConsumerState<CommentList> {
   //textcontroller
   final TextEditingController _commentController = TextEditingController();
   final FocusNode _commentFocusNode = FocusNode();
-  Timer? _debounce;
+  bool loading = false;
 
   String selectedCommentId = '';
 
   @override
   void dispose() {
     _commentController.dispose();
-    _debounce?.cancel();
     super.dispose();
   }
 
@@ -48,8 +47,11 @@ class _CommentBoxState extends ConsumerState<CommentList> {
     });
   }
 
-  postComment(context) async {
+  Future postComment(context) async {
     try {
+      setState(() {
+        loading = true;
+      });
       if (selectedCommentId.isEmpty) {
         await ref
             .read(postRepositoryProvider)
@@ -69,6 +71,9 @@ class _CommentBoxState extends ConsumerState<CommentList> {
         ),
       );
     }
+    setState(() {
+      loading = false;
+    });
   }
 
   @override
@@ -137,18 +142,11 @@ class _CommentBoxState extends ConsumerState<CommentList> {
                                     focusNode: _commentFocusNode,
                                     hintText: '댓글을 입력해주세요',
                                     suffixIcon: IconButton(
-                                      onPressed: () {
+                                      onPressed: () async {
                                         if (_commentController
-                                            .text.isNotEmpty) {
-                                          log('press');
-                                          if (_debounce?.isActive ?? false) {
-                                            _debounce?.cancel();
-                                          }
-                                          _debounce = Timer(
-                                              const Duration(milliseconds: 300),
-                                              () {
-                                            postComment(context);
-                                          });
+                                                .text.isNotEmpty &&
+                                            loading == false) {
+                                          await postComment(context);
                                         }
                                       },
                                       icon: Icon(
