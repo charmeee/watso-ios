@@ -18,3 +18,9 @@ String getStringDate(DateTime dateTime) {
 
   return DateFormat("M월 d일 E요일", 'ko').format(dateTime);
 }
+
+bool isSameDate(DateTime date1, DateTime date2) {
+  return date1.year == date2.year &&
+      date1.month == date2.month &&
+      date1.day == date2.day;
+}
