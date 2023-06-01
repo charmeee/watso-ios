@@ -60,7 +60,8 @@ class _MenuListPageState extends ConsumerState<MenuListPage> {
   Widget build(BuildContext context) {
     PostOrder myOrder = ref.watch(myDeliveryNotifierProvider);
     log("loadState: $loadState storeMenus: $storeMenus myOrder: $myOrder");
-    log("myOrder.store.id != widget.storeId: ${myOrder.store.id} , ${widget.storeId}");
+    log("myOrder.store.id != widget.storeId: ${myOrder.orderOption.store
+        .id} , ${widget.storeId}");
     if (loadState == LoadState.loading && storeMenus == null) {
       return Scaffold(
         body: const Center(child: CircularProgressIndicator()),
@@ -69,7 +70,7 @@ class _MenuListPageState extends ConsumerState<MenuListPage> {
     if (storeMenus == null ||
         loadState == LoadState.error ||
         (loadState != LoadState.loading &&
-            myOrder.store.id != widget.storeId)) {
+            myOrder.orderOption.store.id != widget.storeId)) {
       return ErrorPage(
         error: error ?? Exception("로직 에러."),
       );
@@ -93,7 +94,7 @@ class _MenuListPageState extends ConsumerState<MenuListPage> {
                   ),
                   SliverList(
                     delegate: SliverChildBuilderDelegate(
-                      (context, indexOfSection) {
+                          (context, indexOfSection) {
                         List<MenuSection> menuSection = storeMenus!.menuSection;
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -110,7 +111,7 @@ class _MenuListPageState extends ConsumerState<MenuListPage> {
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),
                               itemCount:
-                                  menuSection[indexOfSection].menus.length,
+                              menuSection[indexOfSection].menus.length,
                               itemBuilder: (context, indexOfMenu) {
                                 Menu menu = menuSection[indexOfSection]
                                     .menus[indexOfMenu];
@@ -132,11 +133,12 @@ class _MenuListPageState extends ConsumerState<MenuListPage> {
                                     //navigate to menu option page
                                     Navigator.of(context).push(
                                       MaterialPageRoute(
-                                        builder: (context) => MenuOptionPage(
-                                          storeId: widget.storeId,
-                                          menuId: menu.id,
-                                          menuName: menu.name,
-                                        ),
+                                        builder: (context) =>
+                                            MenuOptionPage(
+                                              storeId: widget.storeId,
+                                              menuId: menu.id,
+                                              menuName: menu.name,
+                                            ),
                                       ),
                                     );
                                   },
@@ -157,18 +159,18 @@ class _MenuListPageState extends ConsumerState<MenuListPage> {
             ),
             orderMenus.isNotEmpty
                 ? Container(
-                    color: Colors.transparent,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16.0, vertical: 8),
-                    child: primaryButton(
-                      padding: EdgeInsets.all(16),
-                      child: floatingButtonLabel((orderMenus.fold(
-                          0,
-                          (previousValue, element) =>
-                              previousValue + element.quantity)).toString()),
-                      onPressed: navigateToBasket,
-                    ),
-                  )
+              color: Colors.transparent,
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 16.0, vertical: 8),
+              child: primaryButton(
+                padding: EdgeInsets.all(16),
+                child: floatingButtonLabel((orderMenus.fold(
+                    0,
+                        (previousValue, element) =>
+                    previousValue + element.quantity)).toString()),
+                onPressed: navigateToBasket,
+              ),
+            )
                 : const SizedBox(height: 32),
           ],
         ),
@@ -179,7 +181,8 @@ class _MenuListPageState extends ConsumerState<MenuListPage> {
   navigateToBasket() {
     Navigator.of(context).push(
       MaterialPageRoute(
-          builder: (context) => MenuBasketPage(
+          builder: (context) =>
+              MenuBasketPage(
                 recuitNum: widget.recuitNum,
               )),
     );

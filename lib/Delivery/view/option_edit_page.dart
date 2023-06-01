@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:watso/Common/view/error_page.dart';
 import 'package:watso/Common/widget/appbar.dart';
 import 'package:watso/Common/widget/primary_button.dart';
 
@@ -35,26 +36,26 @@ class _OptionEditPageState extends ConsumerState<OptionEditPage> {
     // TODO: implement initState
     super.initState();
     postData = widget.postData;
-    if (postData.orderTime.isBefore(nowDate)) {
+    if (postData.orderOption.orderTime.isBefore(nowDate)) {
       unEditable = true;
     }
   }
 
   setPlace(String place) {
     setState(() {
-      postData.place = place;
+      postData.orderOption.place = place;
     });
   }
 
   setMinMaxMember({int? min, int? max}) {
     if (min != null) {
       setState(() {
-        postData.minMember = min;
+        postData.orderOption.minMember = min;
       });
     }
     if (max != null) {
       setState(() {
-        postData.maxMember = max;
+        postData.orderOption.maxMember = max;
       });
     }
   }
@@ -64,12 +65,15 @@ class _OptionEditPageState extends ConsumerState<OptionEditPage> {
       return;
     }
     setState(() {
-      postData.orderTime = time;
+      postData.orderOption.orderTime = time;
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    if (widget.postData.orderOption.postId == null) {
+      return ErrorPage(error: Exception("게시글 정보가 불러와지지 않았습니다."));
+    }
     if (unEditable) {
       return Scaffold(
           appBar: customAppBar(
@@ -115,7 +119,7 @@ class _OptionEditPageState extends ConsumerState<OptionEditPage> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         TimeSelector(
-                          orderTime: postData.orderTime,
+                          orderTime: postData.orderOption.orderTime,
                           setOrderTime: setOrderTime,
                         ),
                         SizedBox(
@@ -125,14 +129,14 @@ class _OptionEditPageState extends ConsumerState<OptionEditPage> {
                           "가게 선택",
                           style: TextStyle(fontSize: 15),
                         ),
-                        Text(postData.store.name,
+                        Text(postData.orderOption.store.name,
                             style:
                                 TextStyle(fontSize: 20, color: Colors.black)),
                         SizedBox(
                           height: 15,
                         ),
                         PlaceSelector(
-                          place: postData.place,
+                          place: postData.orderOption.place,
                           setPlace: setPlace,
                         ),
                         SizedBox(
@@ -140,16 +144,16 @@ class _OptionEditPageState extends ConsumerState<OptionEditPage> {
                         ),
                         RecuitNumSelector(
                           recruitFormKey: _recruitEditFormKey,
-                          minMember: postData.minMember,
-                          maxMember: postData.maxMember,
+                          minMember: postData.orderOption.minMember,
+                          maxMember: postData.orderOption.maxMember,
                           setMinMaxMember: setMinMaxMember,
                         ),
                         SizedBox(
                           height: 15,
                         ),
-                        if (postData.store.id.isNotEmpty) ...{
+                        if (postData.orderOption.store.id.isNotEmpty) ...{
                           StoreDetailBox(
-                            store: postData.store,
+                            store: postData.orderOption.store,
                           ),
                         },
                       ],
@@ -163,7 +167,7 @@ class _OptionEditPageState extends ConsumerState<OptionEditPage> {
                     onPressed: () {
                       _recruitEditFormKey.currentState!.save();
 
-                      if (!postData.isMemberLogical) {
+                      if (!postData.orderOption.isMemberLogical) {
                         String memberError = '최소인원이 최대인원보다 클 수 없습니다.';
 
                         showDialog<void>(
@@ -190,9 +194,11 @@ class _OptionEditPageState extends ConsumerState<OptionEditPage> {
                       }
                       ref
                           .read(postRepositoryProvider)
-                          .updatePost(postData.postId!, postData.editableInfo)
+                          .updatePost(postData.orderOption.postId!,
+                              postData.orderOption.editableInfo)
                           .then((value) {
-                        ref.invalidate(postDetailProvider(postData.postId!));
+                        ref.invalidate(
+                            postDetailProvider(postData.orderOption.postId!));
                         Navigator.of(context).pop();
                       }).onError((error, stackTrace) => showDialog(
                               context: context,

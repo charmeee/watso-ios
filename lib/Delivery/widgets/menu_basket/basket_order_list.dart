@@ -26,11 +26,16 @@ class BasketList extends StatelessWidget {
                 ),
                 Column(
                   mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     DeleteMenu(
                       orderMenu: orderMenu,
                       index: index,
                       isLast: orderLines.length == 1,
+                    ),
+                    Text(
+                      ' · 기본 : ${orderMenu.menu.price}원 x ${orderMenu.quantity}',
+                      style: TextStyle(color: Colors.grey, fontSize: 12),
                     ),
                     if (orderMenu.menu.optionGroups != null &&
                         orderMenu.menu.optionGroups!.isNotEmpty)

@@ -6,11 +6,12 @@ import '../models/post_response_model.dart';
 import '../view/post_page.dart';
 
 Widget indexCommonListTile(ResponsePost data, context) {
-  String orderTime = DateFormat("HH시 mm분", 'ko').format(data.orderTime);
+  String orderTime =
+      DateFormat("HH시 mm분", 'ko').format(data.orderOption.orderTime);
   return ListTile(
     leading: ClipRRect(
         borderRadius: BorderRadius.circular(8.0),
-        child: Image.network(data.store.logoImgUrl,
+        child: Image.network(data.orderOption.store.logoImgUrl,
             width: 60, height: 60, fit: BoxFit.fitWidth)),
     title: Column(
       mainAxisSize: MainAxisSize.min,
@@ -21,7 +22,7 @@ Widget indexCommonListTile(ResponsePost data, context) {
                 fontSize: 15,
                 fontWeight: FontWeight.w600,
                 color: Colors.black87)),
-        Text('[${data.place}] ' + data.store.name,
+        Text('[${data.orderOption.place}] ' + data.orderOption.store.name,
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800)),
       ],
     ),
@@ -37,7 +38,7 @@ Widget indexCommonListTile(ResponsePost data, context) {
           //   '📍${data.place}',
           //   style: TextStyle(height: 1.2),
           // ),
-          Text('· ${data.users.length} / ${data.maxMember} 명 ',
+          Text('· ${data.users.length} / ${data.orderOption.maxMember} 명 ',
               style: TextStyle(color: Colors.black87, height: 1.2)),
         ],
       ),
@@ -50,6 +51,7 @@ Widget indexCommonListTile(ResponsePost data, context) {
           context,
           MaterialPageRoute(
               builder: (context) => PostPage(
+                    key: ValueKey(data.id),
                     postId: data.id,
                   )));
     },

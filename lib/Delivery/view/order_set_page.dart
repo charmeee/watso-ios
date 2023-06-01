@@ -5,8 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:watso/Common/widget/appbar.dart';
 import 'package:watso/Common/widget/primary_button.dart';
 
-import '../models/post_request_model.dart';
-import '../provider/my_deliver_provider.dart';
+import '../models/post_model.dart';
+import '../provider/order_option_provider.dart';
 import '../widgets/common/store_detail_box.dart';
 import '../widgets/order_set_place.dart';
 import '../widgets/order_set_recuit.dart';
@@ -28,7 +28,7 @@ class OrderSetPage extends ConsumerStatefulWidget {
 class _OrderSetPageState extends ConsumerState<OrderSetPage> {
   @override
   Widget build(BuildContext context) {
-    final PostOrder myPostState = ref.watch(myDeliveryNotifierProvider);
+    final OrderOption myOrderOption = ref.watch(orderOptionNotifierProvider);
     return Scaffold(
         appBar: customAppBar(
           context,
@@ -48,34 +48,34 @@ class _OrderSetPageState extends ConsumerState<OrderSetPage> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         TimeSelector(
-                          orderTime: myPostState.orderTime,
+                          orderTime: myOrderOption.orderTime,
                         ),
                         SizedBox(
                           height: 15,
                         ),
                         StoreSelector(
-                          myStore: myPostState.store,
+                          myStore: myOrderOption.store,
                         ),
                         SizedBox(
                           height: 15,
                         ),
                         PlaceSelector(
-                          place: myPostState.place,
+                          place: myOrderOption.place,
                         ),
                         SizedBox(
                           height: 15,
                         ),
                         RecuitNumSelector(
                           recruitFormKey: _recruitFormKey,
-                          minMember: myPostState.minMember,
-                          maxMember: myPostState.maxMember,
+                          minMember: myOrderOption.minMember,
+                          maxMember: myOrderOption.maxMember,
                         ),
                         SizedBox(
                           height: 15,
                         ),
-                        if (myPostState.store.id.isNotEmpty) ...{
+                        if (myOrderOption.store.id.isNotEmpty) ...{
                           StoreDetailBox(
-                            store: myPostState.store,
+                            store: myOrderOption.store,
                           ),
                         },
                       ],
@@ -89,20 +89,20 @@ class _OrderSetPageState extends ConsumerState<OrderSetPage> {
                     onPressed: () {
                       if (!_recruitFormKey.currentState!.validate()) return;
                       _recruitFormKey.currentState!.save();
-                      log(myPostState.minMember.toString());
-                      log(myPostState.maxMember.toString());
-                      log(myPostState.store.fee.toString());
-                      log(myPostState.store.id.toString());
-                      log(myPostState.place.toString());
-                      if (!myPostState.isStoreSelected ||
-                          !myPostState.isMemberLogical ||
-                          !myPostState.isOrderTimeLogical) {
+                      log(myOrderOption.minMember.toString());
+                      log(myOrderOption.maxMember.toString());
+                      log(myOrderOption.store.fee.toString());
+                      log(myOrderOption.store.id.toString());
+                      log(myOrderOption.place.toString());
+                      if (!myOrderOption.isStoreSelected ||
+                          !myOrderOption.isMemberLogical ||
+                          !myOrderOption.isOrderTimeLogical) {
                         String? storeError =
-                            !myPostState.isStoreSelected ? '가게를 선택하세요' : null;
-                        String? memberError = !myPostState.isMemberLogical
+                            !myOrderOption.isStoreSelected ? '가게를 선택하세요' : null;
+                        String? memberError = !myOrderOption.isMemberLogical
                             ? '최소인원이 최대인원보다 클 수 없습니다.'
                             : null;
-                        String? timeError = !myPostState.isOrderTimeLogical
+                        String? timeError = !myOrderOption.isOrderTimeLogical
                             ? '주문시간은 최소 10분 뒤 부터 가능합니다.'
                             : null;
                         showDialog<void>(
@@ -132,7 +132,7 @@ class _OrderSetPageState extends ConsumerState<OrderSetPage> {
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                MenuListPage(storeId: myPostState.store.id)),
+                                MenuListPage(storeId: myOrderOption.store.id)),
                       );
                     },
                     text: '주문하기',

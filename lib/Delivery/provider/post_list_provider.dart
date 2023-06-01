@@ -23,7 +23,9 @@ final joinablePostListProvider =
   if (filter == PostPlaceFilter.all) {
     return list;
   }
-  return list.where((element) => element.place == filter.korName).toList();
+  return list
+      .where((element) => element.orderOption.place == filter.korName)
+      .toList();
 });
 
 final joinablePostFilterProvider = StateProvider<PostPlaceFilter>((ref) {

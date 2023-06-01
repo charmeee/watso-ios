@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
-import '../provider/my_deliver_provider.dart';
+import '../provider/order_option_provider.dart';
 
 class TimeSelector extends ConsumerStatefulWidget {
   const TimeSelector({
@@ -44,8 +44,8 @@ class _TimeSelectorState extends ConsumerState<TimeSelector> {
                       widget.setOrderTime!(newDateTime);
                     } else {
                       ref
-                          .read(myDeliveryNotifierProvider.notifier)
-                          .setMyDeliverOption(orderTime: newDateTime);
+                          .read(orderOptionNotifierProvider.notifier)
+                          .setPartOfOption(orderTime: newDateTime);
                     }
                   },
                 ),

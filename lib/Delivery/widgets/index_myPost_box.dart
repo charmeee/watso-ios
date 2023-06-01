@@ -63,9 +63,9 @@ class MyPostBox extends ConsumerWidget {
       itemCount: data.length,
       padding: EdgeInsets.all(0),
       itemBuilder: (context, index) {
-        final nowDataDate = data[index].orderTime;
+        final nowDataDate = data[index].orderOption.orderTime;
         final bool diffDate =
-            nowDataDate.difference(beforeTime).inDays != 0; //이전 데이터와 날짜가 다른지
+            !isSameDate(nowDataDate, beforeTime); //이전 데이터와 날짜가 다른지
         beforeTime = nowDataDate;
         return Column(
           mainAxisSize: MainAxisSize.min,

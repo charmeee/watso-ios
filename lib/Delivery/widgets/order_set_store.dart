@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/post_model.dart';
-import '../provider/my_deliver_provider.dart';
+import '../provider/order_option_provider.dart';
 import '../repository/store_repository.dart';
 
 class StoreSelector extends ConsumerStatefulWidget {
@@ -92,8 +92,8 @@ class _StoreSelectorState extends ConsumerState<StoreSelector> {
                   ),
                   onTap: () {
                     ref
-                        .read(myDeliveryNotifierProvider.notifier)
-                        .setMyDeliverStore(_storeList[index]);
+                        .read(orderOptionNotifierProvider.notifier)
+                        .setPartOfOption(store: _storeList[index]);
                     Navigator.pop(context);
                   },
                 );

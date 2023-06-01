@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../provider/my_deliver_provider.dart';
+import '../provider/order_option_provider.dart';
 
 const int MAX_RECUIT_MEMBER = 99;
 const int MIN_RECUIT_MEMBER = 1;
@@ -113,8 +113,8 @@ class _RecuitNumSelectorState extends ConsumerState<RecuitNumSelector> {
                           return;
                         }
                         ref
-                            .read(myDeliveryNotifierProvider.notifier)
-                            .setMyDeliverOption(minMember: curVal);
+                            .read(orderOptionNotifierProvider.notifier)
+                            .setPartOfOption(minMember: curVal);
                       }
                     },
                   ),
@@ -180,8 +180,8 @@ class _RecuitNumSelectorState extends ConsumerState<RecuitNumSelector> {
                             return;
                           }
                           ref
-                              .read(myDeliveryNotifierProvider.notifier)
-                              .setMyDeliverOption(maxMember: curVal);
+                              .read(orderOptionNotifierProvider.notifier)
+                              .setPartOfOption(maxMember: curVal);
                         }
                       }),
                 ),

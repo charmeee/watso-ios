@@ -7,10 +7,11 @@ import 'package:watso/Delivery/models/post_model.dart';
 import '../../repository/post_repository.dart';
 
 class AccountCard extends ConsumerStatefulWidget {
-  const AccountCard({Key? key,
-    required this.isOwner,
-    required this.status,
-    required this.postId})
+  const AccountCard(
+      {Key? key,
+      required this.isOwner,
+      required this.status,
+      required this.postId})
       : super(key: key);
   final bool isOwner;
   final PostStatus status;
@@ -79,7 +80,7 @@ class _AccountCardState extends ConsumerState<AccountCard> {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.0)),
                   margin:
-                  const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Row(
@@ -117,28 +118,32 @@ class _AccountCardState extends ConsumerState<AccountCard> {
                   ),
                 );
               }
+
               return Card(
                   elevation: 0,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.0)),
                   margin:
-                  const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        snapshot.hasError
-                            ? '계좌번호를 불러오지 못했습니다.'
-                            : '계좌번호를 불러오는 중입니다.',
-                        textAlign: TextAlign.center,
-                      )));
+                      child: snapshot.hasError
+                          ? Text(
+                              '계좌번호를 불러오지 못했습니다.\n${snapshot.error}',
+                              textAlign: TextAlign.center,
+                            )
+                          : Text(
+                              '계좌번호를 불러오는 중입니다.',
+                              textAlign: TextAlign.center,
+                            )));
             }),
       );
     }
     //return empty
     return SliverToBoxAdapter(
         child: SizedBox(
-          height: 0,
-        ));
+      height: 0,
+    ));
   }
 
   Widget accountCard({required Widget child}) {

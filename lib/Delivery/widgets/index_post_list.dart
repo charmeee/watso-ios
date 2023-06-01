@@ -37,10 +37,11 @@ class PostList extends ConsumerWidget {
         return ListView.separated(
             itemBuilder: (BuildContext context, int index) {
               final nowData = data[index];
-              final nowDataDate = data[index].orderTime;
-              final bool diffDate = nowDataDate.difference(beforeTime).inDays !=
-                  0; //이전 데이터와 날짜가 다른지
+              final nowDataDate = nowData.orderOption.orderTime;
+              final bool diffDate =
+                  !isSameDate(nowDataDate, beforeTime); //이전 데이터와 날짜가 다른지
               beforeTime = nowDataDate;
+
               return Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,

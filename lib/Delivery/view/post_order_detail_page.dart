@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:watso/Common/theme/text.dart';
@@ -15,7 +17,10 @@ class PostOrderDetailPage extends ConsumerWidget {
   const PostOrderDetailPage({
     Key? key,
     required this.postId,
+    required this.fee,
   }) : super(key: key);
+
+  final int fee;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -38,6 +43,7 @@ class PostOrderDetailPage extends ConsumerWidget {
                           0,
                           (previousValue, element) =>
                               previousValue + element.totalPrice));
+              log('totalSumPrice: $totalSumPrice');
               return SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -182,7 +188,7 @@ class PostOrderDetailPage extends ConsumerWidget {
                     ),
                     CalculateBox(
                         totalSumPrice: totalSumPrice,
-                        expectDeliverFee: 0,
+                        expectDeliverFee: fee,
                         isTotal: true),
                   ],
                 ),

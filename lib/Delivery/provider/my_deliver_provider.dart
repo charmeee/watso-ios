@@ -6,64 +6,29 @@ import 'package:watso/Auth/models/user_model.dart';
 import '../../Auth/provider/user_provider.dart';
 import '../models/post_model.dart';
 import '../models/post_request_model.dart';
-import '../models/post_response_model.dart';
+import 'order_option_provider.dart';
 
 //order stateprovider과
 //PostOption stateprovider을 합친것.
 final myDeliveryNotifierProvider =
     StateNotifierProvider.autoDispose<MyDeliveryNotifier, PostOrder>((ref) {
   UserInfo? user = ref.watch(userNotifierProvider);
+  OrderOption option = ref.watch(orderOptionNotifierProvider);
   if (user == null) {
     throw Exception('user is null');
   }
-  return MyDeliveryNotifier(ref, user: user);
+  return MyDeliveryNotifier(ref, user: user, option: option);
 });
 
 class MyDeliveryNotifier extends StateNotifier<PostOrder> {
-  MyDeliveryNotifier(this.ref, {required this.user})
-      : super(PostOrder.init(user));
+  MyDeliveryNotifier(this.ref, {required this.user, required this.option})
+      : super(PostOrder(
+          order: Order.init(user),
+          orderOption: option,
+        ));
+  final OrderOption option;
   final UserInfo user;
   final Ref ref;
-
-  deleteMyDeliver() {
-    state = PostOrder.init(user);
-  }
-
-  setMyDeliverOption({
-    String? place,
-    DateTime? orderTime,
-    int? minMember,
-    int? maxMember,
-    String? postId,
-  }) {
-    state = PostOrder(
-        order: state.order,
-        store: state.store,
-        place: place ?? state.place,
-        orderTime: orderTime ?? state.orderTime,
-        minMember: minMember ?? state.minMember,
-        maxMember: maxMember ?? state.maxMember,
-        postId: postId ?? state.postId);
-
-    log('setMyDeliverOption: ${state.newPostToJson()}');
-  }
-
-  setMyDeliverStore(Store store) {
-    PostOrder tmp = PostOrder.clone(state);
-    tmp.store = store;
-    state = tmp;
-  }
-
-  setMyDeliverByPost(ResponsePost data) {
-    PostOrder tmp = PostOrder.clone(state);
-    tmp.place = data.place;
-    tmp.orderTime = data.orderTime;
-    tmp.minMember = data.minMember;
-    tmp.maxMember = data.maxMember;
-    tmp.postId = data.id;
-    tmp.store = data.store;
-    state = tmp;
-  }
 
   addMyDeliverOrder(OrderMenu order) {
     PostOrder tmp = PostOrder.clone(state);

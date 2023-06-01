@@ -23,8 +23,8 @@ class MenuBasketPage extends ConsumerWidget {
     PostOrder postOrder = ref.watch(myDeliveryNotifierProvider);
     int totalSumPrice = postOrder.order.orderLines
         .fold(0, (pre, element) => pre + element.totalPrice);
-    int expectDeliverFee =
-        postOrder.store.fee ~/ (recuitNum ?? postOrder.minMember);
+    int expectDeliverFee = postOrder.orderOption.store.fee ~/
+        (recuitNum ?? postOrder.orderOption.minMember);
     return Scaffold(
       appBar: customAppBar(context, title: '장바구니', isCenter: true),
       body: SafeArea(
@@ -34,7 +34,7 @@ class MenuBasketPage extends ConsumerWidget {
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Text(
-                  postOrder.store.name,
+                  postOrder.orderOption.store.name,
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
               ),

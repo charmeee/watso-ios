@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:watso/Common/theme/color.dart';
 
-import '../provider/my_deliver_provider.dart';
+import '../provider/order_option_provider.dart';
 
 class PlaceSelector extends ConsumerWidget {
   const PlaceSelector({
@@ -36,8 +36,8 @@ class PlaceSelector extends ConsumerWidget {
                     return;
                   }
                   ref
-                      .read(myDeliveryNotifierProvider.notifier)
-                      .setMyDeliverOption(place: value.toString());
+                      .read(orderOptionNotifierProvider.notifier)
+                      .setPartOfOption(place: value.toString());
                 },
                 fillColor: MaterialStateProperty.resolveWith((states) {
                   if (states.contains(MaterialState.selected)) {
@@ -56,8 +56,8 @@ class PlaceSelector extends ConsumerWidget {
                     return;
                   }
                   ref
-                      .read(myDeliveryNotifierProvider.notifier)
-                      .setMyDeliverOption(place: value.toString());
+                      .read(orderOptionNotifierProvider.notifier)
+                      .setPartOfOption(place: value.toString());
                 },
                 fillColor: MaterialStateProperty.resolveWith((states) {
                   if (states.contains(MaterialState.selected)) {

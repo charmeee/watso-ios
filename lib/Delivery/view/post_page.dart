@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -6,13 +8,14 @@ import 'package:watso/Common/widget/appbar.dart';
 import 'package:watso/Delivery/models/post_model.dart';
 import 'package:watso/Delivery/models/post_request_model.dart';
 
+import '../../Auth/models/user_model.dart';
 import '../../Auth/provider/user_provider.dart';
 import '../../Common/theme/color.dart';
 import '../../Common/theme/text.dart';
 import '../../Common/widget/primary_button.dart';
 import '../../Common/widget/secondary_button.dart';
 import '../models/post_response_model.dart';
-import '../provider/my_deliver_provider.dart';
+import '../provider/order_option_provider.dart';
 import '../provider/post_list_provider.dart';
 import '../repository/order_repository.dart';
 import '../repository/post_repository.dart';
@@ -36,18 +39,31 @@ class PostPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     AsyncValue<ResponsePost> postData = ref.watch(postDetailProvider(postId));
-    String userId = ref.watch(userNotifierProvider)!.id;
+    User? user = ref.watch(userNotifierProvider);
+
+    ref.watch(orderOptionNotifierProvider);
+    if (user == null) {
+      return ErrorPage(
+        error: Exception("로그인이 필요합니다."),
+      );
+    }
+    User nowUser = user;
 
     return postData.when(
         skipLoadingOnRefresh: false,
         data: (data) {
-          bool isJoined = data.users.any((element) => element == userId);
-          bool isOwner = data.userId == userId;
+          log("data: ${data.toMap()}");
+          log("orderOption: ${data.orderOption.toMap()}");
+          bool isJoined = data.users.any((element) => element == user.id);
+          bool isOwner = data.userId == nowUser.id;
           return Scaffold(
             appBar: customAppBar(context,
-                title: data.store.name,
+                title: data.orderOption.store.name,
                 action: _postActionButton(context, ref,
-                    isOwner: isOwner, status: data.status, data: data)),
+                    isOwner: isOwner,
+                    status: data.status,
+                    data: data,
+                    user: nowUser)),
             body: RefreshIndicator(
               onRefresh: () async {
                 ref.invalidate(postDetailProvider(postId));
@@ -63,7 +79,7 @@ class PostPage extends ConsumerWidget {
                       child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: StoreDetailBox(
-                      store: data.store,
+                      store: data.orderOption.store,
                     ),
                   )),
                   SliverToBoxAdapter(
@@ -95,13 +111,13 @@ class PostPage extends ConsumerWidget {
                                 icon: Icons.access_time_rounded,
                                 title: "주문시간",
                                 content: DateFormat("M월 d일(E) HH시 mm분", 'ko')
-                                    .format(data.orderTime)),
+                                    .format(data.orderOption.orderTime)),
                             //"3월 19일(일) 10시 30분"
                             InformationTile(
                                 icon: Icons.people,
                                 title: "현재 모인 인원",
                                 content:
-                                    "${data.users.length} 명 (최소 ${data.minMember}명 필요)"),
+                                    "${data.users.length} 명 (최소 ${data.orderOption.minMember}명 필요)"),
                             if (isOwner ||
                                 (isJoined &&
                                     data.status == PostStatus.delivered))
@@ -225,7 +241,9 @@ class PostPage extends ConsumerWidget {
                                                     builder: (context) =>
                                                         MyPostOrderDetailPage(
                                                           postId: postId,
-                                                          store: data.store,
+                                                          store: data
+                                                              .orderOption
+                                                              .store,
                                                           orderNum:
                                                               data.users.length,
                                                           status: data.status,
@@ -247,7 +265,9 @@ class PostPage extends ConsumerWidget {
                                                 MaterialPageRoute(
                                                     builder: (context) =>
                                                         PostOrderDetailPage(
-                                                            postId: postId)));
+                                                          postId: postId,
+                                                          fee: data.fee,
+                                                        )));
                                           },
                                           text: "전체 배달"),
                                     ),
@@ -297,6 +317,7 @@ class PostPage extends ConsumerWidget {
   List<Widget>? _postActionButton(context, WidgetRef ref,
       {required bool isOwner,
       required PostStatus status,
+      required User user,
       required ResponsePost data}) {
     if (isOwner &&
         (status == PostStatus.recruiting || status == PostStatus.closed)) {
@@ -329,11 +350,14 @@ class PostPage extends ConsumerWidget {
                       ));
               return;
             }
+            OrderOption option = OrderOption.clone(data.orderOption);
+            option.postId = data.id;
             Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (context) => OptionEditPage(
-                          postData: PostOrder.fromResponsePost(data),
+                          postData: PostOrder(
+                              orderOption: option, order: Order.init(user)),
                         )));
           },
           icon: Icon(
@@ -514,12 +538,14 @@ class PostPage extends ConsumerWidget {
 
   Widget _joinButton(ResponsePost data, context, WidgetRef ref) {
     onButtonClick() {
-      ref.read(myDeliveryNotifierProvider.notifier).setMyDeliverByPost(data);
+      OrderOption option = OrderOption.clone(data.orderOption);
+      option.postId = data.id;
+      ref.read(orderOptionNotifierProvider.notifier).setOption(option);
       Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) => MenuListPage(
-                  storeId: data.store.id,
+                  storeId: data.orderOption.store.id,
                   recuitNum: data.users.length,
                 )),
       );
