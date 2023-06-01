@@ -158,72 +158,73 @@ class PostPage extends ConsumerWidget {
                                 icon: Icons.waves,
                                 title: "게시글 상태",
                                 content: "${data.status.korName}"),
-                            InformationTile(
-                                icon: data.status == PostStatus.recruiting
-                                    ? Icons.person
-                                    : Icons.person_off,
-                                title: "모집 여부",
-                                widget: ToggleButtons(
-                                  children: [
-                                    Text("모집중"),
-                                    Text("모집완료"),
-                                  ],
-                                  isSelected: [
-                                    data.status == PostStatus.recruiting,
-                                    data.status != PostStatus.recruiting
-                                  ],
-                                  borderRadius: const BorderRadius.all(
-                                      Radius.circular(8)),
-                                  selectedBorderColor: Colors.green,
-                                  selectedColor: Colors.white,
-                                  fillColor: Colors.green[300],
-                                  color: Colors.grey,
-                                  constraints: const BoxConstraints(
-                                    minHeight: 30.0,
-                                    minWidth: 80.0,
-                                  ),
-                                  onPressed: (index) async {
-                                    if (!isOwner) return;
-                                    if (data.status == PostStatus.ordered ||
-                                        data.status == PostStatus.delivered) {
-                                      showDialog(
-                                          context: context,
-                                          builder: (context) {
-                                            return AlertDialog(
-                                              title: Text(
-                                                  "주문/배달 완료된 글은 모집 상태를 변경할 수 없습니다."),
-                                              actions: [
-                                                TextButton(
-                                                    onPressed: () {
-                                                      Navigator.pop(context);
-                                                    },
-                                                    child: Text("확인"))
-                                              ],
-                                            );
-                                          });
-                                      return;
-                                    }
-                                    try {
-                                      if (index == 0) {
-                                        await ref
-                                            .read(postRepositoryProvider)
-                                            .updatePostStatus(
-                                                postId, PostStatus.recruiting);
-                                      } else {
-                                        await ref
-                                            .read(postRepositoryProvider)
-                                            .updatePostStatus(
-                                                postId, PostStatus.closed);
+                            if (isOwner)
+                              InformationTile(
+                                  icon: data.status == PostStatus.recruiting
+                                      ? Icons.person
+                                      : Icons.person_off,
+                                  title: "모집 여부",
+                                  widget: ToggleButtons(
+                                    children: [
+                                      Text("모집중"),
+                                      Text("모집완료"),
+                                    ],
+                                    isSelected: [
+                                      data.status == PostStatus.recruiting,
+                                      data.status != PostStatus.recruiting
+                                    ],
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(8)),
+                                    selectedBorderColor: Colors.green,
+                                    selectedColor: Colors.white,
+                                    fillColor: Colors.green[300],
+                                    color: Colors.grey,
+                                    constraints: const BoxConstraints(
+                                      minHeight: 30.0,
+                                      minWidth: 80.0,
+                                    ),
+                                    onPressed: (index) async {
+                                      if (!isOwner) return;
+                                      if (data.status == PostStatus.ordered ||
+                                          data.status == PostStatus.delivered) {
+                                        showDialog(
+                                            context: context,
+                                            builder: (context) {
+                                              return AlertDialog(
+                                                title: Text(
+                                                    "주문/배달 완료된 글은 모집 상태를 변경할 수 없습니다."),
+                                                actions: [
+                                                  TextButton(
+                                                      onPressed: () {
+                                                        Navigator.pop(context);
+                                                      },
+                                                      child: Text("확인"))
+                                                ],
+                                              );
+                                            });
+                                        return;
                                       }
-                                      ref.invalidate(
-                                          postDetailProvider(postId));
-                                    } catch (e) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(SnackBar(
-                                              content: Text("모집 상태 변경 실패")));
-                                    }
-                                  },
-                                )),
+                                      try {
+                                        if (index == 0) {
+                                          await ref
+                                              .read(postRepositoryProvider)
+                                              .updatePostStatus(postId,
+                                                  PostStatus.recruiting);
+                                        } else {
+                                          await ref
+                                              .read(postRepositoryProvider)
+                                              .updatePostStatus(
+                                                  postId, PostStatus.closed);
+                                        }
+                                        ref.invalidate(
+                                            postDetailProvider(postId));
+                                      } catch (e) {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(SnackBar(
+                                                content: Text("모집 상태 변경 실패")));
+                                      }
+                                    },
+                                  )),
                             Padding(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 8.0, vertical: 2),
