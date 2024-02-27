@@ -11,6 +11,7 @@
 
 ## 배포
 <img width="388" alt="스크린샷 2024-02-27 오전 11 41 31" src="https://github.com/charmeee/watso-ios/assets/75278669/68f34e62-4760-4d93-99ae-e4a641f0bf36">
+
 ![image (4)](https://github.com/charmeee/watso-ios/assets/75278669/6bc01085-6188-484c-9e16-d0a7530e7def)
 
 배포 후 사용자들의 불편한점들을 확인하여 버전2에서 그 부분을 개선하고 택시 공동 탑승 기능을 추가하여 개발중
